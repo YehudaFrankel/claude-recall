@@ -261,8 +261,14 @@ def main():
     tools_dir.mkdir(exist_ok=True)
     (tools_dir / "check_memory.py").write_text(kit_check, encoding="utf-8")
 
+    # Save update.py itself so future runs use `python update.py` directly
+    kit_updater = get_content(source, "update.py", github_base)
+    if kit_updater:
+        (ROOT / "update.py").write_text(kit_updater, encoding="utf-8")
+
     print("\nDone. Kit updated successfully.")
     print("  Your memory files, STATUS.md, and project config were not changed.")
+    print("  update.py saved — next time just run: python update.py")
 
 
 if __name__ == "__main__":
