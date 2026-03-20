@@ -684,7 +684,7 @@ footer {
         <span class="t-line"><span class="t-prompt">$ </span><span class="t-user">Start Session</span></span>
         <span class="t-out"><span class="t-ok">✓</span> Python 3.11 found</span>
         <span class="t-out"><span class="t-ok">✓</span> check_memory.py — no drift</span>
-        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 88</span>
+        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 91</span>
         <span class="t-out"><span class="t-ok">✓</span> 5 lessons loaded</span>
         <span class="t-out"><span class="t-ok">✓</span> 4 decisions loaded</span>
         <span class="t-out"><span class="t-ok">✓</span> 3 known errors loaded</span>
@@ -703,7 +703,7 @@ footer {
 <div class="stats">
   <div class="stats-inner">
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="88">88</span></div>
+      <div class="s-num"><span class="counter" data-target="91">91</span></div>
       <div class="s-label">real production sessions — not a demo project</div>
     </div>
     <div class="stat-item">
@@ -725,7 +725,7 @@ footer {
 <div class="section reveal" id="proof">
   <div class="section-tag">Real-world test</div>
   <h2 class="section-h">Tested on a production codebase — not a todo app</h2>
-  <p class="section-p">88 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
+  <p class="section-p">91 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
 
   <div class="how-list">
     <div class="how-row">
@@ -844,6 +844,10 @@ footer {
       <div class="feat-desc"><code>check_memory.py</code> runs silently after every file edit via a PostToolUse hook. Add a function, rename a CSS class, delete an endpoint — Claude's memory updates within seconds, not next session. On the test codebase, it caught 21 undocumented functions on first run and ~50 more when a new feature was added across sessions. Without it, that logic would have been invisible to Claude indefinitely.</div>
     </div>
     <div class="feature-row">
+      <div class="feat-label"><span class="feat-icon">🔗</span> Lifecycle hooks</div>
+      <div class="feat-desc">Three hooks beyond drift detection: <code>SessionStart</code> injects memory before your first message — Claude starts warm without a manual command. <code>PreCompact</code> preserves memory through <code>/compact</code>, so long sessions stay clean without losing context. <code>Stop</code> silently checks for unsaved memory changes and surfaces a reminder only when needed. All three ship as Python scripts — cross-platform, no dependencies.</div>
+    </div>
+    <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">📋</span> Task continuity</div>
       <div class="feat-desc">Four files that travel with your repo: <code>todo.md</code> for plans, <code>lessons.md</code> so mistakes don't repeat, <code>decisions.md</code> so architecture doesn't get re-debated, <code>errors.md</code> so you never debug the same bug twice.</div>
     </div>
@@ -869,7 +873,7 @@ footer {
 <!-- COMMANDS -->
 <div class="section reveal" id="commands">
   <div class="section-tag">Reference</div>
-  <h2 class="section-h">13 commands, all in plain English</h2>
+  <h2 class="section-h">13 commands. 4 hooks. All automatic.</h2>
   <p class="section-p">Type any of these in Claude Code chat. Skills fire automatically — no commands needed.</p>
 
   <div class="cmd-list">
@@ -928,8 +932,8 @@ footer {
     <div class="how-row">
       <div class="how-n">05</div>
       <div>
-        <div class="how-title">settings.json — the automation layer</div>
-        <div class="how-body">Tells Claude Code to run <code>check_memory.py --silent</code> after every Edit or Write tool call. You never trigger it manually. It just runs in the background and alerts you if drift appears.</div>
+        <div class="how-title">settings.json — four lifecycle hooks</div>
+        <div class="how-body">Runs four scripts automatically at the right moments. <code>PostToolUse</code>: drift check after every file edit. <code>SessionStart</code>: injects memory before your first message so Claude starts warm. <code>PreCompact</code>: preserves memory through <code>/compact</code> so you can compact freely on long sessions. <code>Stop</code>: checks for unsaved memory changes and reminds you to run End Session if needed. None of these need manual triggers.</div>
       </div>
     </div>
     <div class="how-row">
@@ -973,9 +977,12 @@ footer {
       <span class="tl">│   ├── <span class="tl-new">decisions.md</span>        <span class="tl-comment">← architecture record</span></span>
       <span class="tl">│   └── <span class="tl-new">errors.md</span>           <span class="tl-comment">← bug history</span></span>
       <span class="tl">├── <span class="tl-dir">tools/</span></span>
-      <span class="tl">│   └── <span class="tl-file">check_memory.py</span>     <span class="tl-comment">← drift detector, auto-runs</span></span>
+      <span class="tl">│   ├── <span class="tl-file">check_memory.py</span>     <span class="tl-comment">← drift detector, runs on Edit/Write</span></span>
+      <span class="tl">│   ├── <span class="tl-new">session_start.py</span>    <span class="tl-comment">← injects memory on session open</span></span>
+      <span class="tl">│   ├── <span class="tl-new">precompact.py</span>       <span class="tl-comment">← preserves memory through /compact</span></span>
+      <span class="tl">│   └── <span class="tl-new">stop_check.py</span>       <span class="tl-comment">← reminds to End Session if unsaved</span></span>
       <span class="tl">└── <span class="tl-dir">.claude/</span></span>
-      <span class="tl">    ├── <span class="tl-file">settings.json</span>       <span class="tl-comment">← hooks + permissions</span></span>
+      <span class="tl">    ├── <span class="tl-file">settings.json</span>       <span class="tl-comment">← 4 hooks: drift · session · compact · stop</span></span>
       <span class="tl">    ├── <span class="tl-dir">memory/</span></span>
       <span class="tl">    │   ├── <span class="tl-file">MEMORY.md</span></span>
       <span class="tl">    │   ├── <span class="tl-file">js_functions.md</span></span>
@@ -1001,12 +1008,12 @@ footer {
     <div class="by-text">
       <h3>Built from frustration, not theory</h3>
       <p>
-        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The tasks/ files came after debugging a bug that had already been fixed two weeks earlier. Everything here has a story.
+        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The lifecycle hooks — session start, precompact, stop — came after session 90 when the setup finally felt complete. Everything here has a story.
       </p>
     </div>
     <div class="by-stats">
       <div class="by-stat">
-        <div class="by-stat-n"><em>88</em></div>
+        <div class="by-stat-n"><em>91</em></div>
         <div class="by-stat-l">sessions on a real production Java platform — the codebase that stress-tested every part of this kit</div>
       </div>
       <div class="by-stat">

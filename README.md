@@ -50,7 +50,7 @@ This kit was stress-tested on a production Java course delivery platform — not
 - A silent SQL apostrophe failure was traced, fixed, and captured — same story
 - When a session ran out of context, `Start Session` loaded all lessons, decisions, and known errors in seconds
 
-**The verdict:** The memory system held up across 88 sessions on a real production codebase. Context was never lost. Known bugs stayed known. The same mistake was never made twice.
+**The verdict:** The memory system held up across 91 sessions on a real production codebase. Context was never lost. Known bugs stayed known. The same mistake was never made twice.
 
 ---
 
@@ -164,6 +164,23 @@ Or let it run silently in the background — `.claude/settings.json` is pre-conf
 
 ---
 
+## Lifecycle Hooks
+
+Three additional hooks run automatically at key points in every session. No commands needed.
+
+### SessionStart — loads memory automatically
+Runs when you open Claude Code. Injects `STATUS.md` and `MEMORY.md` into context before your first message. Claude starts warm without you typing `Start Session`.
+
+### PreCompact — survives `/compact`
+Runs before Claude compacts the conversation. Reinjects your memory files into the compacted context. Use `/compact` freely on long sessions — context is preserved.
+
+### Stop — catches forgotten End Session
+Runs when Claude finishes responding. Checks whether memory files have unsaved changes. If they do, you see: *"Memory has unsaved changes. Run End Session to push."* Silent otherwise — no nagging.
+
+All three hooks ship as Python scripts in `tools/` so they work on any OS.
+
+---
+
 ## What Gets Created
 
 ```
@@ -177,9 +194,12 @@ your-project/
 │   ├── decisions.md                 ← Why things were built the way they were
 │   └── errors.md                    ← Bugs fixed, root causes, fixes applied
 ├── tools/
-│   └── check_memory.py              ← Drift detector — runs after every file edit
+│   ├── check_memory.py              ← Drift detector — runs after every Edit/Write
+│   ├── session_start.py             ← Injects memory on SessionStart
+│   ├── precompact.py                ← Preserves memory through /compact
+│   └── stop_check.py                ← Reminds you to End Session if unsaved changes
 └── .claude/
-    ├── settings.json                ← Hooks config
+    ├── settings.json                ← 4 hooks: drift + session start + compaction + stop
     ├── memory/
     │   ├── MEMORY.md                ← Index — auto-loaded every session
     │   ├── project_status.md        ← What's built, what's not, key decisions
@@ -246,7 +266,7 @@ No re-explanation. No context loss. This was tested repeatedly on the production
 
 ## Known Limitations
 
-- **No automated sync** — memory drift is caught by the script, but only if the script runs. If you skip `End Session` consistently, files go stale.
+- **No automated sync** — memory files need `End Session` to be pushed to git. The Stop hook reminds you when there are unsaved changes, but it won't push automatically.
 - **Combined memory entries break drift detection** — `js_functions.md` requires one function per row. Combined entries like `` `funcA` / `funcB` `` will only match the first one.
 - **JS keyword false positives** — the class-method regex can match keywords like `for`, `if`, `switch` as function names. The included `JS_SKIP_NAMES` filter handles the common ones — extend it if you hit others.
 - **Manual sync between project bundle and system path** — `End Session` handles this, but mid-session edits need a manual copy if you switch machines before ending the session.
@@ -280,6 +300,6 @@ Skip `setup.py` entirely — paste one of these directly into Claude Code:
 
 ---
 
-> Built across 88 real development sessions on a production codebase. The drift detector found 21 undocumented functions the first run. Skills were added after noticing the same prompts typed every day. Everything here came from actual use — nothing hypothetical.
+> Built across 91 real development sessions on a production codebase. The drift detector found 21 undocumented functions the first run. Skills were added after noticing the same prompts typed every day. Everything here came from actual use — nothing hypothetical.
 
 **[YehudaFrankel/Claude-Code-memory-starter-kit](https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit)**
