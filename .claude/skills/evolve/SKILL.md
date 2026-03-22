@@ -39,6 +39,41 @@
 
 ---
 
+## Phase 3: Compound Learning Loop — Self-Improving Skills
+
+Run this phase every time `/evolve` is called, after Phase 2.
+
+### Step A — Find failing skills
+Read `.claude/memory/tasks/skill_scores.md`. Find all rows where:
+- `Correction Needed = Y`
+- `Improvement Applied = -` (not yet fixed)
+
+### Step B — For each failing skill
+1. Read the skill's SKILL.md at `.claude/skills/[name]/SKILL.md`
+2. Read the "What Failed" description from skill_scores.md
+3. Identify which step caused the failure
+4. Rewrite that step to prevent the same failure — be specific, not generic
+5. Add an improvement note at the bottom of the changed step:
+   ```
+   > [YYYY-MM-DD] Improved: [one line — what changed and why]
+   ```
+6. Save the updated SKILL.md
+
+### Step C — Log the improvement
+Append to `.claude/memory/tasks/skill_improvements.md`:
+```
+| [date] | [skill] | Step N | [what failed before] | [what was fixed] | skill_scores row [date] |
+```
+Update the `skill_scores.md` row: change `Improvement Applied` from `-` to `Fixed [date]`.
+
+### Step D — Report
+```
+Compound Learning: patched N skills
+- [skill name]: Step [N] — [one line summary of what changed]
+```
+
+---
+
 ## Skill File Format
 ```markdown
 # Skill: [name]

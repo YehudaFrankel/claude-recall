@@ -41,7 +41,8 @@
    ```
 
 5. **Skill scoring:** Log each skill that fired this session to `.claude/memory/tasks/skill_scores.md`:
-   `| [date] | [skill] | [used for] | Y/N correction needed | [note] |`
+   `| [date] | [skill] | [used for] | Y/N | [what specifically failed — be precise, /evolve uses this to patch the right step] | - |`
+   If Y: the "What Failed" column is critical — describe the exact step that was wrong, not just "it didn't work".
 
 6. **Velocity log:** If this session had an estimated task, append to `.claude/memory/tasks/velocity.md`:
    `| [date] | [task] | [estimated] | [actual] | [complexity 1-5] | [notes] |`
