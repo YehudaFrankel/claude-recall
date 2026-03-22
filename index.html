@@ -644,6 +644,127 @@ footer {
 .footer-right a:hover { color: var(--text); }
 
 /* ─────────────────────────────────────────
+   Session Demo
+───────────────────────────────────────── */
+.demo-section {
+  max-width: 820px;
+  margin: 6rem auto;
+  padding: 0 2rem;
+}
+
+.demo-phases {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1.5rem;
+}
+.demo-phase {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: var(--mono);
+  font-size: .75rem;
+  color: var(--dim);
+  transition: color .3s;
+}
+.demo-phase.active { color: var(--text); }
+.demo-phase.done   { color: var(--green); }
+.dp-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; font-weight: 700;
+  background: var(--surface);
+  transition: all .3s;
+}
+.demo-phase.active .dp-dot {
+  border-color: var(--accent);
+  background: rgba(139,92,246,.15);
+  color: #c4b5fd;
+  box-shadow: 0 0 10px rgba(139,92,246,.3);
+}
+.demo-phase.done .dp-dot {
+  border-color: var(--green);
+  background: rgba(63,185,80,.1);
+  color: var(--green);
+}
+.dp-arrow {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  margin: 0 .5rem;
+  min-width: 40px;
+  max-width: 80px;
+}
+
+.demo-term {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: .82rem;
+  box-shadow: 0 0 60px rgba(139,92,246,.12), 0 16px 40px rgba(0,0,0,.4);
+}
+.demo-term-bar {
+  padding: .7rem 1rem;
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .5rem;
+}
+.demo-term-body {
+  padding: 1.2rem 1.2rem;
+  line-height: 2;
+  min-height: 320px;
+  position: relative;
+}
+.dl { display: block; }
+.dl-prompt { color: var(--dim); }
+.dl-cmd    { color: var(--text); }
+.dl-ok     { color: var(--green); padding-left: 1.2rem; display: block; }
+.dl-dim    { color: var(--dim);   padding-left: 1.2rem; display: block; }
+.dl-green  { color: var(--green); display: block; }
+.dl-warn   { color: var(--amber); display: block; }
+.dl-add    { color: #c4b5fd;      display: block; }
+.dl-cmt    { color: var(--dim);   display: block; font-style: italic; }
+.dl-sep    { display: block; color: var(--border2); margin: .3rem 0; letter-spacing: .05em; }
+.dl-gap    { display: block; height: .4rem; }
+
+.demo-cursor {
+  display: inline-block;
+  width: 7px; height: .9em;
+  background: var(--accent);
+  vertical-align: middle;
+  border-radius: 1px;
+  animation: cur .9s step-end infinite;
+  margin-left: 1px;
+}
+
+.demo-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .9rem 1.2rem;
+  border-top: 1px solid var(--border);
+}
+.demo-status {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--dim);
+}
+.demo-replay {
+  font-family: var(--font);
+  font-size: .75rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: .3rem .75rem;
+  cursor: pointer;
+  transition: all .15s;
+}
+.demo-replay:hover { color: var(--text); border-color: var(--dim); }
+
+/* ─────────────────────────────────────────
    Scroll reveal
 ───────────────────────────────────────── */
 .reveal {
@@ -997,6 +1118,46 @@ footer {
     <div class="stat-item">
       <div class="s-num"><span class="counter" data-target="13">13</span></div>
       <div class="s-label">skills — 7 starter + 6 new from the everything-claude-code project</div>
+    </div>
+  </div>
+</div>
+
+<!-- SESSION DEMO -->
+<div class="demo-section reveal" id="demo">
+  <div class="section-tag">Live demo</div>
+  <h2 class="section-h">A full session, start to finish</h2>
+  <p class="section-p" style="margin-bottom:1.5rem;">Three phases every day. All automatic after setup.</p>
+
+  <div class="demo-phases">
+    <div class="demo-phase" id="dp0">
+      <div class="dp-dot">1</div>
+      <span>Morning</span>
+    </div>
+    <div class="dp-arrow"></div>
+    <div class="demo-phase" id="dp1">
+      <div class="dp-dot">2</div>
+      <span>Working</span>
+    </div>
+    <div class="dp-arrow"></div>
+    <div class="demo-phase" id="dp2">
+      <div class="dp-dot">3</div>
+      <span>End of day</span>
+    </div>
+  </div>
+
+  <div class="demo-term">
+    <div class="demo-term-bar">
+      <div class="term-dot term-dot-r"></div>
+      <div class="term-dot term-dot-y"></div>
+      <div class="term-dot term-dot-g"></div>
+      <span class="term-title">bash — your-project/</span>
+    </div>
+    <div class="demo-term-body" id="demoBody">
+      <span class="demo-cursor"></span>
+    </div>
+    <div class="demo-footer">
+      <span class="demo-status" id="demoStatus">Starting…</span>
+      <button class="demo-replay" id="demoReplay">↺ Replay</button>
     </div>
   </div>
 </div>
@@ -1792,6 +1953,213 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (i < text.length) { userEl.textContent += text[i++]; setTimeout(type, 75); }
   }
   setTimeout(type, 900);
+})();
+
+/* ── Session Demo ──────────────────────────────────── */
+(function() {
+  var body    = document.getElementById('demoBody');
+  var status  = document.getElementById('demoStatus');
+  var replay  = document.getElementById('demoReplay');
+  if (!body) return;
+
+  var PHASES = [
+    { id:'dp0', label:'Morning'     },
+    { id:'dp1', label:'Working'     },
+    { id:'dp2', label:'End of day'  }
+  ];
+
+  // Each frame: type, text, delay (ms before this line appears), phase (0/1/2)
+  var FRAMES = [
+    // ── Morning ──────────────────────────────────────
+    { t:'phase',  phase:0                                                    },
+    { t:'sep',    text:'── morning ─────────────────────────────────────',   delay:300  },
+    { t:'cmd',    text:'Start Session',                                       delay:500  },
+    { t:'ok',     text:'✓ memory.ps1 pull — OK',                             delay:700  },
+    { t:'ok',     text:'✓ no drift detected',                                delay:300  },
+    { t:'ok',     text:'✓ STATUS.md — Session 97',                           delay:280  },
+    { t:'ok',     text:'✓ 5 lessons loaded',                                 delay:260  },
+    { t:'ok',     text:'✓ 4 decisions loaded',                               delay:260  },
+    { t:'ok',     text:'✓ 13 skills ready',                                  delay:300  },
+    { t:'gap',                                                                delay:200  },
+    { t:'green',  text:'Session 97 ready.',                                  delay:400  },
+    { t:'dim',    text:'Last change: backup finalized + quality hardening',  delay:200  },
+    { t:'dim',    text:'What are we working on?',                            delay:300  },
+    { t:'gap',                                                                delay:1600 },
+
+    // ── Working ──────────────────────────────────────
+    { t:'phase',  phase:1                                                    },
+    { t:'sep',    text:'── working ─────────────────────────────────────',   delay:300  },
+    { t:'cmt',    text:'// you edit dashboard.js — hook fires automatically',delay:500  },
+    { t:'gap',                                                                delay:200  },
+    { t:'warn',   text:'DRIFT DETECTED — MISSING from js_functions.md:',    delay:600  },
+    { t:'add',    text:'  + submitFeedback   [dashboard.js]',                delay:200  },
+    { t:'add',    text:'  + loadFeedItems    [dashboard.js]',                delay:200  },
+    { t:'dim',    text:"Run 'Analyze Codebase' to update memory.",          delay:600  },
+    { t:'gap',                                                                delay:400  },
+    { t:'cmd',    text:'Analyze Codebase',                                   delay:900  },
+    { t:'ok',     text:'✓ submitFeedback — documented',                     delay:500  },
+    { t:'ok',     text:'✓ loadFeedItems — documented',                      delay:350  },
+    { t:'green',  text:'Memory updated. No drift.',                          delay:400  },
+    { t:'gap',                                                                delay:1600 },
+
+    // ── End of day ───────────────────────────────────
+    { t:'phase',  phase:2                                                    },
+    { t:'sep',    text:'── end of day ───────────────────────────────────',  delay:300  },
+    { t:'cmd',    text:'End Session',                                        delay:500  },
+    { t:'dim',    text:'Running /learn…',                                    delay:600  },
+    { t:'ok',     text:'✓ 2 new lessons extracted',                         delay:500  },
+    { t:'ok',     text:'✓ decisions.md updated',                            delay:350  },
+    { t:'dim',    text:'Updating memory files…',                            delay:500  },
+    { t:'ok',     text:'✓ STATUS.md — Session 97 → 98',                    delay:350  },
+    { t:'ok',     text:'✓ memory.ps1 push — pushed to GitHub',              delay:400  },
+    { t:'gap',                                                                delay:300  },
+    { t:'green',  text:'Session complete. Memory pushed to GitHub.',        delay:500  },
+    { t:'gap',                                                                delay:4000 } // pause before restart
+  ];
+
+  var cursor, timer, frameIdx = 0, running = false;
+
+  function setPhase(p) {
+    PHASES.forEach(function(ph, i) {
+      var el = document.getElementById(ph.id);
+      el.classList.remove('active','done');
+      if (i < p)  el.classList.add('done');
+      if (i === p) el.classList.add('active');
+    });
+    status.textContent = PHASES[p].label + '…';
+  }
+
+  function addLine(cls, text) {
+    // remove cursor first
+    if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+    var span = document.createElement('span');
+    span.className = cls;
+    span.textContent = text || '';
+    body.appendChild(span);
+    body.scrollTop = body.scrollHeight;
+    return span;
+  }
+
+  function addCursor() {
+    if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+    cursor = document.createElement('span');
+    cursor.className = 'demo-cursor';
+    body.appendChild(cursor);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function typeCmd(text, cb) {
+    var line = addLine('dl', '');
+    var prompt = document.createElement('span');
+    prompt.className = 'dl-prompt';
+    prompt.textContent = '$ ';
+    line.appendChild(prompt);
+    var cmdSpan = document.createElement('span');
+    cmdSpan.className = 'dl-cmd';
+    line.appendChild(cmdSpan);
+    body.scrollTop = body.scrollHeight;
+
+    var i = 0;
+    function tick() {
+      if (!running) return;
+      if (i < text.length) {
+        cmdSpan.textContent += text[i++];
+        body.scrollTop = body.scrollHeight;
+        timer = setTimeout(tick, 55 + Math.random() * 25);
+      } else {
+        addCursor();
+        timer = setTimeout(cb, 300);
+      }
+    }
+    tick();
+  }
+
+  function runFrame() {
+    if (!running) return;
+    if (frameIdx >= FRAMES.length) {
+      // done — restart
+      status.textContent = 'Complete ✓';
+      timer = setTimeout(startDemo, 2000);
+      return;
+    }
+    var f = FRAMES[frameIdx++];
+    var delay = f.delay || 0;
+
+    if (f.t === 'phase') {
+      setPhase(f.phase);
+      timer = setTimeout(runFrame, 0);
+      return;
+    }
+
+    timer = setTimeout(function() {
+      if (!running) return;
+      if (f.t === 'cmd') {
+        typeCmd(f.text, runFrame);
+      } else if (f.t === 'gap') {
+        if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'sep') {
+        addLine('dl-sep', f.text);
+        runFrame();
+      } else if (f.t === 'ok') {
+        addLine('dl-ok', f.text);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'dim') {
+        addLine('dl-dim', f.text);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'green') {
+        addLine('dl-green', f.text);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'warn') {
+        addLine('dl-warn', f.text);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'add') {
+        addLine('dl-add', f.text);
+        addCursor();
+        runFrame();
+      } else if (f.t === 'cmt') {
+        addLine('dl-cmt', f.text);
+        addCursor();
+        runFrame();
+      } else {
+        runFrame();
+      }
+    }, delay);
+  }
+
+  function startDemo() {
+    running = false;
+    clearTimeout(timer);
+    body.innerHTML = '';
+    cursor = null;
+    frameIdx = 0;
+    PHASES.forEach(function(ph) {
+      var el = document.getElementById(ph.id);
+      el.classList.remove('active','done');
+    });
+    status.textContent = 'Starting…';
+    addCursor();
+    running = true;
+    timer = setTimeout(runFrame, 600);
+  }
+
+  replay.addEventListener('click', startDemo);
+
+  // Start when scrolled into view
+  var started = false;
+  var demoSection = document.getElementById('demo');
+  var obs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting && !started) {
+      started = true;
+      startDemo();
+    }
+  }, { threshold: 0.3 });
+  if (demoSection) obs.observe(demoSection);
 })();
 
 </script>
