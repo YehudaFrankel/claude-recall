@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>claude-recall — The Living System for Claude Code</title>
+<title>claude-recall — Agentic Engineering for Claude Code</title>
 <style>
 :root {
-  --bg:      #07050302;
-  --bg0:     #070503;
-  --s1:      #110d07;
-  --s2:      #1a1409;
-  --border:  #241c0e;
-  --border2: #312510;
+  --bg0:     #1c1508;
+  --s1:      #261b0a;
+  --s2:      #2f220e;
+  --border:  #3d2e14;
+  --border2: #503c1a;
   --amber:   #d4890a;
   --amber2:  #f5a623;
   --orange:  #e85820;
   --green:   #6dba78;
   --red:     #c85040;
-  --text:    #dfd2b8;
-  --muted:   #8a7a5a;
-  --dim:     #3d3020;
+  --text:    #e8dcc0;
+  --muted:   #9a8a6a;
+  --dim:     #5a4830;
   --mono: 'SF Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
 }
 
@@ -34,12 +33,12 @@ body {
   overflow-x: hidden;
 }
 
-/* Grain */
+/* Grain overlay */
 body::after {
   content: '';
   position: fixed; inset: 0; z-index: 999; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity: .6;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: .7;
 }
 
 main { position: relative; z-index: 1; }
@@ -49,7 +48,9 @@ nav {
   position: fixed; top:0; left:0; right:0; z-index:200;
   display: flex; align-items: center; justify-content: space-between;
   padding: .8rem 2rem;
-  background: rgba(7,5,3,.96);
+  background: rgba(28,21,8,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -60,7 +61,7 @@ nav {
 .yf-mark {
   width: 26px; height: 26px; background: var(--amber);
   display: flex; align-items: center; justify-content: center;
-  font-size: .62rem; font-weight: 700; color: #07050a;
+  font-size: .62rem; font-weight: 700; color: #1c1508;
   letter-spacing: -.02em; flex-shrink: 0;
 }
 .nav-name { color: var(--text); letter-spacing: .02em; }
@@ -83,26 +84,52 @@ nav {
 }
 .nav-gh:hover { color: var(--amber); border-color: var(--amber); }
 
+/* ─── HERO SECTION WRAPPER ─── */
+.hero-section {
+  position: relative; overflow: hidden;
+}
+
+/* Animated gradient orbs */
+.hero-section::before,
+.hero-section::after {
+  content: ''; position: absolute; border-radius: 50%;
+  pointer-events: none; z-index: 0;
+}
+.hero-section::before {
+  width: 700px; height: 700px;
+  top: -15%; left: -8%;
+  background: radial-gradient(ellipse at center,
+    rgba(212,137,10,.14) 0%,
+    rgba(232,88,32,.06) 40%,
+    transparent 70%);
+  animation: orb1 12s ease-in-out infinite alternate;
+}
+.hero-section::after {
+  width: 500px; height: 500px;
+  bottom: -10%; right: 5%;
+  background: radial-gradient(ellipse at center,
+    rgba(109,186,120,.08) 0%,
+    rgba(212,137,10,.04) 50%,
+    transparent 70%);
+  animation: orb2 15s ease-in-out infinite alternate;
+}
+@keyframes orb1 {
+  0%   { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(60px,40px) scale(1.15); }
+  100% { transform: translate(20px,-30px) scale(0.95); }
+}
+@keyframes orb2 {
+  0%   { transform: translate(0,0) scale(1); }
+  50%  { transform: translate(-40px,30px) scale(1.1); }
+  100% { transform: translate(30px,-20px) scale(1.2); }
+}
+
 /* ─── HERO ─── */
 .hero {
   padding: 7rem 2rem 4rem;
   max-width: 1200px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr 1.05fr;
-  gap: 4rem; align-items: start; position: relative;
-}
-
-/* Ambient glow behind hero */
-.hero::before {
-  content: '';
-  position: absolute; top: 30%; left: 5%;
-  width: 480px; height: 480px; z-index: -1;
-  background: radial-gradient(ellipse at center, rgba(212,137,10,.07) 0%, transparent 70%);
-  pointer-events: none;
-  animation: ambientShift 8s ease-in-out infinite alternate;
-}
-@keyframes ambientShift {
-  0%   { transform: translate(0,0) scale(1); }
-  100% { transform: translate(30px,20px) scale(1.1); }
+  gap: 4rem; align-items: start; position: relative; z-index: 1;
 }
 
 .hero-eyebrow {
@@ -140,7 +167,7 @@ h1 {
   letter-spacing: .02em;
 }
 .btn-primary {
-  background: var(--amber); color: #07050a; font-weight: 600;
+  background: var(--amber); color: #1c1508; font-weight: 600;
 }
 .btn-primary:hover { background: var(--amber2); transform: translateY(-1px); }
 .btn-ghost {
@@ -182,10 +209,97 @@ h1 {
 }
 
 /* ─── SECTION COMMON ─── */
-section { border-top: 1px solid var(--border); }
-.wrap { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
-.wrap-sm { max-width: 800px; margin: 0 auto; padding: 5rem 2rem; }
-.wrap-lg { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
+section { border-top: 1px solid var(--border); position: relative; overflow: hidden; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; position: relative; z-index: 1; }
+.wrap-sm { max-width: 800px; margin: 0 auto; padding: 5rem 2rem; position: relative; z-index: 1; }
+.wrap-lg { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; position: relative; z-index: 1; }
+
+/* Install — subtle amber top-left glow */
+#install {
+  background: radial-gradient(ellipse at 0% 0%,
+    rgba(212,137,10,.09) 0%, transparent 55%);
+}
+
+/* Living System — dot grid */
+#living {
+  background:
+    radial-gradient(circle, rgba(212,137,10,.18) 1px, transparent 1px),
+    radial-gradient(ellipse at 100% 50%, rgba(232,88,32,.07) 0%, transparent 55%);
+  background-size: 32px 32px, 100% 100%;
+}
+#living .living-cell { backdrop-filter: blur(0); }
+
+/* Loop — diagonal line mesh */
+#loop {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 38px,
+      rgba(212,137,10,.035) 38px,
+      rgba(212,137,10,.035) 39px
+    ),
+    radial-gradient(ellipse at 50% 0%, rgba(212,137,10,.08) 0%, transparent 60%);
+}
+
+/* Skills — left-edge amber bar */
+#skills {
+  background: linear-gradient(90deg,
+    rgba(212,137,10,.07) 0px,
+    rgba(212,137,10,.02) 300px,
+    transparent 600px);
+}
+
+/* Tiers — dramatic left amber glow */
+#tiers {
+  background:
+    radial-gradient(ellipse at -5% 50%,
+      rgba(212,137,10,.15) 0%,
+      rgba(212,137,10,.05) 30%,
+      transparent 55%),
+    radial-gradient(ellipse at 110% 80%, rgba(109,186,120,.06) 0%, transparent 40%);
+}
+
+/* Hooks — blue-green circuit feel */
+#hooks {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 80px,
+      rgba(109,186,120,.025) 80px,
+      rgba(109,186,120,.025) 81px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 80px,
+      rgba(109,186,120,.02) 80px,
+      rgba(109,186,120,.02) 81px
+    );
+}
+
+/* Stats — CRT green glow from bottom */
+#stats {
+  background:
+    radial-gradient(ellipse at 50% 110%,
+      rgba(109,186,120,.12) 0%,
+      rgba(109,186,120,.04) 35%,
+      transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(212,137,10,.06) 0%, transparent 40%);
+}
+
+/* Commands — amber right-side glow */
+#commands {
+  background: radial-gradient(ellipse at 105% 50%,
+    rgba(212,137,10,.1) 0%, transparent 45%);
+}
+
+/* FAQ — subtle centered glow */
+#faq {
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(212,137,10,.05) 0%, transparent 70%);
+}
 
 .sec-label {
   font-size: .68rem; color: var(--muted);
@@ -457,17 +571,19 @@ footer {
 <main>
 
 <!-- HERO -->
+<div class="hero-section">
 <div class="hero">
   <div>
-    <div class="hero-eyebrow"><span class="dot"></span>open source · MIT license</div>
+    <div class="hero-eyebrow"><span class="dot"></span>agentic engineering starter · open source · MIT</div>
     <h1>
-      Claude forgets.<br>
-      <span class="h1-amber">claude-recall</span><br>
-      <span class="h1-dim">doesn't.</span>
+      A living<br>
+      <span class="h1-amber">engineering</span><br>
+      environment.
     </h1>
     <p class="hero-sub">
-      A <em>living system</em> for Claude Code — memory that persists, skills that self-improve,
-      and workflows that run themselves. Ships in 5 minutes. Gets smarter every session.
+      claude-recall turns Claude Code into an environment that <em>builds on itself</em> —
+      skills self-improve, workflows run autonomously, and knowledge compounds
+      across every session. Not a config file. A system.
     </p>
     <div class="hero-btns">
       <a class="btn btn-primary" href="#install">Get started →</a>
@@ -489,15 +605,16 @@ footer {
     </div>
   </div>
 </div>
+</div><!-- /hero-section -->
 
 <!-- INSTALL -->
 <section id="install">
   <div class="wrap-sm">
     <div class="sec-label">get started</div>
-    <h2>Five minutes to a <span class="h2-amber">living system</span></h2>
+    <h2>Five minutes to a <span class="h2-amber">living environment</span></h2>
     <p class="sec-desc">
       Python 3.7+ and Claude Code are the only requirements.
-      Setup runs from inside Claude Code — no terminal juggling.
+      Setup configures CLAUDE.md, memory files, hooks, and skills — all from inside Claude Code.
     </p>
 
     <div class="install-block reveal">
@@ -535,40 +652,40 @@ footer {
 <!-- LIVING SYSTEM -->
 <section id="living">
   <div class="wrap">
-    <div class="sec-label">the differentiator</div>
-    <h2>A system that <span class="h2-amber">compounds</span></h2>
+    <div class="sec-label">why it's different</div>
+    <h2>Not a config file.<br><span class="h2-amber">A living environment.</span></h2>
     <p class="sec-desc">
-      Other solutions save a snapshot. claude-recall builds a system that
-      <em>gets better every time you use it</em>.
-      Three properties that set it apart.
+      Most setups drop a CLAUDE.md and call it done. claude-recall ships
+      a <em>three-tier agentic system</em> — the environment learns your
+      codebase, improves its own workflows, and operates without checkpoints.
     </p>
 
     <div class="living-grid reveal">
       <div class="living-cell">
         <div class="lc-num">01 ─────</div>
-        <div class="lc-head">Memory Syncs</div>
+        <div class="lc-head">The Environment Persists</div>
         <div class="lc-body">
-          Everything lives on disk and in git — not in the session.
-          Crashes don't lose work. <em>New machine = clone + Start Session.</em>
-          MEMORY.md auto-loads at every session start.
+          CLAUDE.md, memory files, and hooks are configured once and loaded
+          automatically every session. <em>Crash, close, switch machines —
+          the environment picks up exactly where it left off.</em>
         </div>
       </div>
       <div class="living-cell">
         <div class="lc-num">02 ─────</div>
-        <div class="lc-head">Skills Evolve</div>
+        <div class="lc-head">Skills Self-Improve</div>
         <div class="lc-body">
-          <em>/learn extracts lessons after every session.</em>
-          /evolve reads skill scores, patches steps that needed correction,
-          and proposes new skills from repeated patterns.
+          After every session, <em>/learn scores each skill Y/N.</em>
+          /evolve reads those scores, patches weak steps, and proposes
+          new skills from patterns it detected — without you asking.
         </div>
       </div>
       <div class="living-cell">
         <div class="lc-num">03 ─────</div>
-        <div class="lc-head">Sessions Compound</div>
+        <div class="lc-head">Knowledge Compounds</div>
         <div class="lc-body">
-          lessons.md grows every session and is applied at every Start Session.
-          <em>Claude stops re-debating settled decisions.</em>
-          By session 50 it knows your codebase better than you do.
+          lessons.md and decisions.md grow every session and apply at
+          every Start Session. <em>Claude stops re-debating settled choices.</em>
+          By session 50 it engineers alongside you, not behind you.
         </div>
       </div>
     </div>
@@ -578,11 +695,12 @@ footer {
 <!-- LEARNING LOOP -->
 <section id="loop">
   <div class="wrap">
-    <div class="sec-label">compound learning loop</div>
-    <h2>The system that <span class="h2-amber">self-improves</span></h2>
+    <div class="sec-label">agentic core</div>
+    <h2>The compound<br><span class="h2-amber">learning loop</span></h2>
     <p class="sec-desc">
-      Ships with a full agentic layer. Three commands drive the loop —
-      <em>run /learn before End Session, /evolve every few sessions.</em>
+      The engine that makes this agentic. Runs quietly in the background —
+      <em>extract lessons, score skills, patch weak steps, repeat.</em>
+      The environment gets smarter without you managing it.
     </p>
 
     <div class="loop-track reveal">
@@ -631,10 +749,10 @@ footer {
       </div>
       <div style="background:var(--s1); padding:1.4rem 1.6rem; border-left:1px solid var(--border);">
         <div style="font-size:.68rem; color:var(--muted); margin-bottom:.6rem; letter-spacing:.06em;">AUTONOMOUS</div>
-        <div style="font-size:.82rem; color:var(--text); line-height:1.8;">Self-healing: auto-touch + retry</div>
+        <div style="font-size:.82rem; color:var(--text); line-height:1.8;">Self-healing: retry before escalating</div>
         <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">Stop hook: push memory after 9pm<br>
-        Nightly health check at midnight<br>
-        Daily summary at 6pm</div>
+        PreCompact hook: saves in-flight work<br>
+        PostToolUse hook: drift check after every edit</div>
       </div>
     </div>
   </div>
@@ -643,56 +761,58 @@ footer {
 <!-- SKILLS -->
 <section id="skills">
   <div class="wrap-lg">
-    <div class="sec-label">what ships</div>
-    <h2>10 skills out of the box.<br><span class="h2-amber">You grow the rest.</span></h2>
+    <div class="sec-label">agentic toolkit</div>
+    <h2>6 skills ship ready.<br><span class="h2-amber">The environment grows the rest.</span></h2>
     <p class="sec-desc">
-      Skills are markdown files in <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">.claude/skills/</code>.
-      Type the trigger phrase. Claude runs the steps.
-      <em>/evolve creates new ones from patterns it detects in your sessions.</em>
+      Skills live in <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">.claude/skills/</code> as markdown files.
+      Chain them with <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">## Auto-Chain</code>.
+      <em>/evolve creates new ones from patterns it detects across sessions.</em>
     </p>
 
     <table class="skills-tbl reveal">
       <thead>
         <tr>
-          <th>skill</th>
+          <th>skill file</th>
           <th>trigger phrase</th>
           <th>what it does</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td class="td-cmd">Start Session</td><td class="td-trig">start session, start a new session</td><td class="td-desc">Pull memory, check drift, load lessons, report last status</td></tr>
-        <tr><td class="td-cmd">End Session</td><td class="td-trig">end session, end of session</td><td class="td-desc">Run /learn, update all memory, push to GitHub</td></tr>
-        <tr><td class="td-cmd">/learn</td><td class="td-trig">/learn, extract patterns</td><td class="td-desc">Extract lessons, score skills Y/N, log velocity, update decisions.md</td></tr>
-        <tr><td class="td-cmd">/evolve</td><td class="td-trig">/evolve, evolve lessons into skills</td><td class="td-desc">Read skill scores, patch weak steps, propose new skills from patterns</td></tr>
-        <tr><td class="td-cmd">Check Drift</td><td class="td-trig">check drift, find code drift</td><td class="td-desc">Run check_memory.py — find code changes Claude doesn't know about yet</td></tr>
-        <tr><td class="td-cmd">Analyze Codebase</td><td class="td-trig">analyze codebase, scan project</td><td class="td-desc">Scan all files and rebuild memory indexes automatically</td></tr>
-        <tr><td class="td-cmd">Install Memory</td><td class="td-trig">install memory, new machine</td><td class="td-desc">Rebuild all knowledge from scratch by scanning the project</td></tr>
-        <tr><td class="td-cmd">Generate Skills</td><td class="td-trig">generate skills</td><td class="td-desc">Auto-create skills tailored to your tech stack</td></tr>
-        <tr><td class="td-cmd">Update Kit</td><td class="td-trig">update kit</td><td class="td-desc">Pull latest from GitHub — shows diff, asks before touching anything</td></tr>
-        <tr><td class="td-cmd">Setup Memory</td><td class="td-trig">setup memory (first time)</td><td class="td-desc">Run Python setup, choose Full or Lite mode, configure memory files</td></tr>
+        <tr><td class="td-cmd">/learn</td><td class="td-trig">/learn, extract patterns</td><td class="td-desc">Extract lessons from this session, score skills Y/N, update decisions.md and lessons.md</td></tr>
+        <tr><td class="td-cmd">/evolve</td><td class="td-trig">/evolve, evolve lessons into skills</td><td class="td-desc">Read skill_scores.md, patch weak steps, propose new skills from detected patterns</td></tr>
+        <tr><td class="td-cmd">verification-loop</td><td class="td-trig">verify, run verification loop, did that work</td><td class="td-desc">After a code change — confirm it compiled, smoke test, self-check quality</td></tr>
+        <tr><td class="td-cmd">search-first</td><td class="td-trig">search first, check if this exists</td><td class="td-desc">Enforce research-before-coding: search codebase before implementing anything new</td></tr>
+        <tr><td class="td-cmd">strategic-compact</td><td class="td-trig">should I compact, context getting long</td><td class="td-desc">Evaluate whether to compact and guide through safe compaction that preserves all memory</td></tr>
+        <tr><td class="td-cmd">java-reviewer</td><td class="td-trig">java review, review this java</td><td class="td-desc">Java-specific code review — checks for framework gotchas that cause silent failures</td></tr>
       </tbody>
     </table>
 
     <div style="margin-top:2.5rem; border:1px solid var(--border2); background:var(--s1); padding:1.5rem 1.75rem;" class="reveal">
-      <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// TOOLS THAT SHIP WITH THE KIT</div>
+      <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// PYTHON TOOLS THAT SHIP WITH THE KIT</div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:.6rem 2rem;">
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">check_memory.py</span> <span style="color:var(--muted)">— drift detection, runs on every file edit via hook</span>
+          <span style="color:var(--amber)">check_memory.py</span> <span style="color:var(--muted)">— drift detection, auto-runs on every file edit via PostToolUse hook</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">session_journal.py</span> <span style="color:var(--muted)">— log what happened this session with timestamp</span>
+          <span style="color:var(--amber)">session_start.py</span> <span style="color:var(--muted)">— runs on SessionStart hook, loads context and applies lessons</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">bootstrap.py</span> <span style="color:var(--muted)">— new project setup, verify node/git/env</span>
+          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: after 9pm with unsaved changes → auto-push memory</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— auto end-session after 9pm if unsaved changes exist</span>
+          <span style="color:var(--amber)">precompact.py</span> <span style="color:var(--muted)">— PreCompact hook: saves all in-flight work before context compaction</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">update.py</span> <span style="color:var(--muted)">— safe kit updater, shows diff before applying</span>
+          <span style="color:var(--amber)">session_journal.py</span> <span style="color:var(--muted)">— log what happened each session with timestamp</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">setup.py</span> <span style="color:var(--muted)">— first-time project setup, Full or Lite mode</span>
+          <span style="color:var(--amber)">bootstrap.py</span> <span style="color:var(--muted)">— new project setup, verify env, configure memory and hooks</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">setup.py</span> <span style="color:var(--muted)">— first-time setup, Full or Lite mode</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">update.py</span> <span style="color:var(--muted)">— safe updater, shows diff and asks before applying anything</span>
         </div>
       </div>
     </div>
@@ -703,10 +823,10 @@ footer {
 <section id="tiers">
   <div class="wrap">
     <div class="sec-label">architecture</div>
-    <h2>Three tiers. Scored <span class="h2-amber">8.5/10 agentic</span>.</h2>
+    <h2>Three tiers.<br><span class="h2-amber">8.5/10 agentic.</span></h2>
     <p class="sec-desc">
-      Most "Claude memory" setups are Tier 1.
-      <em>claude-recall ships all three.</em>
+      Most Claude setups are Tier 1 — a CLAUDE.md file and nothing else.
+      <em>claude-recall ships all three tiers out of the box.</em>
     </p>
 
     <div class="tier-rows reveal">
@@ -770,11 +890,12 @@ footer {
 <!-- LIFECYCLE HOOKS -->
 <section id="hooks">
   <div class="wrap">
-    <div class="sec-label">lifecycle hooks</div>
-    <h2>Runs without <span class="h2-amber">being asked</span></h2>
+    <div class="sec-label">autonomous operation</div>
+    <h2>Runs without<br><span class="h2-amber">being asked.</span></h2>
     <p class="sec-desc">
-      Hooks fire automatically at session events.
-      <em>Configured in .claude/settings.json — Claude reads the results, not the prompts.</em>
+      Lifecycle hooks fire on session events — no prompting required.
+      <em>The environment monitors itself, pushes memory, and runs health checks
+      while you work.</em>
     </p>
 
     <div class="hooks-list reveal">
@@ -810,11 +931,11 @@ footer {
 <!-- STATS -->
 <section id="stats">
   <div class="wrap-sm">
-    <div class="sec-label">results</div>
-    <h2>112 sessions.<br><span class="h2-amber">Still going.</span></h2>
+    <div class="sec-label">proof of concept</div>
+    <h2>112 sessions.<br><span class="h2-amber">One living environment.</span></h2>
     <p class="sec-desc">
-      Built on a production InfoGrasp project — Java backend, vanilla JS, SQL Server.
-      These numbers are real, from the repo that powers this kit.
+      Built and validated on a production project — Java backend, vanilla JS, SQL Server.
+      These numbers are from the actual engineering environment this kit grew out of.
     </p>
 
     <div class="stats-term reveal">
@@ -863,6 +984,10 @@ footer {
       <div class="cmd-row"><div class="cr-cmd">Analyze Codebase</div><div class="cr-desc">Scan every file, rebuild all memory indexes in one pass</div></div>
       <div class="cmd-row"><div class="cr-cmd">Install Memory</div><div class="cr-desc">New machine — scan project, rebuild Claude's knowledge from scratch</div></div>
       <div class="cmd-row"><div class="cr-cmd">Generate Skills</div><div class="cr-desc">Auto-create skills tailored to your specific stack and file patterns</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Debug Session</div><div class="cr-desc">Reproduce → isolate → hypothesize → fix → verify → <em>log to errors.md</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">Code Health</div><div class="cr-desc">Scan for debug leftovers, hardcoded values, missing error handling, dead code, large files</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Handoff</div><div class="cr-desc">Generate HANDOFF.md — current state, next tasks, settled decisions, gotchas, how to start</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Estimate: [task]</div><div class="cr-desc">Complexity + files that change + risks — <em>writes plan to todo.md on confirm</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Push Memory</div><div class="cr-desc">Manually push memory to GitHub — useful mid-session before a risky change</div></div>
       <div class="cmd-row"><div class="cr-cmd">Update Kit</div><div class="cr-desc">Pull latest from GitHub — shows exactly what will change, <em>asks before applying</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Update Kit from [URL]</div><div class="cr-desc">Pull from a fork or branch — <em>your memory files are never touched</em></div></div>
