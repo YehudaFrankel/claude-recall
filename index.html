@@ -265,6 +265,82 @@ section { border-top: 1px solid var(--border); position: relative; overflow: hid
     #0d0e12;
 }
 
+/* ─── AMBIENT ANIMATIONS ─── */
+@keyframes drift-slow {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(50px,-40px) scale(1.05); }
+  66%  { transform: translate(-30px,50px) scale(.97); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes drift-slow-r {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(-40px,30px) scale(1.04); }
+  66%  { transform: translate(30px,-40px) scale(.98); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes scan-line {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  8%   { opacity: .5; }
+  92%  { opacity: .5; }
+  100% { transform: translateY(3000%); opacity: 0; }
+}
+@keyframes node-pulse {
+  0%, 55%, 100% { background: var(--s1); }
+  28%           { background: rgba(212,137,10,.1); }
+}
+@keyframes node-pulse-green {
+  0%, 55%, 100% { background: var(--s1); }
+  28%           { background: rgba(109,186,120,.13); }
+}
+@keyframes cell-glow {
+  0%, 100% { box-shadow: inset 0 0 0 1px transparent; }
+  50%       { box-shadow: inset 0 0 0 1px rgba(109,186,120,.15); }
+}
+
+/* Living — slow ambient green orb behind dot grid */
+#living::after {
+  content: ''; position: absolute; pointer-events: none; z-index: 0;
+  width: 500px; height: 500px; top: -15%; right: 5%; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(109,186,120,.09) 0%, transparent 70%);
+  animation: drift-slow 22s ease-in-out infinite;
+}
+
+/* Loop — secondary drifting amber bloom */
+#loop::before {
+  content: ''; position: absolute; pointer-events: none; z-index: 0;
+  width: 550px; height: 380px; bottom: -25%; left: 10%; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(212,137,10,.08) 0%, transparent 70%);
+  animation: drift-slow-r 28s ease-in-out infinite;
+}
+
+/* Loop nodes — traveling pulse */
+.loop-node:nth-child(1) { animation: node-pulse       4s ease-in-out infinite 0s;   }
+.loop-node:nth-child(2) { animation: node-pulse       4s ease-in-out infinite .8s;  }
+.loop-node:nth-child(3) { animation: node-pulse       4s ease-in-out infinite 1.6s; }
+.loop-node:nth-child(4) { animation: node-pulse       4s ease-in-out infinite 2.4s; }
+.loop-node:nth-child(5) { animation: node-pulse-green 4s ease-in-out infinite 3.2s; }
+
+/* Living cells — sequential inset glow */
+.living-cell             { animation: cell-glow 7s ease-in-out infinite 0s;   }
+.living-cell:nth-child(2){ animation-delay: 2.3s; }
+.living-cell:nth-child(3){ animation-delay: 4.6s; }
+
+/* Hooks — horizontal scan line */
+#hooks::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 1px; top: 0;
+  background: linear-gradient(90deg, transparent, rgba(109,186,120,.4), transparent);
+  animation: scan-line 10s linear infinite;
+  pointer-events: none; z-index: 0;
+}
+
+/* Staggered reveal — children animate in sequence */
+.reveal > *:nth-child(1) { transition-delay: 0s;   }
+.reveal > *:nth-child(2) { transition-delay: .1s;  }
+.reveal > *:nth-child(3) { transition-delay: .2s;  }
+.reveal > *:nth-child(4) { transition-delay: .3s;  }
+.reveal > *:nth-child(5) { transition-delay: .4s;  }
+.reveal > *:nth-child(6) { transition-delay: .5s;  }
+
 .sec-label {
   font-size: .68rem; color: var(--muted);
   letter-spacing: .12em; text-transform: uppercase;
