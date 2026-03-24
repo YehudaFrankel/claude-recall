@@ -17,6 +17,14 @@ When the user types **"Start Session"**, do the following:
 1. **Check Python** — run `python --version` (or `python3 --version`):
    - Not installed → tell user to download from https://python.org/downloads (check "Add to PATH"), then re-run `Start Session`
    - Installed → proceed
+1b. **Check node_modules (silent, self-healing)** — only if `package.json` exists in project root:
+   - Run: `node -e "require('fs').existsSync('node_modules') ? process.exit(0) : process.exit(1)"` (or check with Python)
+   - If `node_modules/` missing → run `npm install` automatically, print "Installing dependencies..."
+   - If present → silent, continue
+1c. **Check MCP server** — if the project has an MCP server configured in `.mcp.json`:
+   - Verify the MCP tool is available in Claude's tool list
+   - If NOT available → warn: "ACTION NEEDED: MCP server not connected. Check `.mcp.json` and re-open Claude Code."
+   - If available or no MCP configured → silent, continue
 2. Run `python tools/check_memory.py` — check for JS/CSS drift; fix any found (update memory files + sync to bundle)
 3. Read `STATUS.md` — find the current session number and last change
 4. Read `tasks/lessons.md` — apply all lessons before touching anything

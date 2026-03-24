@@ -172,6 +172,29 @@ Claude Code sessions can die unexpectedly — API errors, large images pasted in
 
 ---
 
+## Skill Auto-Chain Pattern
+
+Skills can automatically trigger the next skill on pass or fail — no human prompt needed.
+
+Add an `## Auto-Chain` section to the bottom of any `SKILL.md`:
+
+```markdown
+## Auto-Chain
+- **On pass:** → run `verification-loop`
+- **On fail:** → run `debug-resin`, then retry
+```
+
+Claude reads this and continues the chain without waiting. Example flow:
+```
+fix-bug → verification-loop → smoke-test
+              ↓ (if fail)
+          debug-resin → smoke-test
+```
+
+Build your chain by adding `## Auto-Chain` to each skill. Start simple — one next step is enough.
+
+---
+
 ## The 3 Guarantees
 
 1. **Memory survives crashes** — files are on disk, not just in the session

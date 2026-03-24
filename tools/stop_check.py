@@ -11,6 +11,7 @@ No configuration needed — auto-detects memory directory.
 
 import json
 import subprocess
+import datetime
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -25,29 +26,53 @@ def find_memory_dir():
     return ROOT / '.claude/memory'
 
 
-def main():
-    memory_dir = find_memory_dir()
-
-    if not memory_dir.exists():
-        return  # No memory dir yet — nothing to check
-
-    # Check for uncommitted changes in the memory directory
+def get_unsaved_changes(memory_dir):
     try:
         result = subprocess.run(
             ['git', '-C', str(memory_dir), 'status', '--porcelain'],
-            capture_output=True,
-            text=True,
-            timeout=5
+            capture_output=True, text=True, timeout=5
         )
-        if result.returncode == 0 and result.stdout.strip():
-            # Changes detected — show a reminder
-            output = {
-                'systemMessage': 'Memory has unsaved changes. Type "End Session" to update and save.'
-            }
-            print(json.dumps(output))
-        # If no changes or git not available: exit silently
+        if result.returncode == 0:
+            return result.stdout.strip()
     except Exception:
-        pass  # Never block the session on a hook error
+        pass
+    return ""
+
+
+def auto_push(memory_dir):
+    try:
+        subprocess.run(['git', '-C', str(memory_dir), 'add', '-A'], timeout=10)
+        subprocess.run(['git', '-C', str(memory_dir), 'commit',
+                        '-m', f'Auto end session {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}'],
+                       timeout=10)
+        result = subprocess.run(['git', '-C', str(memory_dir), 'push'],
+                                capture_output=True, text=True, timeout=30)
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
+def main():
+    memory_dir = find_memory_dir()
+    if not memory_dir.exists():
+        return
+
+    changes = get_unsaved_changes(memory_dir)
+    messages = []
+
+    # Auto end session: past 9pm + unsaved changes → auto-push memory
+    current_hour = datetime.datetime.now().hour
+    if current_hour >= 21 and changes:
+        success = auto_push(memory_dir)
+        if success:
+            messages.append("Auto end session: memory pushed. Run /learn to extract lessons.")
+        else:
+            messages.append("Auto end session: push failed. Run End Session manually.")
+    elif changes:
+        messages.append("Memory has unsaved changes. Type \"End Session\" to update and save.")
+
+    if messages:
+        print(json.dumps({'systemMessage': ' | '.join(messages)}))
 
 
 if __name__ == '__main__':
