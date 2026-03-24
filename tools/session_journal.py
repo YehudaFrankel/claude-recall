@@ -93,6 +93,29 @@ def read_edit_count(mem_dir: Path) -> int:
     return 0
 
 
+def read_open_plans(mem_dir: Path) -> list:
+    """Scan plans/ (not archive/) for any Draft or On Hold plans."""
+    plans_dir = mem_dir / 'plans'
+    if not plans_dir.exists():
+        return []
+    open_plans = []
+    for plan_file in sorted(plans_dir.glob('*.md')):
+        if plan_file.name.startswith('_'):
+            continue
+        try:
+            text = plan_file.read_text(encoding='utf-8')
+            m = re.search(r'\*\*Status:\*\*\s*(.+)', text)
+            if not m:
+                continue
+            status = m.group(1).strip()
+            if status in ('Draft', 'On Hold'):
+                name = plan_file.stem.replace('-', ' ').title()
+                open_plans.append(f'{name} ({status})')
+        except Exception:
+            pass
+    return open_plans
+
+
 def main():
     mem_dir = find_memory_dir()
     draft_file   = mem_dir / 'tasks' / 'draft-lessons.md'
@@ -102,6 +125,7 @@ def main():
     edited_files = read_edited_files(draft_file)
     phase        = read_current_phase(status_file)
     edit_count   = read_edit_count(mem_dir)
+    open_plans   = read_open_plans(mem_dir)
     tokens, pct, warn = estimate_tokens(ROOT)
 
     # Skip if nothing happened
@@ -113,12 +137,15 @@ def main():
     edit_str  = f'{edit_count} file saves' if edit_count > 0 else '0 file saves'
     token_str = f'~{tokens:,} tokens ({pct}%){warn}' if tokens > 0 else 'unknown'
 
+    plans_str = ', '.join(open_plans) if open_plans else ''
     entry = (
         f'\n## [{now}]\n'
         f'**Files:** {files_str}\n'
         f'**Edits:** {edit_str} | **Tokens:** {token_str}\n'
         f'**What:** {phase}\n'
     )
+    if plans_str:
+        entry += f'**Open plans:** {plans_str}\n'
 
     # Create journal with header if missing
     if not journal_file.exists():

@@ -270,6 +270,32 @@ def main():
             for cls in sorted(significant):
                 print(f"  + .{cls}")
 
+    # --- Plans drift check ---
+    plans_dir = memory_dir / 'plans'
+    if plans_dir.exists():
+        memory_md = memory_dir / 'MEMORY.md'
+        memory_text = memory_md.read_text(encoding='utf-8', errors='ignore') if memory_md.exists() else ''
+
+        # Plan files: direct children only, skip _template.md and archive/
+        plan_files = {p.stem for p in plans_dir.glob('*.md') if not p.name.startswith('_')}
+
+        # References in MEMORY.md to plans/*.md (not plans/archive/)
+        referenced_plans = set(re.findall(r'\bplans/(?!archive/)([^/)]+)\.md', memory_text))
+
+        undocumented = plan_files - referenced_plans
+        if undocumented:
+            drift = True
+            print("DRIFT DETECTED \u2014 Plan files not referenced in MEMORY.md:")
+            for p in sorted(undocumented):
+                print(f"  + plans/{p}.md")
+
+        stale_refs = referenced_plans - plan_files
+        if stale_refs:
+            drift = True
+            print("DRIFT DETECTED \u2014 MEMORY.md references missing plan files:")
+            for p in sorted(stale_refs):
+                print(f"  - plans/{p}.md (missing)")
+
     if not drift:
         if not SILENT:
             print("OK \u2014 no drift detected")

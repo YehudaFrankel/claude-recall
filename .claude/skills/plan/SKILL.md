@@ -10,6 +10,8 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 
 **Trigger:** `"plan [feature]"` · `"I want to build X"` · `"design X"` · `"plan mode"` · `"thinking about building X"`
 
+> **Sync note:** Mirror core logic changes to `D:\resin-2.1.17\webapps\.claude\skills\plan\SKILL.md` (webapps copy). The two files diverge intentionally — different `[MEM]` paths and TicTacWisdom-specific Java/SQL guidance in the webapps copy. Update both when the core skill steps change.
+
 ---
 
 ## Steps
