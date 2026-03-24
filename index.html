@@ -3,43 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Recall — Persistent Context for Claude Code</title>
+<title>Claude Recall — Agentic Engineering Starter for Claude Code</title>
 <style>
-/* ─────────────────────────────────────────
-   Tokens
-───────────────────────────────────────── */
 :root {
-  --bg:        #0d1117;
-  --surface:   #161b22;
-  --border:    #21262d;
-  --border2:   #30363d;
-  --accent:    #8b5cf6;
-  --green:     #3fb950;
-  --amber:     #d29922;
-  --text:      #e6edf3;
-  --muted:     #8b949e;
-  --dim:       #484f58;
-  --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --mono:      'SF Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --bg:      #0d1117;
+  --surface: #161b22;
+  --border:  #21262d;
+  --border2: #30363d;
+  --accent:  #8b5cf6;
+  --green:   #3fb950;
+  --amber:   #d29922;
+  --text:    #e6edf3;
+  --muted:   #8b949e;
+  --dim:     #484f58;
+  --font:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono:    'SF Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
-
 body {
   font-family: var(--font);
   background: var(--bg);
-  background-image: radial-gradient(ellipse at 65% 40%, rgba(139,92,246,0.10) 0%, transparent 60%);
+  background-image: radial-gradient(ellipse at 65% 40%, rgba(139,92,246,.10) 0%, transparent 60%);
   color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─────────────────────────────────────────
-   Nav
-───────────────────────────────────────── */
+/* Nav */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
@@ -48,197 +40,82 @@ nav {
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
 }
-
 .logo {
-  font-family: var(--mono);
-  font-size: .9rem;
-  color: var(--text);
-  text-decoration: none;
-  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .9rem; color: var(--text);
+  text-decoration: none; display: flex; align-items: center; gap: .5rem;
 }
 .logo-mark {
-  display: inline-block;
-  width: 8px; height: 8px;
-  background: var(--accent);
-  border-radius: 2px;
+  display: inline-block; width: 8px; height: 8px;
+  background: var(--accent); border-radius: 2px;
   box-shadow: 0 0 8px var(--accent);
   animation: markPulse 3s ease-in-out infinite;
 }
-@keyframes markPulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: .4; }
-}
-
+@keyframes markPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 .nav-right { display: flex; align-items: center; gap: 1.5rem; }
-.nav-link {
-  font-size: .85rem; color: var(--muted);
-  text-decoration: none; transition: color .15s;
-}
+.nav-link { font-size: .85rem; color: var(--muted); text-decoration: none; transition: color .15s; }
 .nav-link:hover { color: var(--text); }
-
 .gh-btn {
   display: flex; align-items: center; gap: .4rem;
-  font-size: .8rem; color: var(--muted);
-  text-decoration: none;
-  border: 1px solid var(--border2);
-  border-radius: 6px; padding: .35rem .8rem;
+  font-size: .8rem; color: var(--muted); text-decoration: none;
+  border: 1px solid var(--border2); border-radius: 6px; padding: .35rem .8rem;
   transition: all .15s;
 }
 .gh-btn:hover { color: var(--text); border-color: var(--dim); background: var(--surface); }
 
-/* ─────────────────────────────────────────
-   Hero brand — neon product name in hero
-───────────────────────────────────────── */
-.hero-brand {
-  font-family: var(--mono);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 700;
-  color: #c4b5fd;
-  letter-spacing: .02em;
-  display: inline-block;
-  position: relative;
-  margin-bottom: 1rem;
-  animation: glitch 6s infinite;
-}
-.hero-brand::before,
-.hero-brand::after {
-  content: 'Claude Recall';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  opacity: 0;
-}
-.hero-brand::before {
-  color: #a78bfa;
-  animation: glitchTop 6s infinite;
-  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
-}
-.hero-brand::after {
-  color: #7c3aed;
-  animation: glitchBot 6s infinite;
-  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
-}
-@keyframes glitch {
-  0%,94%,100% {
-    text-shadow: 0 0 8px rgba(139,92,246,.9), 0 0 24px rgba(139,92,246,.5), 0 0 50px rgba(139,92,246,.2);
-    transform: none;
-  }
-  95% { transform: skewX(-1deg); }
-  96% { transform: skewX(1deg) translateX(-2px); }
-  97% { transform: none; }
-  98% { transform: skewX(.5deg) translateX(2px); }
-  99% { transform: none; }
-}
-@keyframes glitchTop {
-  0%,94%,100% { opacity: 0; transform: none; }
-  95% { opacity: .8; transform: translateX(-3px); }
-  96% { opacity: .8; transform: translateX(3px); }
-  97% { opacity: 0; }
-}
-@keyframes glitchBot {
-  0%,94%,100% { opacity: 0; transform: none; }
-  96% { opacity: .7; transform: translateX(4px); }
-  97% { opacity: .7; transform: translateX(-2px); }
-  98% { opacity: 0; }
-}
-
-/* ─────────────────────────────────────────
-   Hero  —  intentionally NOT centered
-───────────────────────────────────────── */
+/* Hero */
 .hero {
-  min-height: 0;
-  display: flex; align-items: center;
-  padding: 6rem 2rem 2.5rem;
-  max-width: 1100px; margin: 0 auto;
+  min-height: 0; display: flex; align-items: center;
+  padding: 6rem 2rem 3rem; max-width: 1100px; margin: 0 auto;
 }
-
 .hero-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: 1fr 1fr;
   gap: 4rem; align-items: center;
 }
-
-.hero-text { }
-
 .eyebrow {
   display: inline-flex; align-items: center; gap: .4rem;
-  font-family: var(--mono);
-  font-size: .75rem; color: var(--green);
+  font-family: var(--mono); font-size: .75rem; color: var(--green);
   margin-bottom: 1.5rem; letter-spacing: .04em;
 }
-.eyebrow::before {
-  content: '▸';
+.eyebrow::before { content: '▸'; }
+.hero-brand {
+  font-family: var(--mono); font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700; color: #c4b5fd; letter-spacing: .02em;
+  display: inline-block; position: relative; margin-bottom: 1rem;
+  animation: glitch 6s infinite;
+  text-shadow: 0 0 8px rgba(139,92,246,.9), 0 0 24px rgba(139,92,246,.5);
 }
-
-h1 {
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -.025em;
-  margin-bottom: 1.25rem;
+.hero-brand::before, .hero-brand::after {
+  content: 'Claude Recall'; position: absolute; top: 0; left: 0; width: 100%; opacity: 0;
 }
+.hero-brand::before { color: #a78bfa; animation: glitchTop 6s infinite; clip-path: polygon(0 0,100% 0,100% 35%,0 35%); }
+.hero-brand::after  { color: #7c3aed; animation: glitchBot 6s infinite; clip-path: polygon(0 65%,100% 65%,100% 100%,0 100%); }
+@keyframes glitch { 0%,94%,100%{transform:none} 95%{transform:skewX(-1deg)} 96%{transform:skewX(1deg) translateX(-2px)} 97%{transform:none} 98%{transform:skewX(.5deg) translateX(2px)} 99%{transform:none} }
+@keyframes glitchTop { 0%,94%,100%{opacity:0;transform:none} 95%{opacity:.8;transform:translateX(-3px)} 96%{opacity:.8;transform:translateX(3px)} 97%{opacity:0} }
+@keyframes glitchBot { 0%,94%,100%{opacity:0;transform:none} 96%{opacity:.7;transform:translateX(4px)} 97%{opacity:.7;transform:translateX(-2px)} 98%{opacity:0} }
 
-.h1-line2 {
-  display: block;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.hero-desc {
-  font-size: 1.05rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 2rem;
-  max-width: 400px;
-}
-
-.hero-actions {
-  display: flex; gap: .75rem; flex-wrap: wrap;
-}
-
+h1 { font-size: clamp(2.2rem,4vw,3.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 1.25rem; }
+.h1-line2 { display: block; color: var(--muted); font-weight: 600; }
+.hero-desc { font-size: 1.05rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; max-width: 400px; }
+.hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
 .btn {
   display: inline-flex; align-items: center; gap: .4rem;
-  padding: .6rem 1.3rem;
-  border-radius: 7px;
-  font-size: .875rem; font-weight: 500;
-  text-decoration: none;
-  transition: all .15s;
-  border: none; cursor: pointer;
-  font-family: var(--font);
+  padding: .6rem 1.3rem; border-radius: 7px;
+  font-size: .875rem; font-weight: 500; text-decoration: none;
+  transition: all .15s; border: none; cursor: pointer; font-family: var(--font);
 }
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
-}
-.btn-primary:hover {
-  background: #7c3aed;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139,92,246,.3);
-}
-.btn-ghost {
-  color: var(--muted);
-  border: 1px solid var(--border2);
-  background: var(--surface);
-}
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 1px 0 rgba(255,255,255,.1) inset; }
+.btn-primary:hover { background: #7c3aed; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,.3); }
+.btn-ghost { color: var(--muted); border: 1px solid var(--border2); background: var(--surface); }
 .btn-ghost:hover { color: var(--text); border-color: var(--dim); }
 
-/* ─────────────────────────────────────────
-   Hero terminal  —  the real one
-───────────────────────────────────────── */
+/* Terminal */
 .hero-term {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 50px rgba(139,92,246,0.18), 0 0 100px rgba(139,92,246,0.08), 0 8px 32px rgba(0,0,0,.5);
-  font-family: var(--mono);
-  font-size: .8rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.04) inset;
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 10px;
+  overflow: hidden; font-family: var(--mono); font-size: .8rem;
+  box-shadow: 0 0 50px rgba(139,92,246,.18), 0 8px 32px rgba(0,0,0,.5);
 }
 .term-bar {
-  padding: .7rem 1rem;
-  background: rgba(255,255,255,.03);
+  padding: .7rem 1rem; background: rgba(255,255,255,.03);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: .5rem;
 }
@@ -247,2083 +124,519 @@ h1 {
 .term-dot-y { background: #febc2e; }
 .term-dot-g { background: #28c840; }
 .term-title { margin-left: .3rem; font-size: .72rem; color: var(--dim); }
+.term-body { padding: 1.2rem 1.4rem; line-height: 1.9; }
+.t-prompt { color: var(--accent); }
+.t-cmd    { color: var(--text); }
+.t-ok     { color: var(--green); }
+.t-warn   { color: var(--amber); }
+.t-dim    { color: var(--dim); }
+.t-muted  { color: var(--muted); }
+.t-gap    { display: block; height: .6rem; }
+.t-chain  { color: #c4b5fd; }
 
-.term-body { padding: 1.2rem 1rem; line-height: 1.9; }
-
-.t-line { display: block; }
-.t-prompt { color: var(--dim); }
-.t-user  { color: var(--text); }
-.t-ok    { color: var(--green); }
-.t-out   { color: var(--muted); padding-left: 1.2rem; display: block; }
-.t-out2  { color: var(--dim); padding-left: 1.2rem; display: block; }
-.t-gap   { display: block; height: .5rem; }
-.t-cmd   { color: #c9a0ff; }
-.t-cursor {
-  display: inline-block;
-  width: 7px; height: .85em;
-  background: var(--accent);
-  vertical-align: middle;
-  opacity: 1;
-  animation: cur .9s step-end infinite;
-  border-radius: 1px;
-}
-@keyframes cur { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-
-/* ─────────────────────────────────────────
-   Stats  —  just text, no cards
-───────────────────────────────────────── */
-.stats {
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.stats-inner {
-  max-width: 1100px; margin: 0 auto;
-  display: flex; padding: 2.5rem 2rem;
-  gap: 0;
-}
-.stat-item {
-  flex: 1; text-align: left;
-  padding-right: 2rem;
-  border-right: 1px solid var(--border);
-  margin-right: 2rem;
-}
-.stat-item:last-child {
-  border-right: none; margin-right: 0; padding-right: 0;
-}
-.s-num {
-  font-size: 2.2rem; font-weight: 800;
-  color: var(--text);
-  font-family: var(--mono);
-  letter-spacing: -.02em;
-  line-height: 1;
-}
-.s-num span { color: var(--accent); }
-.s-label { font-size: .78rem; color: var(--muted); margin-top: .4rem; }
-
-/* ─────────────────────────────────────────
-   Shared section layout
-───────────────────────────────────────── */
-.section {
-  max-width: 1100px;
-  margin: 6rem auto;
-  padding: 0 2rem;
-}
-.section.narrow { max-width: 740px; }
-
-.section-tag {
-  font-family: var(--mono);
-  font-size: .72rem; color: var(--accent);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: .6rem;
-}
-.section-h {
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 700;
-  letter-spacing: -.02em;
-  margin-bottom: .6rem;
-  line-height: 1.2;
-}
-.section-p { color: var(--muted); max-width: 500px; margin-bottom: 2.5rem; }
-
-/* ─────────────────────────────────────────
-   Install
-───────────────────────────────────────── */
-.install-wrap {
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--surface);
-}
-.install-head {
-  padding: .7rem 1rem;
-  background: rgba(255,255,255,.02);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.install-dots { display: flex; gap: .4rem; }
-.install-dots .d { width: 11px; height: 11px; border-radius: 50%; }
-.d1 { background: #ff5f57; }
-.d2 { background: #febc2e; }
-.d3 { background: #28c840; }
-.install-label { font-size: .72rem; color: var(--dim); font-family: var(--mono); }
-.copy-btn {
-  font-family: var(--font);
-  font-size: .72rem; color: var(--muted);
-  background: none; border: 1px solid var(--border2);
-  border-radius: 5px; padding: .25rem .65rem;
-  cursor: pointer; transition: all .15s;
-}
-.copy-btn:hover { color: var(--text); border-color: var(--dim); }
-.copy-btn.ok { color: var(--green); border-color: var(--green); }
-
-.install-body {
-  padding: 1.3rem 1.2rem;
-  font-family: var(--mono); font-size: .8rem; line-height: 1.6;
-  color: var(--text);
-}
-.i-prompt { color: var(--dim); }
-.i-cmd { color: var(--text); }
-
-.install-footer {
-  padding: 1rem 1.2rem;
-  border-top: 1px solid var(--border);
-  display: flex; gap: 2.5rem; flex-wrap: wrap;
-}
-.i-step {
-  display: flex; align-items: center; gap: .6rem;
-  font-size: .82rem; color: var(--muted);
-}
-.step-n {
-  font-family: var(--mono);
-  font-size: .68rem; color: var(--accent); font-weight: 700;
-  background: rgba(139,92,246,.1);
-  border: 1px solid rgba(139,92,246,.2);
-  border-radius: 4px; padding: .1rem .4rem;
-}
-.i-step code {
-  font-family: var(--mono); font-size: .75rem;
-  color: var(--amber); background: rgba(210,153,34,.08);
-  border-radius: 4px; padding: .1rem .4rem;
-}
-
-/* ─────────────────────────────────────────
-   Workflow diagram  —  horizontal steps
-───────────────────────────────────────── */
-.flow {
-  display: flex; align-items: center;
-  gap: 0; overflow-x: auto;
-  padding-bottom: .5rem;
-  margin-top: 2rem;
-}
-.flow-step {
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: .9rem 1.1rem;
-  min-width: 130px;
-}
-.flow-step-n {
-  font-family: var(--mono);
-  font-size: .65rem; color: var(--accent);
-  margin-bottom: .2rem; letter-spacing: .04em;
-}
-.flow-step-title {
-  font-size: .85rem; font-weight: 600; color: var(--text);
-  margin-bottom: .15rem;
-}
-.flow-step-cmd {
-  font-family: var(--mono);
-  font-size: .72rem; color: var(--muted);
-}
-.flow-arrow {
-  flex-shrink: 0;
-  color: var(--dim); font-size: .9rem;
-  padding: 0 .75rem;
-  position: relative;
-}
-.flow-arrow::after {
-  content: '';
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: 28px; height: 1px;
-  background: linear-gradient(90deg, var(--dim), transparent);
-}
-
-/* ─────────────────────────────────────────
-   Feature list  —  not a grid of cards
-───────────────────────────────────────── */
-.feature-list { margin-top: 2rem; }
-.feature-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 2rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--border);
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .4s ease, transform .4s ease;
-}
-.feature-row:first-child { border-top: 1px solid var(--border); }
-.feature-row.in { opacity: 1; transform: none; }
-.feat-label {
-  font-size: .85rem; font-weight: 600; color: var(--text);
-  padding-top: .15rem;
-  display: flex; align-items: flex-start; gap: .5rem;
-}
-.feat-icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
-.feat-desc { font-size: .875rem; color: var(--muted); line-height: 1.7; }
-.feat-desc code {
-  font-family: var(--mono); font-size: .78rem;
-  color: var(--amber); background: rgba(210,153,34,.08);
-  border-radius: 4px; padding: .1rem .4rem;
-}
-
-/* ─────────────────────────────────────────
-   Commands  —  clean table
-───────────────────────────────────────── */
-.cmd-list { margin-top: 2rem; }
-.cmd-row {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 1.5rem;
-  padding: .8rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: .875rem;
-  opacity: 0;
-  transform: translateX(-10px);
-  transition: opacity .35s ease, transform .35s ease;
-}
-.cmd-row:first-child { border-top: 1px solid var(--border); }
-.cmd-row.in { opacity: 1; transform: none; }
-.cmd-name {
-  font-family: var(--mono); font-size: .78rem;
-  color: #c9a0ff;
-  display: flex; align-items: flex-start;
-  padding-top: .1rem;
-}
-.cmd-desc-text { color: var(--muted); line-height: 1.55; }
-
-/* ─────────────────────────────────────────
-   How it works  —  numbered prose
-───────────────────────────────────────── */
-.how-list { margin-top: 2rem; }
-.how-row {
-  display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  gap: 1.2rem;
-  padding: 1.4rem 0;
-  border-bottom: 1px solid var(--border);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .45s ease, transform .45s ease;
-}
-.how-row:first-child { border-top: 1px solid var(--border); }
-.how-row.in { opacity: 1; transform: none; }
-.how-n {
-  font-family: var(--mono);
-  font-size: .75rem; color: var(--dim);
-  padding-top: .25rem;
-  font-weight: 600;
-}
-.how-title {
-  font-size: .95rem; font-weight: 600; color: var(--text);
-  margin-bottom: .35rem;
-}
-.how-body { font-size: .875rem; color: var(--muted); line-height: 1.7; }
-.how-body code {
-  font-family: var(--mono); font-size: .78rem;
-  color: var(--amber); background: rgba(210,153,34,.08);
-  border-radius: 4px; padding: .1rem .4rem;
-}
-
-/* ─────────────────────────────────────────
-   File tree  —  actual IDE look
-───────────────────────────────────────── */
-.tree-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px; overflow: hidden;
-  margin-top: 2rem;
-}
-.tree-head {
-  padding: .7rem 1rem;
-  border-bottom: 1px solid var(--border);
+/* Sections */
+section { padding: 5rem 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-family: var(--mono); font-size: .72rem; color: var(--accent);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 1rem;
   display: flex; align-items: center; gap: .5rem;
-  background: rgba(255,255,255,.02);
 }
-.tree-head .term-dot { }
-.tree-head-name {
-  font-family: var(--mono);
-  font-size: .72rem; color: var(--dim); margin-left: .4rem;
-}
-.tree-body {
-  padding: 1rem 1.2rem;
-  font-family: var(--mono); font-size: .78rem;
-  line-height: 1.95;
-}
-.tl { display: block; white-space: nowrap; }
-.tl-dir { color: var(--accent); }
-.tl-file { color: var(--text); }
-.tl-comment { color: var(--dim); }
-.tl-new { color: var(--green); }
+.section-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); }
+h2 { font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 700; letter-spacing: -.02em; margin-bottom: 1rem; }
+.section-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; margin-bottom: 3rem; line-height: 1.7; }
 
-/* ─────────────────────────────────────────
-   Quote
-───────────────────────────────────────── */
-.pull-quote {
-  border-left: 2px solid var(--accent);
-  padding-left: 1.5rem;
-  margin: 0;
+/* Tiers */
+.tiers { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.tier {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1.8rem;
+  position: relative; overflow: hidden;
+  transition: border-color .2s;
 }
-.pull-quote p {
-  font-size: 1.15rem; line-height: 1.75;
-  color: var(--muted);
-  font-style: italic;
+.tier:hover { border-color: var(--accent); }
+.tier-num {
+  font-family: var(--mono); font-size: .7rem; color: var(--dim);
+  margin-bottom: 1rem; letter-spacing: .06em;
 }
-.pull-quote p strong { color: var(--text); font-style: normal; }
-.pull-quote cite {
-  display: block; margin-top: .75rem;
-  font-size: .78rem; color: var(--dim);
-  font-family: var(--mono); font-style: normal;
+.tier-name { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+.tier-desc { font-size: .9rem; color: var(--muted); line-height: 1.6; }
+.tier-glow {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0; transition: opacity .2s;
 }
+.tier:hover .tier-glow { opacity: 1; }
 
-/* ─────────────────────────────────────────
-   Honest "built by" section
-───────────────────────────────────────── */
-.built-by {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 3rem 2rem;
+/* Loop diagram */
+.loop-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.loop-steps { display: flex; flex-direction: column; gap: 0; }
+.loop-step {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: 1.2rem 0; border-bottom: 1px solid var(--border);
 }
-.built-by-inner {
-  max-width: 1100px; margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem; align-items: center;
-}
-.by-text h3 {
-  font-size: 1.3rem; font-weight: 700;
-  margin-bottom: .75rem; letter-spacing: -.01em;
-}
-.by-text p {
-  font-size: .9rem; color: var(--muted); line-height: 1.7;
-}
-.by-stats {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-.by-stat { }
-.by-stat-n {
-  font-family: var(--mono);
-  font-size: 1.6rem; font-weight: 700;
-  color: var(--text); letter-spacing: -.02em;
-  line-height: 1;
-}
-.by-stat-n em { color: var(--accent); font-style: normal; }
-.by-stat-l { font-size: .75rem; color: var(--muted); margin-top: .3rem; }
-
-/* ─────────────────────────────────────────
-   CTA
-───────────────────────────────────────── */
-.cta-wrap {
-  max-width: 1100px; margin: 6rem auto 4rem; padding: 0 2rem;
-}
-.cta-inner {
-  padding: 3rem;
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  background: var(--surface);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 2rem;
-}
-.cta-text h2 {
-  font-size: 1.4rem; font-weight: 700;
-  margin-bottom: .4rem; letter-spacing: -.01em;
-}
-.cta-text p { font-size: .875rem; color: var(--muted); }
-
-/* ─────────────────────────────────────────
-   Footer
-───────────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 1.75rem 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1rem;
-}
-.footer-left {
-  font-family: var(--mono); font-size: .75rem; color: var(--dim);
-}
-.footer-right { display: flex; gap: 1.5rem; }
-.footer-right a { font-size: .8rem; color: var(--muted); text-decoration: none; }
-.footer-right a:hover { color: var(--text); }
-
-/* ─────────────────────────────────────────
-   Session Demo
-───────────────────────────────────────── */
-.demo-section {
-  max-width: 820px;
-  margin: 6rem auto;
-  padding: 0 2rem;
-}
-
-.demo-phases {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 1.5rem;
-}
-.demo-phase {
-  display: flex;
-  align-items: center;
-  gap: .55rem;
-  font-family: var(--mono);
-  font-size: .75rem;
-  color: var(--dim);
-  transition: color .3s;
-}
-.demo-phase.active { color: var(--text); }
-.demo-phase.done   { color: var(--green); }
-.dp-dot {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border2);
+.loop-step:last-child { border-bottom: none; }
+.loop-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(139,92,246,.15); border: 1px solid rgba(139,92,246,.3);
   display: flex; align-items: center; justify-content: center;
-  font-size: .65rem; font-weight: 700;
-  background: var(--surface);
-  transition: all .3s;
+  font-size: .85rem; flex-shrink: 0; margin-top: .1rem;
 }
-.demo-phase.active .dp-dot {
-  border-color: var(--accent);
-  background: rgba(139,92,246,.15);
-  color: #c4b5fd;
-  box-shadow: 0 0 10px rgba(139,92,246,.3);
-}
-.demo-phase.done .dp-dot {
-  border-color: var(--green);
-  background: rgba(63,185,80,.1);
-  color: var(--green);
-}
-.dp-arrow {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-  margin: 0 .5rem;
-  min-width: 40px;
-  max-width: 80px;
+.loop-step-title { font-weight: 600; margin-bottom: .25rem; }
+.loop-step-desc { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+.loop-term {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden;
+  font-family: var(--mono); font-size: .78rem;
 }
 
-.demo-term {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: var(--mono);
-  font-size: .82rem;
-  box-shadow: 0 0 60px rgba(139,92,246,.12), 0 16px 40px rgba(0,0,0,.4);
+/* Autonomous */
+.auto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.auto-card {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1.8rem;
 }
-.demo-term-bar {
-  padding: .7rem 1rem;
-  background: rgba(255,255,255,.03);
-  border-bottom: 1px solid var(--border);
+.auto-card-title {
+  font-weight: 700; font-size: 1rem; margin-bottom: .6rem;
   display: flex; align-items: center; gap: .5rem;
 }
-.demo-term-body {
-  padding: 1.2rem 1.2rem;
-  line-height: 2;
-  min-height: 320px;
-  position: relative;
+.auto-icon { font-size: 1.1rem; }
+.auto-card p { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+.auto-card p:last-child { margin-bottom: 0; }
+.code-snip {
+  background: rgba(0,0,0,.3); border: 1px solid var(--border);
+  border-radius: 6px; padding: .8rem 1rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--muted);
+  line-height: 1.8;
 }
-.dl { display: block; }
-.dl-prompt { color: var(--dim); }
-.dl-cmd    { color: var(--text); }
-.dl-ok     { color: var(--green); padding-left: 1.2rem; display: block; }
-.dl-dim    { color: var(--dim);   padding-left: 1.2rem; display: block; }
-.dl-green  { color: var(--green); display: block; }
-.dl-warn   { color: var(--amber); display: block; }
-.dl-add    { color: #c4b5fd;      display: block; }
-.dl-cmt    { color: var(--dim);   display: block; font-style: italic; }
-.dl-sep    { display: block; color: var(--border2); margin: .3rem 0; letter-spacing: .05em; }
-.dl-gap    { display: block; height: .4rem; }
+.code-snip .t-ok { color: var(--green); }
+.code-snip .t-chain { color: #c4b5fd; }
+.code-snip .t-warn { color: var(--amber); }
 
-.demo-cursor {
-  display: inline-block;
-  width: 7px; height: .9em;
-  background: var(--accent);
-  vertical-align: middle;
-  border-radius: 1px;
-  animation: cur .9s step-end infinite;
-  margin-left: 1px;
+/* Commands */
+.cmd-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.cmd-group-title { font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: .75rem; color: var(--dim); font-weight: 500; padding: .4rem 0; border-bottom: 1px solid var(--border); }
+td { font-size: .875rem; padding: .7rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+td:first-child { font-family: var(--mono); font-size: .8rem; color: var(--accent); padding-right: 1.5rem; white-space: nowrap; }
+td:last-child { color: var(--muted); }
+tr:last-child td { border-bottom: none; }
+
+/* Drift */
+.drift-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+.drift-points { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; }
+.drift-point { display: flex; gap: .75rem; align-items: flex-start; }
+.drift-bullet {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  margin-top: .55rem; flex-shrink: 0;
 }
+.drift-point-text { font-size: .95rem; color: var(--muted); line-height: 1.6; }
 
-.demo-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: .9rem 1.2rem;
+/* File tree */
+.tree {
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 10px;
+  padding: 1.8rem; font-family: var(--mono); font-size: .78rem; line-height: 2;
+  overflow-x: auto;
+}
+.t-file   { color: var(--text); }
+.t-folder { color: var(--accent); }
+.t-ann    { color: var(--dim); }
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; margin-bottom: 3rem; }
+.stat {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1.5rem; text-align: center;
+}
+.stat-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); font-family: var(--mono); letter-spacing: -.02em; }
+.stat-label { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+
+/* CTA */
+.cta-section {
+  text-align: center; padding: 5rem 2rem;
   border-top: 1px solid var(--border);
 }
-.demo-status {
-  font-family: var(--mono);
-  font-size: .72rem;
-  color: var(--dim);
-}
-.demo-replay {
-  font-family: var(--font);
-  font-size: .75rem;
-  color: var(--muted);
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: .3rem .75rem;
-  cursor: pointer;
-  transition: all .15s;
-}
-.demo-replay:hover { color: var(--text); border-color: var(--dim); }
+.cta-section h2 { margin-bottom: 1rem; }
+.cta-section p { color: var(--muted); margin-bottom: 2rem; max-width: 440px; margin-left: auto; margin-right: auto; }
+.cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
-/* ─────────────────────────────────────────
-   Scroll reveal
-───────────────────────────────────────── */
-.reveal {
-  opacity: 0; transform: translateY(16px);
-  transition: opacity .55s ease, transform .55s ease;
-}
-.reveal.in { opacity: 1; transform: none; }
-
-/* ─────────────────────────────────────────
-   Responsive
-───────────────────────────────────────── */
-@media (max-width: 780px) {
+/* Responsive */
+@media (max-width: 768px) {
   .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-  .hero-term { display: none; }
-  .built-by-inner { grid-template-columns: 1fr; gap: 2rem; }
-  .cta-inner { flex-direction: column; align-items: flex-start; }
-  .stats-inner { flex-wrap: wrap; }
-  .stat-item { min-width: 130px; }
-  .nav-hide-sm { display: none; }
-  .nav-link { font-size: .78rem; }
-  .cmd-row, .feature-row { grid-template-columns: 1fr; gap: .5rem; }
-}
-
-/* ─────────────────────────────────────────
-   Subtle entrance for hero
-───────────────────────────────────────── */
-.hero-text > * {
-  opacity: 0; transform: translateY(14px);
-  animation: heroIn .5s ease forwards;
-}
-.hero-text > *:nth-child(1) { animation-delay: .05s; }
-.hero-text > *:nth-child(2) { animation-delay: .12s; }
-.hero-text > *:nth-child(3) { animation-delay: .19s; }
-.hero-text > *:nth-child(4) { animation-delay: .26s; }
-@keyframes heroIn {
-  to { opacity: 1; transform: none; }
-}
-.hero-term {
-  opacity: 0; transform: translateX(20px);
-  animation: termIn .55s ease .3s forwards;
-}
-@keyframes termIn { to { opacity: 1; transform: none; } }
-
-/* Live typing animation for hero terminal */
-.typing-line .t-cursor { display: inline-block; }
-
-/* ─────────────────────────────────────────
-   Hero terminal — staggered line reveals
-───────────────────────────────────────── */
-@keyframes lineIn {
-  from { opacity: 0; transform: translateX(-6px); }
-  to   { opacity: 1; transform: none; }
-}
-.term-body .t-line,
-.term-body .t-out,
-.term-body .t-out2,
-.term-body .t-gap {
-  opacity: 0;
-  animation: lineIn .28s ease forwards;
-}
-.term-body > *:nth-child(1)  { animation-delay: .65s; }
-.term-body > *:nth-child(2)  { animation-delay: .88s; }
-.term-body > *:nth-child(3)  { animation-delay: 1.08s; }
-.term-body > *:nth-child(4)  { animation-delay: 1.26s; }
-.term-body > *:nth-child(5)  { animation-delay: 1.42s; }
-.term-body > *:nth-child(6)  { animation-delay: 1.56s; }
-.term-body > *:nth-child(7)  { animation-delay: 1.70s; }
-.term-body > *:nth-child(8)  { animation-delay: 1.84s; }
-.term-body > *:nth-child(9)  { animation-delay: 1.97s; }
-.term-body > *:nth-child(10) { animation-delay: 2.10s; }
-.term-body > *:nth-child(11) { animation-delay: 2.22s; }
-.term-body > *:nth-child(12) { animation-delay: 2.34s; }
-
-/* ─────────────────────────────────────────
-   Lifecycle hooks animation section
-───────────────────────────────────────── */
-.lc-section {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 5rem 2rem;
-}
-.lc-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.lc-timeline {
-  display: flex;
-  align-items: flex-start;
-  position: relative;
-  margin: 2.5rem 0 0;
-  padding-bottom: 2.5rem;
-}
-.lc-timeline::before {
-  content: '';
-  position: absolute;
-  left: 7%; right: 7%;
-  top: 18px;
-  height: 1px;
-  background: var(--border2);
-}
-.lc-node {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .55rem;
-  position: relative;
-}
-.lc-dot-wrap {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  position: relative;
-  z-index: 1;
-  transition: all .4s;
-}
-.lc-dot-inner {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--border2);
-  transition: all .4s;
-}
-.lc-node.lc-active .lc-dot-wrap {
-  border-color: var(--accent);
-  background: rgba(139,92,246,.1);
-  box-shadow: 0 0 0 5px rgba(139,92,246,.1), 0 0 14px rgba(139,92,246,.35);
-}
-.lc-node.lc-active .lc-dot-inner {
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-}
-.lc-node.lc-done .lc-dot-wrap {
-  border-color: var(--green);
-  background: rgba(63,185,80,.06);
-}
-.lc-node.lc-done .lc-dot-inner { background: var(--green); }
-.lc-node-label { text-align: center; }
-.lc-node-event {
-  font-family: var(--mono);
-  font-size: .63rem; color: var(--dim);
-  letter-spacing: .04em;
-  margin-bottom: .18rem;
-}
-.lc-node-name {
-  font-size: .8rem; font-weight: 600;
-  color: var(--muted);
-  transition: color .3s;
-}
-.lc-node.lc-active .lc-node-name { color: var(--accent); }
-.lc-node.lc-done .lc-node-name   { color: var(--green);  }
-.lc-progress {
-  height: 2px; background: var(--border);
-  border-radius: 2px; overflow: hidden;
-  margin-bottom: 1.5rem;
-}
-.lc-progress-fill {
-  height: 100%; background: var(--accent);
-  border-radius: 2px; width: 0;
-}
-.lc-panel {
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: 10px; overflow: hidden;
-  font-family: var(--mono); font-size: .8rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,.35);
-}
-.lc-panel-bar {
-  padding: .65rem 1rem;
-  background: rgba(255,255,255,.02);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: .5rem;
-}
-.lc-panel-file {
-  font-size: .72rem; color: var(--dim);
-  margin-left: .4rem; flex: 1;
-}
-.lc-hook-badge {
-  font-size: .66rem; color: var(--accent);
-  background: rgba(139,92,246,.12);
-  border: 1px solid rgba(139,92,246,.25);
-  border-radius: 4px; padding: .12rem .55rem;
-  font-family: var(--mono);
-}
-.lc-panel-body {
-  padding: 1.3rem 1.1rem;
-  min-height: 175px;
-}
-.lc-slide { display: none; }
-.lc-slide.lc-slide-active { display: block; }
-.lp {
-  display: block; line-height: 1.9;
-  opacity: 0; transform: translateX(-6px);
-  transition: opacity .22s ease, transform .22s ease;
-}
-.lp.in { opacity: 1; transform: none; }
-.lp-cmd  { color: #c9a0ff; }
-.lp-ok   { color: var(--green); }
-.lp-dim  { color: var(--dim); display: block; padding-left: 1.3rem; }
-.lp-warn { color: var(--amber); }
-
-/* ─────────────────────────────────────────
-   Drift detection live demo
-───────────────────────────────────────── */
-.dd-wrap {
-  margin-top: 2.5rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-.dd-panel {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px; overflow: hidden;
-  font-family: var(--mono); font-size: .79rem;
-  position: relative;
-}
-.dd-bar {
-  padding: .65rem 1rem;
-  background: rgba(255,255,255,.02);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: .5rem;
-}
-.dd-bar-name { font-size: .72rem; color: var(--dim); margin-left: .4rem; }
-.dd-bar-badge {
-  margin-left: auto; font-size: .65rem;
-  color: var(--amber); font-family: var(--mono);
-  opacity: 0; transition: opacity .25s;
-}
-.dd-bar-badge.dd-on { opacity: 1; }
-.dd-flash {
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, var(--accent), #79c0ff);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform .5s ease;
-}
-.dd-flash.dd-go { transform: scaleX(1); }
-.dd-body {
-  padding: 1.2rem 1rem;
-  min-height: 235px;
-  line-height: 1.85;
-}
-.dc { display: block; }
-.dc-kw   { color: #c9a0ff; }
-.dc-fn   { color: #79c0ff; }
-.dc-dim  { color: var(--dim); }
-.dc-ok   { color: var(--green); }
-.dc-miss { color: #ff7b72; }
-.dc-warn { color: var(--amber); }
-.dd-cursor {
-  display: inline-block; width: 7px; height: .85em;
-  background: var(--text); vertical-align: text-bottom;
-  animation: cur .8s step-end infinite; border-radius: 1px;
-}
-
-@media (max-width: 780px) {
-  .dd-wrap { grid-template-columns: 1fr; }
-  .lc-timeline { gap: 1rem; }
-  .lc-timeline::before { display: none; }
-  .lc-node-name { font-size: .72rem; }
-}
-
-/* ─────────────────────────────────────────
-   Session journal demo
-───────────────────────────────────────── */
-.jd-wrap {
-  margin-top: 2rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-.jd-panel {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px; overflow: hidden;
-  font-family: var(--mono); font-size: .79rem;
-}
-.jd-bar {
-  padding: .65rem 1rem;
-  background: rgba(255,255,255,.02);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: .5rem;
-}
-.jd-bar-name { font-size: .72rem; color: var(--dim); margin-left: .4rem; flex: 1; }
-.jd-bar-badge {
-  font-size: .65rem; color: var(--accent); font-family: var(--mono);
-  background: rgba(139,92,246,.12);
-  border: 1px solid rgba(139,92,246,.25);
-  border-radius: 4px; padding: .1rem .45rem;
-  opacity: 0; transition: opacity .3s;
-}
-.jd-bar-badge.jd-on { opacity: 1; }
-.jd-body {
-  padding: 1.2rem 1rem;
-  min-height: 185px;
-  line-height: 1.9;
-}
-@media (max-width: 780px) {
-  .jd-wrap { grid-template-columns: 1fr; }
+  .tiers { grid-template-columns: 1fr; }
+  .loop-wrap { grid-template-columns: 1fr; }
+  .auto-grid { grid-template-columns: 1fr; }
+  .cmd-groups { grid-template-columns: 1fr; }
+  .drift-wrap { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="#" class="logo">
-    <div class="logo-mark"></div>
+  <a class="logo" href="#">
+    <span class="logo-mark"></span>
     claude-recall
   </a>
   <div class="nav-right">
-    <a href="#proof" class="nav-link nav-hide-sm">Proof</a>
-    <a href="#features" class="nav-link nav-hide-sm">Features</a>
-    <a href="#install" class="nav-link">Install</a>
-    <a href="#commands" class="nav-link">Commands</a>
-    <a href="#how" class="nav-link nav-hide-sm">How it works</a>
-    <a href="https://github.com/YehudaFrankel/claude-recall" target="_blank" class="gh-btn">
+    <a class="nav-link" href="#loop">Learning Loop</a>
+    <a class="nav-link" href="#autonomous">Autonomous</a>
+    <a class="nav-link" href="#commands">Commands</a>
+    <a class="gh-btn" href="https://github.com/YehudaFrankel/claude-recall" target="_blank">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       GitHub
     </a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<!-- Hero -->
+<div class="hero">
   <div class="hero-inner">
     <div class="hero-text">
+      <div class="eyebrow">Claude Code · Agentic Engineering</div>
       <div class="hero-brand">Claude Recall</div>
-      <div class="eyebrow">v1.0.0 · open source · MIT license</div>
-      <h1>
-        You re-explain your codebase to Claude<br>
-        <span class="h1-line2">every single session.</span>
-      </h1>
+      <h1>From stateless<br><span class="h1-line2">to agentic.</span></h1>
       <p class="hero-desc">
-        Two commands — <strong style="color:var(--text)">Start Session, End Session</strong> — and Claude accumulates everything: bugs fixed, decisions made, corrections given. The discipline is small. The payoff compounds every session.
-      </p>
-      <p class="hero-desc" style="font-size:.875rem; margin-top:-.75rem;">
-        Already using CLAUDE.md? This is the structured system that goes on top of it.
+        Claude Code starts from zero every session. Claude Recall gives it persistent memory, self-improving skills, and autonomous multi-step workflows — compounding over time.
       </p>
       <div class="hero-actions">
-        <a href="#install" class="btn btn-primary">Get started</a>
-        <a href="https://github.com/YehudaFrankel/claude-recall" target="_blank" class="btn btn-ghost">View source</a>
+        <a class="btn btn-primary" href="https://github.com/YehudaFrankel/claude-recall">Get Started</a>
+        <a class="btn btn-ghost" href="#loop">How the loop works</a>
       </div>
     </div>
 
-    <!-- Real terminal showing actual kit output -->
     <div class="hero-term">
       <div class="term-bar">
         <div class="term-dot term-dot-r"></div>
         <div class="term-dot term-dot-y"></div>
         <div class="term-dot term-dot-g"></div>
-        <span class="term-title">bash — your-project/</span>
+        <div class="term-title">claude-code</div>
       </div>
       <div class="term-body">
-        <span class="t-line"><span class="t-prompt">$ </span><span class="t-user">Start Session</span></span>
-        <span class="t-out"><span class="t-ok">✓</span> Python 3.11 found</span>
-        <span class="t-out"><span class="t-ok">✓</span> check_memory.py — no drift</span>
-        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 100</span>
-        <span class="t-out"><span class="t-ok">✓</span> 5 lessons loaded</span>
-        <span class="t-out"><span class="t-ok">✓</span> 4 decisions loaded</span>
-        <span class="t-out"><span class="t-ok">✓</span> 23 skills ready</span>
+        <div><span class="t-prompt">›</span> <span class="t-cmd">Start Session</span></div>
+        <div class="t-ok">  ✓ memory pulled · 14 lessons loaded</div>
+        <div class="t-ok">  ✓ decisions loaded · 3 settled</div>
+        <div class="t-ok">  ✓ node_modules OK</div>
+        <div class="t-ok">  ✓ MCP server connected</div>
+        <div class="t-muted">  Ready. Last: auth endpoint added. What are we working on?</div>
         <span class="t-gap"></span>
-        <span class="t-line"><span class="t-ok">Session 100 ready.</span></span>
-        <span class="t-out2">Last change: session journal + bootstrap indexer + 23 skills</span>
-        <span class="t-out2">What are we working on?</span>
+        <div><span class="t-prompt">›</span> <span class="t-cmd">fix the bug where sessions expire early</span></div>
+        <div class="t-muted">  Heads up: last time you worked on session handling</div>
+        <div class="t-muted">  the JWT secret was hardcoded in test — check .env first</div>
         <span class="t-gap"></span>
-        <span class="t-line"><span class="t-prompt">$ </span><span class="t-cursor"></span></span>
+        <div class="t-chain">  → fix-bug complete</div>
+        <div class="t-chain">  → auto-chain: verification-loop</div>
+        <div class="t-ok">    ✓ smoke test passed</div>
+        <div class="t-chain">  → auto-chain: smoke-test done</div>
+        <span class="t-gap"></span>
+        <div><span class="t-prompt">›</span> <span class="t-cmd">End Session</span></div>
+        <div class="t-ok">  /learn → 2 lessons extracted, fix-bug scored N</div>
+        <div class="t-ok">  memory pushed · session 47 complete</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Three Tiers -->
+<section style="border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Architecture</div>
+    <h2>Three tiers. Most tools ship one.</h2>
+    <p class="section-sub">Most memory tools give you Tier 1 and call it done. Claude Recall ships all three — and they compound.</p>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-num">TIER 01</div>
+        <div class="tier-name">Memory</div>
+        <div class="tier-desc">Claude remembers your codebase, decisions, patterns, and known bugs across every session. Nothing is re-explained. The same mistake is never made twice.</div>
+        <div class="tier-glow"></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">TIER 02</div>
+        <div class="tier-name">Skills</div>
+        <div class="tier-desc">Skills fire automatically from natural language. They score themselves after every use. /evolve reads the scores and patches failing steps — so skills improve without you touching them.</div>
+        <div class="tier-glow"></div>
+      </div>
+      <div class="tier">
+        <div class="tier-num">TIER 03</div>
+        <div class="tier-name">Autonomous</div>
+        <div class="tier-desc">Skills chain into multi-step workflows. Self-healing retries before escalating. Memory auto-pushes after 9pm. Claude acts, not just answers.</div>
+        <div class="tier-glow"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="100">100</span></div>
-      <div class="s-label">real production sessions — not a demo project</div>
-    </div>
-    <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="100">100</span>+</div>
-      <div class="s-label">functions tracked across 5 JS files on the test codebase</div>
-    </div>
-    <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="21">21</span></div>
-      <div class="s-label">undocumented functions caught by drift detection — first run</div>
-    </div>
-    <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="23">23</span></div>
-      <div class="s-label">skills on the test project — kit ships with 7, you grow the rest</div>
-    </div>
-  </div>
-</div>
-
-<!-- SESSION DEMO -->
-<div class="demo-section reveal" id="demo">
-  <div class="section-tag">Live demo</div>
-  <h2 class="section-h">A full session, start to finish</h2>
-  <p class="section-p" style="margin-bottom:1.5rem;">Three phases every day. All automatic after setup.</p>
-
-  <div class="demo-phases">
-    <div class="demo-phase" id="dp0">
-      <div class="dp-dot">1</div>
-      <span>Morning</span>
-    </div>
-    <div class="dp-arrow"></div>
-    <div class="demo-phase" id="dp1">
-      <div class="dp-dot">2</div>
-      <span>Working</span>
-    </div>
-    <div class="dp-arrow"></div>
-    <div class="demo-phase" id="dp2">
-      <div class="dp-dot">3</div>
-      <span>End of day</span>
-    </div>
-  </div>
-
-  <div class="demo-term">
-    <div class="demo-term-bar">
-      <div class="term-dot term-dot-r"></div>
-      <div class="term-dot term-dot-y"></div>
-      <div class="term-dot term-dot-g"></div>
-      <span class="term-title">bash — your-project/</span>
-    </div>
-    <div class="demo-term-body" id="demoBody">
-      <span class="demo-cursor"></span>
-    </div>
-    <div class="demo-footer">
-      <span class="demo-status" id="demoStatus">Starting…</span>
-      <button class="demo-replay" id="demoReplay">↺ Replay</button>
-    </div>
-  </div>
-</div>
-
-<!-- REAL-WORLD PROOF -->
-<div class="section reveal" id="proof">
-  <div class="section-tag">Real-world test</div>
-  <h2 class="section-h">Tested on a production codebase — not a todo app</h2>
-  <p class="section-p">100 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
-
-  <div class="how-list">
-    <div class="how-row">
-      <div class="how-n">⚙</div>
-      <div>
-        <div class="how-title">The stack</div>
-        <div class="how-body">Java on Resin 2.1.17 (legacy server with non-standard compiler constraints), 5 JS files, 3 CSS files, 100+ functions, multi-page frontend with dashboard, admin panel, scheduler, email system, and encrypted URL handling. Not a clean greenfield project.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">💥</div>
-      <div>
-        <div class="how-title">Sessions crashed. Context was never lost.</div>
-        <div class="how-body">API timeouts, context overflow, mid-task interruptions — all happened. Every time: open a new session, type <code>Start Session</code>, and Claude picks up exactly where it left off. Lessons loaded. Known bugs loaded. No re-explanation. This was tested repeatedly and held up every time.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">🔍</div>
-      <div>
-        <div class="how-title">Drift detection caught 50+ undocumented functions</div>
-        <div class="how-body">When a large new feed feature was built across multiple sessions (~50 functions, ~100 CSS classes), drift detection flagged every undocumented entry automatically. On the very first run at project start, it caught 21 functions that had never been documented. Without the detector, all of that would have been invisible to Claude.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">🐛</div>
-      <div>
-        <div class="how-title">Critical bugs became permanent knowledge</div>
-        <div class="how-body">A Resin 2.1.17 compiler limitation — it silently fails to generate <code>$1.class</code> for anonymous generic inner classes — was discovered the hard way. Logged to <code>errors.md</code> and <code>lessons.md</code>. Now it loads every session. Same with a SQL apostrophe injection bug in email subjects. Neither will ever cost a debugging session again.</div>
-      </div>
-    </div>
-  </div>
-
-  <blockquote class="pull-quote" style="margin-top:2.5rem">
-    <p>"Without this kit, day 3 would have started re-explaining the Java patterns to Claude. By day 6 the context would have been too bloated to continue cleanly."</p>
-    <cite>— from an actual session recap, day 6 of 7 building the platform</cite>
-  </blockquote>
-</div>
-
-<!-- INSTALL -->
-<div class="section narrow reveal" id="install">
-  <div class="section-tag">Get started</div>
-  <h2 class="section-h">Two minutes to install. Forever of memory.</h2>
-  <p class="section-p">Clone the kit once, then run <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">setup.py</code> from your project root. Claude handles the rest from inside the chat.</p>
-
-  <div class="install-wrap">
-    <div class="install-head">
-      <div class="install-dots">
-        <div class="d d1"></div><div class="d d2"></div><div class="d d3"></div>
-      </div>
-      <span class="install-label">terminal</span>
-      <button class="copy-btn" id="copyBtn" onclick="copyInstall()">copy</button>
-    </div>
-    <div class="install-body">
-      <span class="i-prompt">$ </span><span class="i-cmd">git clone <span style="color:#8b5cf6">https://github.com/YehudaFrankel/claude-recall.git</span></span><br>
-      <span class="i-prompt">$ </span><span class="i-cmd">cd your-project</span><br>
-      <span class="i-prompt">$ </span><span class="i-cmd">python /path/to/claude-recall/setup.py</span>
-    </div>
-    <div class="install-footer">
-      <div class="i-step"><span class="step-n">2</span> open Claude Code: <code>claude</code></div>
-      <div class="i-step"><span class="step-n">3</span> type <code>Start Session</code> — done</div>
-    </div>
-  </div>
-
-  <details style="margin-top:1.5rem;">
-    <summary style="cursor:pointer; color:var(--dim); font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; list-style:none; display:flex; align-items:center; gap:.4rem;">
-      <span style="color:var(--accent);">▸</span> Quick Try (advanced) — run without cloning
-    </summary>
-    <div style="margin-top:.9rem; padding:.9rem 1rem; background:var(--surface); border:1px solid var(--border2); border-radius:8px;">
-      <p style="margin:0 0 .6rem; color:var(--muted); font-size:.8rem;">⚠️ This executes remote code directly — <a href="https://github.com/YehudaFrankel/claude-recall/blob/main/install.py" target="_blank" style="color:var(--accent);">review the source first</a> if you prefer.</p>
-      <div class="install-body" style="padding:.7rem .9rem; border-radius:6px; margin:0; font-size:.75rem;">
-        <span class="i-prompt">$ </span><span class="i-cmd">python -c "import urllib.request; exec(urllib.request.urlopen('<span style="color:#8b5cf6">https://raw.githubusercontent.com/YehudaFrankel/claude-recall/main/install.py</span>').read().decode())"</span>
-      </div>
-      <button class="copy-btn" onclick="copyOneLiner()" id="oneLinerBtn" style="margin-top:.6rem;">copy one-liner</button>
-    </div>
-  </details>
-</div>
-
-<!-- WORKFLOW -->
-<div class="section reveal" id="workflow">
-  <div class="section-tag">Daily workflow</div>
-  <h2 class="section-h">Two commands. Everything else is automatic.</h2>
-  <p class="section-p">The drift checker runs silently after every file edit. Memory updates after every code change. <code style="font-family:var(--mono);font-size:.78rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">/learn</code> captures session patterns at close. You don't manage any of it — you just work.</p>
-
-  <div class="flow">
-    <div class="flow-step">
-      <div class="flow-step-n">STEP 01</div>
-      <div class="flow-step-title">Load memory</div>
-      <div class="flow-step-cmd">Start Session</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-step-n">STEP 02</div>
-      <div class="flow-step-title">Work normally</div>
-      <div class="flow-step-cmd">auto-saves</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-step-n">STEP 03</div>
-      <div class="flow-step-title">Long session?</div>
-      <div class="flow-step-cmd">/learn → /compact</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step">
-      <div class="flow-step-n">STEP 04</div>
-      <div class="flow-step-title">Close out</div>
-      <div class="flow-step-cmd">End Session</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="border-color: var(--accent); background: rgba(139,92,246,.06);">
-      <div class="flow-step-n" style="color: var(--green);">NEXT TIME</div>
-      <div class="flow-step-title">Full context</div>
-      <div class="flow-step-cmd" style="color: var(--green);">instantly</div>
-    </div>
-  </div>
-</div>
-
-<!-- LIFECYCLE HOOKS -->
-<div class="lc-section reveal" id="hooks-demo">
-  <div class="lc-inner">
-    <div class="section-tag">Automation layer</div>
-    <h2 class="section-h">Four hooks. Every moment covered.</h2>
-    <p class="section-p" style="max-width:520px">Watch each hook fire at the right point in a real session — none of these need manual triggers.</p>
-
-    <div class="lc-timeline">
-      <div class="lc-node" id="lc-n0">
-        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
-        <div class="lc-node-label">
-          <div class="lc-node-event">session opens</div>
-          <div class="lc-node-name">SessionStart</div>
+<!-- Compound Learning Loop -->
+<section id="loop">
+  <div class="section-inner">
+    <div class="section-label">Compound Learning Loop</div>
+    <h2>Skills that improve themselves.</h2>
+    <p class="section-sub">Run /learn at End Session. Run /evolve every few sessions. The rest is automatic.</p>
+    <div class="loop-wrap">
+      <div class="loop-steps">
+        <div class="loop-step">
+          <div class="loop-icon">📝</div>
+          <div>
+            <div class="loop-step-title">/learn — extract what happened</div>
+            <div class="loop-step-desc">Reads the session and writes to <code>lessons.md</code>, <code>decisions.md</code>, <code>skill_scores.md</code>, and <code>velocity.md</code>. Scores every skill that fired (Y = needed correction, N = worked first time).</div>
+          </div>
+        </div>
+        <div class="loop-step">
+          <div class="loop-icon">📊</div>
+          <div>
+            <div class="loop-step-title">skill_scores.md — binary log</div>
+            <div class="loop-step-desc">Every skill gets a row: date, what it was used for, whether it needed correction, and exactly which step failed. /evolve uses the "What Failed" column to patch the right line.</div>
+          </div>
+        </div>
+        <div class="loop-step">
+          <div class="loop-icon">⚡</div>
+          <div>
+            <div class="loop-step-title">/evolve — patch and cluster</div>
+            <div class="loop-step-desc">Finds skills with Y scores and rewrites the failing step. Clusters repeated lessons into new reusable skills. Logs every change to <code>skill_improvements.md</code>. The same skill failure never happens twice.</div>
+          </div>
+        </div>
+        <div class="loop-step">
+          <div class="loop-icon">🔁</div>
+          <div>
+            <div class="loop-step-title">Next session — better skills</div>
+            <div class="loop-step-desc">Patched skills load automatically at Start Session. Lessons apply before any code is touched. Rejected approaches in <code>regret.md</code> are never re-proposed.</div>
+          </div>
         </div>
       </div>
-      <div class="lc-node" id="lc-n1">
-        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
-        <div class="lc-node-label">
-          <div class="lc-node-event">file edited</div>
-          <div class="lc-node-name">PostToolUse</div>
-        </div>
-      </div>
-      <div class="lc-node" id="lc-n2">
-        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
-        <div class="lc-node-label">
-          <div class="lc-node-event">/compact runs</div>
-          <div class="lc-node-name">PreCompact</div>
-        </div>
-      </div>
-      <div class="lc-node" id="lc-n3">
-        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
-        <div class="lc-node-label">
-          <div class="lc-node-event">session ends</div>
-          <div class="lc-node-name">Stop</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="lc-progress"><div class="lc-progress-fill" id="lcFill"></div></div>
-
-    <div class="lc-panel">
-      <div class="lc-panel-bar">
-        <div class="term-dot term-dot-r"></div>
-        <div class="term-dot term-dot-y"></div>
-        <div class="term-dot term-dot-g"></div>
-        <span class="lc-panel-file" id="lcFile">tools/session_start.py</span>
-        <span class="lc-hook-badge" id="lcBadge">SessionStart</span>
-      </div>
-      <div class="lc-panel-body">
-        <div class="lc-slide" id="lc-s0">
-          <span class="lp"><span class="lp-cmd">$ session_start.py</span></span>
-          <span class="lp lp-ok">✓  Reading MEMORY.md</span>
-          <span class="lp lp-ok">✓  Reading STATUS.md — Session 100</span>
-          <span class="lp lp-ok">✓  Context injected as additionalContext</span>
-          <span class="lp lp-dim">Claude starts warm. No "Start Session" command needed.</span>
+      <div class="loop-term">
+        <div class="term-bar">
+          <div class="term-dot term-dot-r"></div>
+          <div class="term-dot term-dot-y"></div>
+          <div class="term-dot term-dot-g"></div>
+          <div class="term-title">skill_scores.md</div>
         </div>
-        <div class="lc-slide" id="lc-s1">
-          <span class="lp"><span class="lp-cmd">$ check_memory.py --silent</span></span>
-          <span class="lp lp-ok">✓  loadDashboard — found in js_functions.md</span>
-          <span class="lp lp-ok">✓  formatDate — found in js_functions.md</span>
-          <span class="lp lp-warn">✗  trackEvent — MISSING from js_functions.md</span>
-          <span class="lp lp-dim">→  flagged. Update memory before next response.</span>
-        </div>
-        <div class="lc-slide" id="lc-s2">
-          <span class="lp"><span class="lp-cmd">$ precompact.py</span></span>
-          <span class="lp lp-ok">✓  MEMORY.md → additionalContext</span>
-          <span class="lp lp-ok">✓  STATUS.md (first 60 lines) → additionalContext</span>
-          <span class="lp lp-dim">Memory injected into compacted context.</span>
-          <span class="lp lp-dim">Safe to /compact on any long session.</span>
-        </div>
-        <div class="lc-slide" id="lc-s3">
-          <span class="lp"><span class="lp-cmd">$ session_journal.py</span></span>
-          <span class="lp lp-ok">✓  3 files edited — dashboard.js, api.java, styles.css</span>
-          <span class="lp lp-ok">✓  Session entry written to session_journal.md</span>
-          <span class="lp lp-dim">$ stop_check.py</span>
-          <span class="lp lp-warn">  M  STATUS.md — unsaved changes detected</span>
-          <span class="lp lp-dim">→  "Memory has unsaved changes. Run End Session."</span>
+        <div class="term-body" style="font-size:.72rem; line-height:1.7;">
+          <div class="t-dim"># Skill Effectiveness Scores</div>
+          <span class="t-gap"></span>
+          <div class="t-dim">| Date | Skill | Correction | What Failed |</div>
+          <div class="t-dim">|------|-------|------------|-------------|</div>
+          <div><span class="t-warn">| 03-20 | fix-bug | Y</span> <span class="t-muted">| Missed checking env var |</span></div>
+          <div><span class="t-ok">| 03-21 | fix-bug | N</span> <span class="t-muted">| - |</span></div>
+          <div><span class="t-ok">| 03-22 | code-review | N</span> <span class="t-muted">| - |</span></div>
+          <span class="t-gap"></span>
+          <div class="t-dim"># Score Summary</div>
+          <div class="t-dim">| Skill | Fired | Rate | Status |</div>
+          <div class="t-dim">|-------|-------|------|--------|</div>
+          <div><span class="t-muted">| fix-bug</span> <span class="t-ok">| 12 | 92% | Keep |</span></div>
+          <div><span class="t-muted">| verification | 8 | 100% | Keep |</span></div>
+          <span class="t-gap"></span>
+          <div class="t-chain">→ /evolve patched fix-bug Step 3</div>
+          <div class="t-chain">  added: check .env before logic fix</div>
+          <div class="t-ok">  Improvement Applied: Fixed 2026-03-23</div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- SESSION JOURNAL DEMO -->
-<div class="section reveal" id="journal-demo">
-  <div class="section-tag">Zero-effort session capture</div>
-  <h2 class="section-h">Session ends. Journal writes itself.</h2>
-  <p class="section-p">When Claude stops, <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">session_journal.py</code> reads what changed and writes a searchable entry automatically. No <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">/learn</code> needed.</p>
-
-  <div class="jd-wrap">
-    <div class="jd-panel">
-      <div class="jd-bar">
-        <div class="term-dot term-dot-r"></div>
-        <div class="term-dot term-dot-y"></div>
-        <div class="term-dot term-dot-g"></div>
-        <span class="jd-bar-name">tools/session_journal.py</span>
-        <span class="jd-bar-badge" id="jdBadge">&#x26A1; Stop</span>
+<!-- Autonomous -->
+<section id="autonomous" style="border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Autonomous Behaviors</div>
+    <h2>It runs. You work.</h2>
+    <p class="section-sub">These happen without prompting — no commands, no checkpoints.</p>
+    <div class="auto-grid">
+      <div class="auto-card">
+        <div class="auto-card-title"><span class="auto-icon">⛓</span> Skill Chaining</div>
+        <p>Skills trigger the next skill on pass or fail. Add one section to any SKILL.md and the chain runs without you.</p>
+        <div class="code-snip">
+          <span class="t-dim">## Auto-Chain</span><br>
+          <span class="t-ok">On pass:</span> <span class="t-chain">→ verification-loop</span><br>
+          <span class="t-warn">On fail:</span> <span class="t-chain">→ debug-topic, retry</span><br>
+          <br>
+          <span class="t-dim">fix-bug → verify → smoke-test</span><br>
+          <span class="t-dim">           ↓ fail</span><br>
+          <span class="t-dim">       debug → smoke-test</span>
+        </div>
       </div>
-      <div class="jd-body" id="jdOutput"></div>
-    </div>
-    <div class="jd-panel">
-      <div class="jd-bar">
-        <div class="term-dot term-dot-r"></div>
-        <div class="term-dot term-dot-y"></div>
-        <div class="term-dot term-dot-g"></div>
-        <span class="jd-bar-name">memory/session_journal.md</span>
+      <div class="auto-card">
+        <div class="auto-card-title"><span class="auto-icon">🔧</span> Self-Healing</div>
+        <p>When a verify step fails, Claude attempts the minimal fix and retries once before escalating to you. Add a Recovery section to any skill to define the fix.</p>
+        <div class="code-snip">
+          <span class="t-dim">## Recovery</span><br>
+          <span class="t-muted">1. touch the changed file</span><br>
+          <span class="t-muted">2. wait 5s for reload</span><br>
+          <span class="t-muted">3. re-run smoke test</span><br>
+          <span class="t-muted">4. escalate if still fails</span><br>
+          <br>
+          <span class="t-ok">✓ auto-recovery succeeded</span>
+        </div>
       </div>
-      <div class="jd-body" id="jdResult"></div>
-    </div>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<div class="section reveal" id="features">
-  <div class="section-tag">What's included</div>
-  <h2 class="section-h">Each feature came from hitting a real problem.</h2>
-  <p class="section-p">Nothing here is decoration. If it's in the kit, it's because a session went wrong without it.</p>
-
-  <div class="feature-list">
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🧠</span> Persistent memory</div>
-      <div class="feat-desc">JS functions, API endpoints, CSS classes, architectural decisions — all documented in <code>.claude/memory/</code>. Claude reads compact summaries instead of re-scanning your entire codebase every session. On a 100+ function project, this is the difference between a 10-second startup and a 10-minute one.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🔍</span> Drift detection — the key differentiator</div>
-      <div class="feat-desc"><code>check_memory.py</code> runs silently after every file edit via a PostToolUse hook. Add a function, rename a CSS class, delete an endpoint — Claude's memory updates within seconds, not next session. On the test codebase, it caught 21 undocumented functions on first run and ~50 more when a new feature was added across sessions. Without it, that logic would have been invisible to Claude indefinitely.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🔗</span> Lifecycle hooks</div>
-      <div class="feat-desc">Four hooks beyond drift detection: <code>SessionStart</code> injects memory before your first message — Claude starts warm without a manual command. <code>PreCompact</code> preserves memory through <code>/compact</code> — run <code>/learn</code> first to capture session patterns, then compact freely. <code>Stop</code> runs <code>session_journal.py</code> to auto-capture what you edited and the current phase to a searchable journal, then checks for unsaved changes and surfaces a reminder if needed — no <code>/learn</code> required. All four ship as Python scripts — cross-platform, no dependencies.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">📋</span> Task continuity</div>
-      <div class="feat-desc">Four files that travel with your repo: <code>todo.md</code> for plans, <code>lessons.md</code> so mistakes don't repeat, <code>decisions.md</code> so architecture doesn't get re-debated, <code>errors.md</code> so you never debug the same bug twice.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">⚡</span> Auto-invoked skills</div>
-      <div class="feat-desc">Say "review this file" and Claude runs the full code-review skill automatically. <code>Generate Skills</code> builds a starter set of 7 skills tailored to your stack. Six additional skills ship with the kit: <code>/learn</code> auto-runs at every End Session — extracting patterns, lessons, and decisions from the session into <code>tasks/lessons.md</code> before memory is pushed; <code>/evolve</code> clusters repeated lessons into new reusable skills; <code>strategic-compact</code> guides safe context compaction mid-session without losing memory; <code>search-first</code> enforces finding existing code before writing new; <code>verification-loop</code> runs compile + smoke test + self-evaluation after every change; <code>java-reviewer</code> deep-checks Java files against your stack's patterns. Add custom skills with a single chat message.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">📓</span> Auto-capture session journal</div>
-      <div class="feat-desc">When Claude stops, <code>session_journal.py</code> reads every file you edited and the current STATUS.md phase, then appends a timestamped entry to <code>memory/session_journal.md</code> — automatically. No <code>/learn</code> needed, no manual action. Search it any time: <code>Grep(pattern='feature', path=session_journal.md)</code>. The edit log clears between sessions so every capture is clean.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🗂️</span> Zero-setup codebase index</div>
-      <div class="feat-desc">Run <code>bootstrap.py</code> on any new project — it scans every source file, groups them by type (Java, JS, TypeScript, Python, HTML, CSS, SQL, and more), and writes <code>quick_index.md</code>. Claude gets instant codebase awareness without reading a single source file. Skips build artifacts, node_modules, and generated output automatically. Works on any language, any size.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🚀</span> Headless mode</div>
-      <div class="feat-desc">For large refactors, scaffolding, or multi-file changes: run <code>claude --headless "your task"</code> and Claude works fully in the background. You return to finished code. Best for well-defined jobs where you don't need to watch every step.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🔄</span> Safe updater</div>
-      <div class="feat-desc">Type <code>Update Kit</code>. The updater shows you exactly what will change and asks before touching anything. Your memory files, task files, and everything below the kit block in CLAUDE.md — never touched.</div>
-    </div>
-    <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🤝</span> Team-ready</div>
-      <div class="feat-desc">Memory files commit to git. Merge strategy: they're append-only tables, conflicts are rare and obvious. <code>Handoff</code> generates a snapshot for whoever picks up the project next — no Slack thread required.</div>
-    </div>
-  </div>
-</div>
-
-<!-- DRIFT DEMO -->
-<div class="section reveal" id="drift-section">
-  <div class="section-tag">Drift detection live</div>
-  <h2 class="section-h">Add a function. Memory stays current.</h2>
-  <p class="section-p">The PostToolUse hook runs check_memory.py silently after every file edit. New functions are caught before Claude even responds.</p>
-
-  <div class="dd-wrap">
-    <div class="dd-panel" id="ddCodePanel">
-      <div class="dd-flash" id="ddFlash"></div>
-      <div class="dd-bar">
-        <div class="term-dot term-dot-r"></div>
-        <div class="term-dot term-dot-y"></div>
-        <div class="term-dot term-dot-g"></div>
-        <span class="dd-bar-name">js/dashboard.js</span>
+      <div class="auto-card">
+        <div class="auto-card-title"><span class="auto-icon">🌙</span> Auto End Session</div>
+        <p>The stop hook monitors every response. After 9pm with unsaved memory changes, it auto-commits and pushes to git. Nothing is ever lost — even if you forget End Session.</p>
+        <div class="code-snip">
+          <span class="t-dim"># stop_check.py fires on every Stop</span><br>
+          <span class="t-muted">hour &gt;= 21 + unsaved changes</span><br>
+          <span class="t-chain">→ git add -A</span><br>
+          <span class="t-chain">→ git commit "Auto end session"</span><br>
+          <span class="t-chain">→ git push</span><br>
+          <span class="t-ok">Memory safe. Run /learn for lessons.</span>
+        </div>
       </div>
-      <div class="dd-body" id="ddCode"></div>
-    </div>
-    <div class="dd-panel" id="ddOutputPanel">
-      <div class="dd-bar">
-        <div class="term-dot term-dot-r"></div>
-        <div class="term-dot term-dot-y"></div>
-        <div class="term-dot term-dot-g"></div>
-        <span class="dd-bar-name">check_memory.py</span>
-        <span class="dd-bar-badge" id="ddBadge">⚡ hook fired</span>
-      </div>
-      <div class="dd-body" id="ddOutput"></div>
-    </div>
-  </div>
-</div>
-
-<!-- COMMANDS -->
-<div class="section reveal" id="commands">
-  <div class="section-tag">Reference</div>
-  <h2 class="section-h">13 commands. 4 hooks. All automatic.</h2>
-  <p class="section-p">Type any of these in Claude Code chat. Skills fire automatically — no commands needed.</p>
-
-  <div class="cmd-list">
-    <div class="cmd-row"><span class="cmd-name">Setup Memory</span><span class="cmd-desc-text">First time only. Runs setup.py from inside Claude Code — no terminal needed.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Start Session</span><span class="cmd-desc-text">Loads memory, reads all four task files, reports session number and last change. Full context in seconds.</span></div>
-    <div class="cmd-row"><span class="cmd-name">End Session</span><span class="cmd-desc-text">Updates STATUS.md, syncs memory, runs drift check. Confirms everything is clean before you close.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Check Drift</span><span class="cmd-desc-text">Compares live code against memory. Reports what's missing and what's stale. Fixes it if you confirm.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Analyze Codebase</span><span class="cmd-desc-text">Scans all JS/CSS/backend files. Updates memory with everything found. Adds missing entries only — never overwrites.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Install Memory</span><span class="cmd-desc-text">New machine. Scans project, copies memory files to system path, fills gaps. One command to rebuild context.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Generate Skills</span><span class="cmd-desc-text">Reads your stack and creates auto-invoked skills tailored to your actual file names and conventions.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Update Kit</span><span class="cmd-desc-text">Pulls latest kit from GitHub. Previews changes. Applies only the kit-managed block — nothing else moves.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Estimate: [task]</span><span class="cmd-desc-text">Before starting anything. Complexity rating, files that will change, risks flagged, one clarifying question if needed.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Debug Session</span><span class="cmd-desc-text">Reproduce → isolate → hypothesize → test → fix → verify → log. Structured, no jumping straight to a fix.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Code Health</span><span class="cmd-desc-text">Finds console.logs, hardcoded values, missing error handling, dead code, files over 500 lines. Pre-ship scan.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Handoff</span><span class="cmd-desc-text">Generates HANDOFF.md from your task files and memory. Current state, next tasks, decisions made, gotchas.</span></div>
-    <div class="cmd-row"><span class="cmd-name">Create a skill called…</span><span class="cmd-desc-text">Describe what you want in plain English. Claude creates the SKILL.md and tells you the trigger phrase.</span></div>
-  </div>
-
-</div>
-
-<!-- HOW IT WORKS -->
-<div class="section narrow reveal" id="how">
-  <div class="section-tag">How it works</div>
-  <h2 class="section-h">7 files. Each one does one thing.</h2>
-  <p class="section-p">No framework. No cloud. Just markdown files and a Python script.</p>
-
-  <div class="how-list">
-    <div class="how-row">
-      <div class="how-n">01</div>
-      <div>
-        <div class="how-title">CLAUDE.md — the instruction file</div>
-        <div class="how-body">Claude reads this automatically when you open a project. You fill in your stack, file names, and conventions once. It also contains all the commands. This is the only file you actually edit.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">02</div>
-      <div>
-        <div class="how-title">.claude/memory/ — the knowledge base</div>
-        <div class="how-body">Five markdown files: <code>js_functions.md</code>, <code>backend_reference.md</code>, <code>html_css_reference.md</code>, <code>project_status.md</code>, <code>user_preferences.md</code>. Claude reads these instead of re-scanning your whole codebase every session.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">03</div>
-      <div>
-        <div class="how-title">tasks/ — session continuity</div>
-        <div class="how-body"><code>todo.md</code> is Claude's plan. <code>lessons.md</code> is its mistake log. <code>decisions.md</code> is its architecture record. <code>errors.md</code> is its bug history. All four are read at the start of every session. All four commit to your repo.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">04</div>
-      <div>
-        <div class="how-title">check_memory.py — the drift guard</div>
-        <div class="how-body">Scans your JS and CSS files, finds every function and class, checks whether they're in the memory files. If something's missing or stale, it reports it. Runs automatically after every edit via a PostToolUse hook in <code>settings.json</code>.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">05</div>
-      <div>
-        <div class="how-title">settings.json — four lifecycle hooks</div>
-        <div class="how-body">Runs four scripts automatically at the right moments. <code>PostToolUse</code>: drift check after every file edit. <code>SessionStart</code>: injects memory before your first message so Claude starts warm. <code>PreCompact</code>: preserves memory through <code>/compact</code> so you can compact freely on long sessions. <code>Stop</code>: checks for unsaved memory changes and reminds you to run End Session if needed. None of these need manual triggers.</div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">06</div>
-      <div>
-        <div class="how-title">.claude/skills/ — reusable playbooks</div>
-        <div class="how-body">Each skill is a folder with a <code>SKILL.md</code> (trigger + instructions) and optional supporting docs Claude reads when it runs — like <code>ANTI-PATTERNS.md</code> for the refactor skill, or <code>ENVIRONMENT-MATRIX.md</code> for the environment-check skill. <code>Generate Skills</code> creates 7 skills tuned to your stack. You can add custom ones with a single chat message: <em>"Create a skill called [name] that [does X]."</em></div>
-      </div>
-    </div>
-    <div class="how-row">
-      <div class="how-n">07</div>
-      <div>
-        <div class="how-title">update.py — the safe updater</div>
-        <div class="how-body">Finds the kit-managed commands block in CLAUDE.md (looks for <code>## Session Commands</code> or older heading variants). Replaces only that block. Everything else — your project config, memory files, task files — is untouched. Shows a diff before applying.</div>
+      <div class="auto-card">
+        <div class="auto-card-title"><span class="auto-icon">🔍</span> Drift Detection</div>
+        <p>Runs after every file edit. Compares live code against Claude's memory — catches new functions, deleted functions, and new CSS classes before they cause confusion.</p>
+        <div class="code-snip">
+          <span class="t-warn">DRIFT DETECTED</span><br>
+          <span class="t-muted">  JS not in memory (2):</span><br>
+          <span class="t-muted">    - submitForm</span><br>
+          <span class="t-muted">    - resetPanel</span><br>
+          <span class="t-muted">  CSS not in memory (1):</span><br>
+          <span class="t-muted">    - .card--highlighted</span><br>
+          <span class="t-ok">→ memory updated automatically</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- FILE TREE -->
-<div class="section narrow reveal" id="files">
-  <div class="section-tag">What gets created</div>
-  <h2 class="section-h">The full file layout</h2>
-  <p class="section-p">Everything commits to your repo. Pull on a new machine, type <code style="font-family:var(--mono);font-size:.85rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">Install Memory</code>, and you're back.</p>
-
-  <div class="tree-wrap">
-    <div class="tree-head">
-      <div class="term-dot term-dot-r"></div>
-      <div class="term-dot term-dot-y"></div>
-      <div class="term-dot term-dot-g"></div>
-      <span class="tree-head-name">your-project/</span>
-    </div>
-    <div class="tree-body">
-      <span class="tl"><span class="tl-dir">your-project/</span></span>
-      <span class="tl">├── <span class="tl-file">CLAUDE.md</span>               <span class="tl-comment">← edit the bottom half for your project</span></span>
-      <span class="tl">├── <span class="tl-file">STATUS.md</span>               <span class="tl-comment">← session log, auto-updated</span></span>
-      <span class="tl">├── <span class="tl-file">update.py</span>               <span class="tl-comment">← safe updater</span></span>
-      <span class="tl">├── <span class="tl-dir">tasks/</span>                  <span class="tl-comment">← commit this</span></span>
-      <span class="tl">│   ├── <span class="tl-new">todo.md</span>             <span class="tl-comment">← plan before code</span></span>
-      <span class="tl">│   ├── <span class="tl-new">lessons.md</span>          <span class="tl-comment">← mistake log</span></span>
-      <span class="tl">│   ├── <span class="tl-new">decisions.md</span>        <span class="tl-comment">← architecture record</span></span>
-      <span class="tl">│   └── <span class="tl-new">errors.md</span>           <span class="tl-comment">← bug history</span></span>
-      <span class="tl">├── <span class="tl-dir">tools/</span></span>
-      <span class="tl">│   ├── <span class="tl-file">check_memory.py</span>     <span class="tl-comment">← drift detector, runs on Edit/Write</span></span>
-      <span class="tl">│   ├── <span class="tl-new">session_start.py</span>    <span class="tl-comment">← injects memory on session open</span></span>
-      <span class="tl">│   ├── <span class="tl-new">precompact.py</span>       <span class="tl-comment">← preserves memory through /compact</span></span>
-      <span class="tl">│   ├── <span class="tl-new">session_journal.py</span>  <span class="tl-comment">← auto-captures session to journal on Stop</span></span>
-      <span class="tl">│   ├── <span class="tl-new">bootstrap.py</span>        <span class="tl-comment">← zero-setup codebase indexer, any project</span></span>
-      <span class="tl">│   └── <span class="tl-new">stop_check.py</span>       <span class="tl-comment">← reminds to End Session if unsaved</span></span>
-      <span class="tl">└── <span class="tl-dir">.claude/</span></span>
-      <span class="tl">    ├── <span class="tl-file">settings.json</span>       <span class="tl-comment">← 4 hooks: drift · session · compact · stop+journal</span></span>
-      <span class="tl">    ├── <span class="tl-dir">memory/</span></span>
-      <span class="tl">    │   ├── <span class="tl-file">MEMORY.md</span></span>
-      <span class="tl">    │   ├── <span class="tl-file">js_functions.md</span></span>
-      <span class="tl">    │   ├── <span class="tl-file">backend_reference.md</span></span>
-      <span class="tl">    │   ├── <span class="tl-file">html_css_reference.md</span></span>
-      <span class="tl">    │   ├── <span class="tl-file">project_status.md</span></span>
-      <span class="tl">    │   └── <span class="tl-file">user_preferences.md</span></span>
-      <span class="tl">    └── <span class="tl-dir">skills/</span>             <span class="tl-comment">← auto-invoked by Claude</span></span>
-      <span class="tl">        ├── <span class="tl-file">code-review/</span></span>
-      <span class="tl">        ├── <span class="tl-file">security-check/</span></span>
-      <span class="tl">        ├── <span class="tl-file">fix-bug/</span></span>
-      <span class="tl">        ├── <span class="tl-file">new-feature/</span></span>
-      <span class="tl">        ├── <span class="tl-dir">environment-check/</span>   <span class="tl-comment">← fill in ENVIRONMENT-MATRIX.md</span></span>
-      <span class="tl">        ├── <span class="tl-dir">run-verification/</span>    <span class="tl-comment">← fill in TEST-STRATEGY.md</span></span>
-      <span class="tl">        └── <span class="tl-dir">refactor/</span>            <span class="tl-comment">← fill in ANTI-PATTERNS.md</span></span>
-    </div>
-  </div>
-</div>
-
-<!-- BUILT BY -->
-<div class="built-by reveal">
-  <div class="built-by-inner">
-    <div class="by-text">
-      <h3>Built from frustration, not theory</h3>
-      <p>
-        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The lifecycle hooks came after session 90 when the setup finally felt complete. <code>session_journal.py</code> and <code>bootstrap.py</code> came from comparing workflows at session 100 and finding what was still missing. Everything here has a story.
-      </p>
-    </div>
-    <div class="by-stats">
-      <div class="by-stat">
-        <div class="by-stat-n"><em>100</em></div>
-        <div class="by-stat-l">sessions on a real production Java platform — the codebase that stress-tested every part of this kit</div>
+<!-- Commands -->
+<section id="commands">
+  <div class="section-inner">
+    <div class="section-label">Commands</div>
+    <h2>Two you use every day.</h2>
+    <p class="section-sub">The rest fire when you describe a situation — Claude recognizes the context.</p>
+    <div class="cmd-groups">
+      <div>
+        <div class="cmd-group-title">Daily</div>
+        <table>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td>Start Session</td><td>Reads memory, applies lessons, picks up where you left off</td></tr>
+          <tr><td>End Session</td><td>Runs /learn, updates STATUS.md, syncs memory</td></tr>
+          <tr><td>/learn</td><td>Extracts lessons, scores skills, logs velocity</td></tr>
+          <tr><td>/evolve</td><td>Patches failing skills, clusters patterns into new ones</td></tr>
+          <tr><td>Should I compact?</td><td>Guides safe context compaction without memory loss</td></tr>
+        </table>
       </div>
-      <div class="by-stat">
-        <div class="by-stat-n"><em>1</em> wk</div>
-        <div class="by-stat-l">to ship a full course platform: scheduler, emails, admin panel, dashboard, feed — with Claude holding the context</div>
+      <div>
+        <div class="cmd-group-title">Auto-triggered skills</div>
+        <table>
+          <tr><th>What you say</th><th>What Claude does</th></tr>
+          <tr><td>fix the bug where...</td><td>Root cause first, fix second, log to lessons</td></tr>
+          <tr><td>review this file</td><td>Dead code, missing error handling, convention violations</td></tr>
+          <tr><td>check for security issues</td><td>SQL injection, missing auth, exposed data</td></tr>
+          <tr><td>is this ready for prod</td><td>Hardcoded dev values, deploy checklist</td></tr>
+          <tr><td>refactor this</td><td>Plan first, change second — no surprise rewrites</td></tr>
+        </table>
       </div>
-      <div class="by-stat">
-        <div class="by-stat-n"><em>50</em>+</div>
-        <div class="by-stat-l">undocumented functions caught by drift detection across a single large feature addition</div>
+      <div>
+        <div class="cmd-group-title">Setup & recovery</div>
+        <table>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td>Setup Memory</td><td>First-time setup — creates all memory files</td></tr>
+          <tr><td>Install Memory</td><td>New machine — copies memory to Claude's system path</td></tr>
+          <tr><td>Generate Skills</td><td>Auto-creates skills tailored to your stack</td></tr>
+          <tr><td>Update Kit</td><td>Pull latest updates safely — memory never touched</td></tr>
+        </table>
       </div>
-      <div class="by-stat">
-        <div class="by-stat-n"><em>7</em></div>
-        <div class="by-stat-l">production bugs permanently captured in errors.md — never hit twice</div>
+      <div>
+        <div class="cmd-group-title">Planning</div>
+        <table>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td>Estimate: [task]</td><td>Complexity, files, risks, written plan — before any code</td></tr>
+          <tr><td>Debug Session</td><td>Reproduce → isolate → hypothesize → fix → verify → log</td></tr>
+          <tr><td>Code Health</td><td>Debug leftovers, hardcoded values, dead code</td></tr>
+          <tr><td>Handoff</td><td>Generates HANDOFF.md — state, next tasks, key decisions</td></tr>
+        </table>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- QUOTE -->
-<div class="section narrow reveal" style="max-width:680px">
-  <blockquote class="pull-quote">
-    <p>"By session 10 Claude knew the codebase better than I did — because it had been reading the same lessons.md, errors.md, and decisions.md at the start of every single session."</p>
-    <cite>— from an actual session recap, session 42</cite>
-  </blockquote>
-</div>
+<!-- File tree -->
+<section style="border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">What Gets Created</div>
+    <h2>Everything ships with setup.py.</h2>
+    <p class="section-sub">Two minutes. Ask a few questions. Done. Commit memory/ and skills/ to your repo — they travel with the code.</p>
+    <div class="tree">
+<span class="t-folder">your-project/</span><br>
+├── <span class="t-file">CLAUDE.md</span>                 <span class="t-ann">← Claude reads this every session</span><br>
+├── <span class="t-file">STATUS.md</span>                 <span class="t-ann">← Full session log</span><br>
+├── <span class="t-folder">tools/</span><br>
+│   ├── <span class="t-file">check_memory.py</span>        <span class="t-ann">← drift detector — runs after every edit</span><br>
+│   ├── <span class="t-file">session_journal.py</span>    <span class="t-ann">← auto-captures session summary on Stop</span><br>
+│   └── <span class="t-file">stop_check.py</span>         <span class="t-ann">← auto-pushes memory after 9pm</span><br>
+└── <span class="t-folder">.claude/</span><br>
+    ├── <span class="t-file">settings.json</span>          <span class="t-ann">← hooks: drift · start · compact · stop</span><br>
+    ├── <span class="t-folder">memory/</span><br>
+    │   ├── <span class="t-file">MEMORY.md</span>          <span class="t-ann">← index — auto-loaded every session</span><br>
+    │   ├── <span class="t-file">lessons.md</span>         <span class="t-ann">← every lesson from /learn</span><br>
+    │   ├── <span class="t-file">decisions.md</span>       <span class="t-ann">← settled choices — never re-debated</span><br>
+    │   ├── <span class="t-file">js_functions.md</span>    <span class="t-ann">← every JS function</span><br>
+    │   ├── <span class="t-file">backend_reference.md</span> <span class="t-ann">← endpoints + DB patterns</span><br>
+    │   └── <span class="t-folder">tasks/</span><br>
+    │       ├── <span class="t-file">skill_scores.md</span> <span class="t-ann">← /evolve reads this to patch skills</span><br>
+    │       ├── <span class="t-file">regret.md</span>       <span class="t-ann">← rejected approaches, never re-proposed</span><br>
+    │       └── <span class="t-file">velocity.md</span>     <span class="t-ann">← estimated vs actual — self-calibrating</span><br>
+    └── <span class="t-folder">skills/</span><br>
+        ├── <span class="t-folder">learn/</span>            <span class="t-ann">← /learn</span><br>
+        ├── <span class="t-folder">evolve/</span>           <span class="t-ann">← /evolve — self-improving skills</span><br>
+        ├── <span class="t-folder">fix-bug/</span><br>
+        ├── <span class="t-folder">code-review/</span><br>
+        ├── <span class="t-folder">verification-loop/</span><br>
+        └── <span class="t-folder">strategic-compact/</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section style="border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Real-World Results</div>
+    <h2>Built across 112 sessions on a production codebase.</h2>
+    <p class="section-sub">Legacy Java backend, 5 JS files, 100+ functions, multi-page frontend with scheduler, email system, and encrypted URL handling.</p>
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-num">112</div>
+        <div class="stat-label">real dev sessions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">context losses</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8.5<span style="font-size:1rem">/10</span></div>
+        <div class="stat-label">agentic score</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">21</div>
+        <div class="stat-label">undocumented functions caught on first drift run</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1.8rem;max-width:680px;">
+      <div style="font-size:.85rem;color:var(--muted);line-height:1.8;">
+        Sessions crashed mid-task — <span style="color:var(--text)">Start Session recovered full context every time, zero re-explanation.</span><br><br>
+        A Resin 2.1.17 compiler bug was discovered, fixed, and permanently logged — <span style="color:var(--text)">it has never cost another debugging session.</span><br><br>
+        Skills patched themselves via /evolve — <span style="color:var(--text)">the same skill failure has never happened twice.</span><br><br>
+        Everything here came from actual use — <span style="color:var(--text)">nothing hypothetical.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- CTA -->
-<div class="cta-wrap reveal">
-  <div class="cta-inner">
-    <div class="cta-text">
-      <h2>Stop re-explaining. Start where you left off.</h2>
-      <p>Clone once, run setup.py, done. Claude handles the rest. You'll be running <code style="font-family:var(--mono);font-size:.8rem;color:var(--amber)">Start Session</code> in under 2 minutes.</p>
-    </div>
-    <div style="display:flex; gap:.75rem; flex-wrap:wrap; flex-shrink:0">
-      <a href="#install" class="btn btn-primary">Install now</a>
-      <a href="https://github.com/YehudaFrankel/claude-recall" target="_blank" class="btn btn-ghost">★ Star on GitHub</a>
-    </div>
+<div class="cta-section">
+  <div class="section-label" style="justify-content:center;">Get Started</div>
+  <h2>Stop re-explaining your codebase.</h2>
+  <p>Two commands. Two minutes of setup. Sessions that compound instead of reset.</p>
+  <div class="cta-actions">
+    <a class="btn btn-primary" href="https://github.com/YehudaFrankel/claude-recall">View on GitHub</a>
+    <a class="btn btn-ghost" href="https://github.com/YehudaFrankel/claude-recall#quick-start">Quick Start →</a>
   </div>
+  <p style="margin-top:2rem;font-size:.8rem;">
+    Python 3.7+ · Claude Code · MIT License
+  </p>
 </div>
 
-<footer>
-  <div class="footer-left">
-    claude-recall · MIT · by YehudaFrankel
-  </div>
-  <div class="footer-right">
-    <a href="https://github.com/YehudaFrankel/claude-recall" target="_blank">GitHub</a>
-    <a href="https://github.com/YehudaFrankel/claude-recall/blob/main/README.md" target="_blank">Docs</a>
-    <a href="https://github.com/YehudaFrankel/claude-recall/blob/main/LICENSE" target="_blank">License</a>
-  </div>
-</footer>
-
-<script>
-/* ── Counter roll-up ── */
-function animateCount(el, target) {
-  const dur = 900, start = performance.now();
-  function tick(now) {
-    const p = Math.min((now - start) / dur, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(ease * target);
-    if (p < 1) requestAnimationFrame(tick);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(tick);
-}
-
-const statsObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.querySelectorAll('.counter').forEach(el => {
-      animateCount(el, +el.dataset.target);
-    });
-    statsObs.disconnect();
-  });
-}, { threshold: .1, rootMargin: '0px 0px -30px 0px' });
-statsObs.observe(document.querySelector('.stats'));
-
-/* ── Scroll reveal (generic) ── */
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
-  });
-}, { threshold: .05, rootMargin: '0px 0px -20px 0px' });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-/* Fallback: show all hidden sections after 2.5s in case observer doesn't fire */
-setTimeout(() => {
-  document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
-  document.querySelectorAll('.feature-row:not(.in)').forEach(el => el.classList.add('in'));
-  // Ensure journal demo panels show if observer didn't fire
-  var jdOut = document.getElementById('jdOutput');
-  var jdRes = document.getElementById('jdResult');
-  if (jdOut && !jdOut.innerHTML) jdOut.innerHTML = '<span class="dc dc-dim">session_journal.py — auto-captures every Stop</span>';
-  if (jdRes && !jdRes.innerHTML) jdRes.innerHTML = '<span class="dc dc-dim">session_journal.md — searchable by Grep</span>';
-  document.querySelectorAll('.cmd-row:not(.in)').forEach(el => el.classList.add('in'));
-  document.querySelectorAll('.how-row:not(.in)').forEach(el => el.classList.add('in'));
-}, 2500);
-
-/* ── Feature rows staggered ── */
-const featObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.querySelectorAll('.feature-row').forEach((row, i) => {
-      setTimeout(() => row.classList.add('in'), i * 70);
-    });
-    featObs.unobserve(e.target);
-  });
-}, { threshold: .05 });
-const fl = document.querySelector('.feature-list');
-if (fl) featObs.observe(fl);
-
-/* ── Command rows staggered ── */
-const cmdObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.querySelectorAll('.cmd-row').forEach((row, i) => {
-      setTimeout(() => row.classList.add('in'), i * 45);
-    });
-    cmdObs.unobserve(e.target);
-  });
-}, { threshold: .05 });
-const cl = document.querySelector('.cmd-list');
-if (cl) cmdObs.observe(cl);
-
-/* ── How rows staggered ── */
-const howObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.querySelectorAll('.how-row').forEach((row, i) => {
-      setTimeout(() => row.classList.add('in'), i * 60);
-    });
-    howObs.unobserve(e.target);
-  });
-}, { threshold: .05 });
-document.querySelectorAll('.how-list').forEach(hl => howObs.observe(hl));
-
-/* ── Copy install ── */
-const INSTALL = `git clone https://github.com/YehudaFrankel/claude-recall.git\ncd your-project\npython /path/to/claude-recall/setup.py`;
-const ONE_LINER = `python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/claude-recall/main/install.py').read().decode())"`;
-function copyOneLiner() {
-  navigator.clipboard.writeText(ONE_LINER).then(() => {
-    const b = document.getElementById('oneLinerBtn');
-    b.textContent = '✓ copied';
-    b.classList.add('ok');
-    setTimeout(() => { b.textContent = 'copy one-liner'; b.classList.remove('ok'); }, 2000);
-  }).catch(() => {});
-}
-function copyInstall() {
-  navigator.clipboard.writeText(INSTALL).then(() => {
-    const b = document.getElementById('copyBtn');
-    b.textContent = '✓ copied';
-    b.classList.add('ok');
-    setTimeout(() => { b.textContent = 'copy'; b.classList.remove('ok'); }, 2000);
-  });
-}
-
-/* ── Nav shadow on scroll ── */
-const nav = document.querySelector('nav');
-window.addEventListener('scroll', () => {
-  nav.style.boxShadow = window.scrollY > 20 ? '0 1px 0 rgba(255,255,255,.04)' : 'none';
-}, { passive: true });
-
-/* ── Smooth anchor scroll ── */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const t = document.querySelector(a.getAttribute('href'));
-    if (!t) return;
-    e.preventDefault();
-    t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
-/* ── Lifecycle hooks animation ── */
-(function() {
-  var hookMeta = [
-    { file: 'tools/session_start.py', badge: 'SessionStart' },
-    { file: 'tools/check_memory.py',  badge: 'PostToolUse'  },
-    { file: 'tools/precompact.py',    badge: 'PreCompact'   },
-    { file: 'tools/session_journal.py', badge: 'Stop'        }
-  ];
-  var PHASE = 3600, LINE_GAP = 220;
-  var current = -1, started = false, timer = null;
-  var fill = document.getElementById('lcFill');
-  var fileLbl = document.getElementById('lcFile');
-  var badgeLbl = document.getElementById('lcBadge');
-
-  function node(i)  { return document.getElementById('lc-n' + i); }
-  function slide(i) { return document.getElementById('lc-s' + i); }
-
-  function resetAll() {
-    for (var i = 0; i < 4; i++) {
-      node(i).classList.remove('lc-active', 'lc-done');
-      var s = slide(i);
-      s.classList.remove('lc-slide-active');
-      s.querySelectorAll('.lp').forEach(function(l) { l.classList.remove('in'); });
-    }
-    if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
-  }
-
-  function activate(phase) {
-    current = phase;
-    for (var i = 0; i < phase; i++) {
-      node(i).classList.remove('lc-active');
-      node(i).classList.add('lc-done');
-    }
-    node(phase).classList.add('lc-active');
-    if (fileLbl) fileLbl.textContent = hookMeta[phase].file;
-    if (badgeLbl) badgeLbl.textContent = hookMeta[phase].badge;
-
-    for (var j = 0; j < 4; j++) {
-      slide(j).classList.remove('lc-slide-active');
-      slide(j).querySelectorAll('.lp').forEach(function(l) { l.classList.remove('in'); });
-    }
-    var s = slide(phase);
-    s.classList.add('lc-slide-active');
-    s.querySelectorAll('.lp').forEach(function(line, idx) {
-      setTimeout(function() { line.classList.add('in'); }, idx * LINE_GAP);
-    });
-
-    if (fill) {
-      fill.style.transition = 'none';
-      fill.style.width = '0%';
-      setTimeout(function() {
-        fill.style.transition = 'width ' + PHASE + 'ms linear';
-        fill.style.width = '100%';
-      }, 60);
-    }
-
-    clearTimeout(timer);
-    timer = setTimeout(function() {
-      var next = (phase + 1) % 4;
-      if (next === 0) { resetAll(); setTimeout(function() { activate(0); }, 350); }
-      else { activate(next); }
-    }, PHASE);
-  }
-
-  var sec = document.getElementById('hooks-demo');
-  if (sec) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting && !started) {
-          started = true;
-          setTimeout(function() { activate(0); }, 500);
-          obs.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    obs.observe(sec);
-  }
-})();
-
-/* ── Drift detection animation ── */
-(function() {
-  var codeEl   = document.getElementById('ddCode');
-  var outputEl = document.getElementById('ddOutput');
-  var badge    = document.getElementById('ddBadge');
-  var flash    = document.getElementById('ddFlash');
-  if (!codeEl || !outputEl) return;
-  var started = false;
-
-  var existingLines = [
-    '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">loadDashboard</span><span class="dc-dim">() {</span></span>',
-    '<span class="dc dc-dim">&nbsp;&nbsp;// fetch and render dashboard</span>',
-    '<span class="dc dc-dim">}</span>',
-    '<span class="dc">&nbsp;</span>',
-    '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">formatDate</span><span class="dc-dim">(d) {</span></span>',
-    '<span class="dc dc-dim">&nbsp;&nbsp;// format date string for display</span>',
-    '<span class="dc dc-dim">}</span>',
-    '<span class="dc">&nbsp;</span>'
-  ];
-
-  var newFnStr  = 'function trackEvent(name) {';
-  var newFnRest = [
-    '<span class="dc dc-dim">&nbsp;&nbsp;// log user interaction</span>',
-    '<span class="dc dc-dim">}</span>'
-  ];
-
-  function renderCode(lines, cursor) {
-    codeEl.innerHTML = lines.join('') + (cursor ? '<span class="dd-cursor"></span>' : '');
-  }
-  function renderOut(lines) { outputEl.innerHTML = lines.join(''); }
-
-  function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
-
-  async function run() {
-    renderCode(existingLines);
-    renderOut(['<span class="dc dc-dim">Watching for file changes...</span>',
-               '<span class="dc dc-dim">PostToolUse hook ready.</span>']);
-    if (badge)  badge.classList.remove('dd-on');
-    if (flash)  { flash.style.transition='none'; flash.classList.remove('dd-go'); }
-    await sleep(1800);
-
-    // Type new function
-    var typed = '';
-    for (var ci = 0; ci < newFnStr.length; ci++) {
-      typed += newFnStr[ci];
-      var hi = typed
-        .replace('function', '<span class="dc-kw">function</span>')
-        .replace('trackEvent', '<span class="dc-fn">trackEvent</span>');
-      renderCode(existingLines.concat(['<span class="dc">' + hi + '</span>']), true);
-      await sleep(52 + Math.random() * 38);
-    }
-    renderCode(existingLines.concat([
-      '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">trackEvent</span><span class="dc-dim">(name) {</span></span>'
-    ].concat(newFnRest)));
-    await sleep(280);
-
-    // Hook fires
-    if (badge) badge.classList.add('dd-on');
-    if (flash) { flash.style.transition = ''; setTimeout(function() { flash.classList.add('dd-go'); }, 20); }
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>']);
-    await sleep(480);
-
-    // Scanner
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
-               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>']);
-    await sleep(420);
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
-               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>']);
-    await sleep(340);
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
-               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>']);
-    await sleep(340);
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
-               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>',
-               '<span class="dc dc-miss">&nbsp;&nbsp;✗ trackEvent — MISSING</span>']);
-    await sleep(580);
-    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
-               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
-               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>',
-               '<span class="dc dc-miss">&nbsp;&nbsp;✗ trackEvent — MISSING</span>',
-               '<span class="dc dc-warn">&nbsp;&nbsp;→ flagged for js_functions.md</span>',
-               '<span class="dc dc-ok">✓ Drift logged. Update memory.</span>']);
-    await sleep(2600);
-
-    // Reset
-    if (flash) { flash.style.transition='none'; flash.classList.remove('dd-go'); }
-    if (badge) badge.classList.remove('dd-on');
-    renderCode([]); renderOut([]);
-    await sleep(400);
-    run();
-  }
-
-  var sec = document.getElementById('drift-section');
-  if (sec) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting && !started) {
-          started = true; run(); obs.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    obs.observe(sec);
-  }
-})();
-
-/* ── Session journal demo ── */
-(function() {
-  var outEl  = document.getElementById('jdOutput');
-  var resEl  = document.getElementById('jdResult');
-  var badge  = document.getElementById('jdBadge');
-  if (!outEl || !resEl) return;
-  var started = false;
-
-  function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
-  function ro(lines) { outEl.innerHTML = lines.join(''); }
-  function rr(lines) { resEl.innerHTML = lines.join(''); }
-  function ln(cls, txt) { return '<span class="dc ' + cls + '">' + txt + '</span>'; }
-
-  async function run() {
-    ro([ln('dc-dim', 'waiting for session to end...')]);
-    rr([ln('dc-dim', '_no entry yet_')]);
-    if (badge) badge.classList.remove('jd-on');
-    await sleep(1800);
-
-    if (badge) badge.classList.add('jd-on');
-    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py')]);
-    await sleep(480);
-
-    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
-        ln('dc-dim',  '&nbsp;&nbsp;reading draft-lessons.md...')]);
-    await sleep(380);
-
-    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
-        ln('dc-dim',  '&nbsp;&nbsp;reading STATUS.md...')]);
-    await sleep(350);
-
-    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; current phase captured'),
-        ln('dc-dim',  '&nbsp;&nbsp;writing to session_journal.md...')]);
-    await sleep(400);
-
-    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; current phase captured'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; entry written to session_journal.md'),
-        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; draft-lessons cleared for next session')]);
-    await sleep(420);
-
-    rr([ln('dc-dim',  '## [2026-03-22 16:42]')]);
-    await sleep(230);
-    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
-        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css')]);
-    await sleep(220);
-    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
-        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css'),
-        ln('dc-warn', '**What:** feed feature &mdash; card render + sort')]);
-    await sleep(230);
-    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
-        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css'),
-        ln('dc-warn', '**What:** feed feature &mdash; card render + sort'),
-        ln('dc-dim',  '&nbsp;'),
-        ln('dc-dim',  '&lt;!-- searchable: Grep(pattern=\'feed\') --&gt;')]);
-    await sleep(3200);
-    run();
-  }
-
-  var sec = document.getElementById('journal-demo');
-  if (sec) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting && !started) {
-          started = true;
-          setTimeout(function() { run(); }, 400);
-          obs.disconnect();
-        }
-      });
-    }, { threshold: 0.15 });
-    obs.observe(sec);
-  }
-})();
-
-/* ── Terminal typewriter ── */
-(function() {
-  var userEl = document.querySelector('.t-user');
-  if (!userEl) return;
-  var text = userEl.textContent;
-  userEl.textContent = '';
-  userEl.style.opacity = '1';
-  var i = 0;
-  function type() {
-    if (i < text.length) { userEl.textContent += text[i++]; setTimeout(type, 75); }
-  }
-  setTimeout(type, 900);
-})();
-
-/* ── Session Demo ──────────────────────────────────── */
-(function() {
-  var body    = document.getElementById('demoBody');
-  var status  = document.getElementById('demoStatus');
-  var replay  = document.getElementById('demoReplay');
-  if (!body) return;
-
-  var PHASES = [
-    { id:'dp0', label:'Morning'     },
-    { id:'dp1', label:'Working'     },
-    { id:'dp2', label:'End of day'  }
-  ];
-
-  // Each frame: type, text, delay (ms before this line appears), phase (0/1/2)
-  var FRAMES = [
-    // ── Morning ──────────────────────────────────────
-    { t:'phase',  phase:0                                                    },
-    { t:'sep',    text:'── morning ─────────────────────────────────────',   delay:300  },
-    { t:'cmd',    text:'Start Session',                                       delay:500  },
-    { t:'ok',     text:'✓ memory.ps1 pull — OK',                             delay:700  },
-    { t:'ok',     text:'✓ no drift detected',                                delay:300  },
-    { t:'ok',     text:'✓ STATUS.md — Session 100',                          delay:280  },
-    { t:'ok',     text:'✓ 5 lessons loaded',                                 delay:260  },
-    { t:'ok',     text:'✓ 4 decisions loaded',                               delay:260  },
-    { t:'ok',     text:'✓ 23 skills ready',                                  delay:300  },
-    { t:'gap',                                                                delay:200  },
-    { t:'green',  text:'Session 100 ready.',                                 delay:400  },
-    { t:'dim',    text:'Last change: session journal + bootstrap + 23 skills', delay:200 },
-    { t:'dim',    text:'What are we working on?',                            delay:300  },
-    { t:'gap',                                                                delay:1600 },
-
-    // ── Working ──────────────────────────────────────
-    { t:'phase',  phase:1                                                    },
-    { t:'sep',    text:'── working ─────────────────────────────────────',   delay:300  },
-    { t:'cmt',    text:'// you edit dashboard.js — hook fires automatically',delay:500  },
-    { t:'gap',                                                                delay:200  },
-    { t:'warn',   text:'DRIFT DETECTED — MISSING from js_functions.md:',    delay:600  },
-    { t:'add',    text:'  + submitFeedback   [dashboard.js]',                delay:200  },
-    { t:'add',    text:'  + loadFeedItems    [dashboard.js]',                delay:200  },
-    { t:'dim',    text:"Run 'Analyze Codebase' to update memory.",          delay:600  },
-    { t:'gap',                                                                delay:400  },
-    { t:'cmd',    text:'Analyze Codebase',                                   delay:900  },
-    { t:'ok',     text:'✓ submitFeedback — documented',                     delay:500  },
-    { t:'ok',     text:'✓ loadFeedItems — documented',                      delay:350  },
-    { t:'green',  text:'Memory updated. No drift.',                          delay:400  },
-    { t:'gap',                                                                delay:1600 },
-
-    // ── End of day ───────────────────────────────────
-    { t:'phase',  phase:2                                                    },
-    { t:'sep',    text:'── end of day ───────────────────────────────────',  delay:300  },
-    { t:'cmd',    text:'End Session',                                        delay:500  },
-    { t:'dim',    text:'Running /learn…',                                    delay:600  },
-    { t:'ok',     text:'✓ 2 new lessons extracted',                         delay:500  },
-    { t:'ok',     text:'✓ decisions.md updated',                            delay:350  },
-    { t:'dim',    text:'Updating memory files…',                            delay:500  },
-    { t:'ok',     text:'✓ STATUS.md — Session 100 → 101',                   delay:350  },
-    { t:'ok',     text:'✓ memory.ps1 push — pushed to GitHub',              delay:400  },
-    { t:'gap',                                                                delay:300  },
-    { t:'green',  text:'Session complete. Memory pushed to GitHub.',        delay:500  },
-    { t:'gap',                                                                delay:4000 } // pause before restart
-  ];
-
-  var cursor, timer, frameIdx = 0, running = false;
-
-  function setPhase(p) {
-    PHASES.forEach(function(ph, i) {
-      var el = document.getElementById(ph.id);
-      el.classList.remove('active','done');
-      if (i < p)  el.classList.add('done');
-      if (i === p) el.classList.add('active');
-    });
-    status.textContent = PHASES[p].label + '…';
-  }
-
-  function addLine(cls, text) {
-    // remove cursor first
-    if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
-    var span = document.createElement('span');
-    span.className = cls;
-    span.textContent = text || '';
-    body.appendChild(span);
-    body.scrollTop = body.scrollHeight;
-    return span;
-  }
-
-  function addCursor() {
-    if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
-    cursor = document.createElement('span');
-    cursor.className = 'demo-cursor';
-    body.appendChild(cursor);
-    body.scrollTop = body.scrollHeight;
-  }
-
-  function typeCmd(text, cb) {
-    var line = addLine('dl', '');
-    var prompt = document.createElement('span');
-    prompt.className = 'dl-prompt';
-    prompt.textContent = '$ ';
-    line.appendChild(prompt);
-    var cmdSpan = document.createElement('span');
-    cmdSpan.className = 'dl-cmd';
-    line.appendChild(cmdSpan);
-    body.scrollTop = body.scrollHeight;
-
-    var i = 0;
-    function tick() {
-      if (!running) return;
-      if (i < text.length) {
-        cmdSpan.textContent += text[i++];
-        body.scrollTop = body.scrollHeight;
-        timer = setTimeout(tick, 55 + Math.random() * 25);
-      } else {
-        addCursor();
-        timer = setTimeout(cb, 300);
-      }
-    }
-    tick();
-  }
-
-  function runFrame() {
-    if (!running) return;
-    if (frameIdx >= FRAMES.length) {
-      // done — restart
-      status.textContent = 'Complete ✓';
-      timer = setTimeout(startDemo, 2000);
-      return;
-    }
-    var f = FRAMES[frameIdx++];
-    var delay = f.delay || 0;
-
-    if (f.t === 'phase') {
-      setPhase(f.phase);
-      timer = setTimeout(runFrame, 0);
-      return;
-    }
-
-    timer = setTimeout(function() {
-      if (!running) return;
-      if (f.t === 'cmd') {
-        typeCmd(f.text, runFrame);
-      } else if (f.t === 'gap') {
-        if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'sep') {
-        addLine('dl-sep', f.text);
-        runFrame();
-      } else if (f.t === 'ok') {
-        addLine('dl-ok', f.text);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'dim') {
-        addLine('dl-dim', f.text);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'green') {
-        addLine('dl-green', f.text);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'warn') {
-        addLine('dl-warn', f.text);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'add') {
-        addLine('dl-add', f.text);
-        addCursor();
-        runFrame();
-      } else if (f.t === 'cmt') {
-        addLine('dl-cmt', f.text);
-        addCursor();
-        runFrame();
-      } else {
-        runFrame();
-      }
-    }, delay);
-  }
-
-  function startDemo() {
-    running = false;
-    clearTimeout(timer);
-    body.innerHTML = '';
-    cursor = null;
-    frameIdx = 0;
-    PHASES.forEach(function(ph) {
-      var el = document.getElementById(ph.id);
-      el.classList.remove('active','done');
-    });
-    status.textContent = 'Starting…';
-    addCursor();
-    running = true;
-    timer = setTimeout(runFrame, 600);
-  }
-
-  replay.addEventListener('click', startDemo);
-
-  // Start when scrolled into view
-  var started = false;
-  var demoSection = document.getElementById('demo');
-  var obs = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting && !started) {
-      started = true;
-      startDemo();
-    }
-  }, { threshold: 0.3 });
-  if (demoSection) obs.observe(demoSection);
-})();
-
-</script>
 </body>
 </html>
