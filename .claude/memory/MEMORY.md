@@ -12,6 +12,7 @@
 - [Skill Scores](tasks/skill_scores.md) — Skill effectiveness log. /evolve reads to prune weak skills.
 - [Global Lessons](~/.claude/global-lessons.md) — Cross-project discoveries. Loaded at every session start across all projects.
 - [Plans](plans/) — Feature plans. Each plan: problem, options, decision, technical spec, open questions. Check status at Start Session.
+- [Complexity Profile](complexity_profile.md) — Auto-generated on first Start Session. Stack, complexity score, recommended skills. Rescan: delete and run Start Session.
 
 # currentDate
 <!-- Update this each session -->

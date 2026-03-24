@@ -25,6 +25,10 @@ When the user types **"Start Session"**, do the following:
    - Verify the MCP tool is available in Claude's tool list
    - If NOT available → warn: "ACTION NEEDED: MCP server not connected. Check `.mcp.json` and re-open Claude Code."
    - If available or no MCP configured → silent, continue
+1d. **Check complexity profile** — look for `.claude/memory/complexity_profile.md`:
+   - **Missing** → run `python tools/complexity_scan.py --silent` (or `python3`). Surface the output line: *"Project scan: [output]. See `.claude/memory/complexity_profile.md` for full skill recommendations."*
+   - **Exists, < 30 days old** → silent, continue
+   - **Exists, 30+ days old** → note once: *"Complexity profile is 30+ days old. Run `python tools/complexity_scan.py` to refresh."*
 2. Run `python tools/check_memory.py` — check for JS/CSS drift; fix any found (update memory files + sync to bundle)
 2b. **Check open plans** — scan `.claude/memory/plans/` for any `.md` file (skip `_template.md`) with `Status: Draft` or `Status: On Hold`. If found, surface: *"Open plan: [name] — Status: [X]. N open questions."* Don't load the full file — just the status line.
 3. Read `STATUS.md` — find the current session number and last change

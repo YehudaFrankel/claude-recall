@@ -126,6 +126,7 @@ Type `Generate Skills` and Claude creates additional skills tailored to your exa
 | `session_journal.py` | After every response | Auto-captures what you worked on — searchable forever, no /learn needed |
 | `stop_check.py` | After every response | Reminds you to save memory when unsaved changes detected; surfaces open plans with unresolved questions |
 | `bootstrap.py` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
+| `complexity_scan.py` | First `Start Session` on a new project | Detects stack, DB, tests, API surface — scores complexity Low/Medium/High and recommends which skills to use. Auto-refreshes after 30 days. |
 | `session_start.py` | When Claude Code opens | Injects memory into context before your first message — Claude starts warm |
 | `precompact.py` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
 
