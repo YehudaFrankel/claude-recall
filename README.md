@@ -238,7 +238,7 @@ Persistent context across sessions. Codebase knowledge, decisions, known bugs, r
 Auto-triggered workflows from natural language. Each skill scores itself on every use (`skill_scores.md`). `/evolve` reads the scores and patches failing steps — the compound learning loop closes without manual intervention. Skills can chain into multi-step workflows via `## Auto-Chain`.
 
 **Tier 3 — Autonomous**
-Skill chaining, self-healing, drift detection, and auto end session run without prompting. Claude works through multi-step tasks without human checkpoints. Agentic score on a real production codebase: **8.5/10** — the remaining 1.5 is intentional (you initiate sessions and approve plans; full autonomy without human initiation is an agent, not an assistant).
+Skill chaining, self-healing, drift detection, and auto end session run without prompting. Claude works through multi-step tasks without human checkpoints between steps.
 
 ---
 
