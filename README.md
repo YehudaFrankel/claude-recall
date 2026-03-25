@@ -99,13 +99,17 @@ Setup asks which mode fits your project:
 
 ### Upgrade to Full
 
-When you outgrow Lite mode, one command adds automated drift detection, session journaling, and stop-check reminders:
+When you outgrow Lite mode, type this in Claude Code:
 
-```bash
-python upgrade.py
+```
+Upgrade to Full
 ```
 
-Downloads `tools/memory.py`, adds 3 lifecycle hooks to `.claude/settings.json`, keeps your `@rules/` files in parallel. Restart Claude Code after running.
+Claude runs `upgrade.py`, which downloads `tools/memory.py`, adds 3 lifecycle hooks to `.claude/settings.json`, and keeps your `@rules/` files in parallel. Restart Claude Code after running.
+
+```bash
+python upgrade.py   ←  same thing, from terminal
+```
 
 ---
 
