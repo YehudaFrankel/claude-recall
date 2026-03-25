@@ -761,8 +761,6 @@ footer {
     <span class="nav-div">·</span>
     <a class="nav-a" href="#commands">commands</a>
     <span class="nav-div">·</span>
-    <a class="nav-a" href="#vs">vs</a>
-    <span class="nav-div">·</span>
     <a class="nav-a" href="#faq">faq</a>
     <a class="nav-gh" href="https://github.com/YehudaFrankel/claude-recall" target="_blank">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -1255,129 +1253,6 @@ footer {
       <div class="cmd-row"><div class="cr-cmd">Update Kit</div><div class="cr-desc">Pull latest from GitHub — shows exactly what will change, <em>asks before applying</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Update Kit from [URL]</div><div class="cr-desc">Pull from a fork or branch — <em>your memory files are never touched</em></div></div>
     </div>
-  </div>
-</section>
-
-<!-- VS ALTERNATIVES -->
-<section id="vs">
-  <div class="wrap-lg">
-    <div class="sec-label">honest comparison</div>
-    <h2>How it stacks up.<br><span class="h2-amber">Pick the right tool.</span></h2>
-    <p class="sec-desc">Nine dimensions, five tools. Strengths and weaknesses called honestly — including the ones where claude-recall isn't the answer.</p>
-
-    <div class="vs-scroll reveal">
-      <table class="vs-table">
-        <thead>
-          <tr>
-            <th style="min-width:120px">feature</th>
-            <th class="vs-hl" style="min-width:170px">claude-recall</th>
-            <th style="min-width:175px">everything-claude-code</th>
-            <th style="min-width:165px">claude-mem / memory-mcp</th>
-            <th style="min-width:160px">Mem0 / supermemory</th>
-            <th style="min-width:130px">plain CLAUDE.md</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="vs-feat">Persistence</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> git-backed markdown</td>
-            <td><span class="vs-y">✓</span> git-backed</td>
-            <td><span class="vs-y">✓</span> git / MCP server</td>
-            <td><span class="vs-y">✓</span> hosted cloud</td>
-            <td><span class="vs-t">~</span> manual</td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Learning loop</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> /learn → /evolve → auto-patches</td>
-            <td><span class="vs-t">~</span> /evolve only</td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Skill system</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> 7 built-in + Generate Skills</td>
-            <td><span class="vs-best">✓✓ best-in-class</span><span class="vs-sub">community library</span></td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Drift detection</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> PostToolUse hook, automatic</td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-n">✗</span></td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Dependencies</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> zero — stdlib only</td>
-            <td><span class="vs-y">✓</span> zero</td>
-            <td><span class="vs-t">~</span> MCP server</td>
-            <td><span class="vs-n">✗</span> API + account</td>
-            <td><span class="vs-y">✓</span> zero</td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Setup time</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> ~5 min</td>
-            <td><span class="vs-y">✓</span> ~5 min</td>
-            <td><span class="vs-t">~</span> ~15 min</td>
-            <td><span class="vs-n">✗</span> account + API key</td>
-            <td><span class="vs-y">✓</span> instant</td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Team memory</td>
-            <td class="vs-hl"><span class="vs-t">~</span> shared git repo</td>
-            <td><span class="vs-t">~</span> shared git repo</td>
-            <td><span class="vs-t">~</span> shared MCP</td>
-            <td><span class="vs-best">✓✓ best-in-class</span><span class="vs-sub">built for multi-user</span></td>
-            <td><span class="vs-t">~</span> shared file</td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Auto-capture</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> Stop hook journals every session</td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-t">~</span> varies by impl</td>
-            <td><span class="vs-t">~</span> API-based</td>
-            <td><span class="vs-n">✗</span></td>
-          </tr>
-          <tr>
-            <td class="vs-feat">Semantic search</td>
-            <td class="vs-hl"><span class="vs-y">✓</span> --search (scored keyword)</td>
-            <td><span class="vs-n">✗</span></td>
-            <td><span class="vs-t">~</span> varies by impl</td>
-            <td><span class="vs-best">✓✓ best-in-class</span><span class="vs-sub">vector search</span></td>
-            <td><span class="vs-n">✗</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="vs-cards reveal">
-      <div class="vs-card">
-        <div class="vs-card-ttl">// pick claude-recall when</div>
-        <p>You want memory that <em>compounds</em> — sessions build on each other, skills self-improve, drift is caught automatically. Works on any stack, zero dependencies, no account required.</p>
-      </div>
-      <div class="vs-card">
-        <div class="vs-card-ttl">// pick everything-claude-code when</div>
-        <p>You need the broadest community skill library. The collection is <em>best-in-class for skill breadth</em>. These tools complement each other — add claude-recall's memory layer on top.</p>
-      </div>
-      <div class="vs-card">
-        <div class="vs-card-ttl">// pick claude-mem / memory-mcp when</div>
-        <p>You're already running MCP servers and want memory inside that ecosystem. <em>Simpler to integrate</em> if MCP is already your infrastructure layer.</p>
-      </div>
-      <div class="vs-card">
-        <div class="vs-card-ttl">// pick Mem0 / supermemory when</div>
-        <p>Multiple developers or AI agents need <em>shared, searchable memory across projects</em>. The hosted vector search is built for multi-user scenarios claude-recall doesn't target.</p>
-      </div>
-      <div class="vs-card">
-        <div class="vs-card-ttl">// pick plain CLAUDE.md when</div>
-        <p>A well-written CLAUDE.md <em>beats a misconfigured system</em>. Start here. Graduate to claude-recall when you need persistence across sessions and context keeps re-explaining the same things.</p>
-      </div>
-    </div>
-
-    <div class="vs-fn reveal">// comparisons based on public README/docs at time of writing — open a PR if something is stale</div>
   </div>
 </section>
 
