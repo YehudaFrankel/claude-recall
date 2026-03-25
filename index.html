@@ -637,7 +637,7 @@ footer {
 .footer-links { display: flex; gap: 1.5rem; }
 .footer-links a { color: var(--muted); text-decoration: none; transition: color .12s; }
 .footer-links a:hover { color: var(--amber); }
-.footer-sig { color: var(--dim); }
+.footer-sig { color: var(--muted); }
 
 /* ─── SCROLL REVEAL ─── */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
@@ -901,7 +901,7 @@ footer {
 <section id="skills">
   <div class="wrap-lg">
     <div class="sec-label">agentic toolkit</div>
-    <h2>5 generic skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
+    <h2>7 skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
     <p class="sec-desc">
       Skills live in <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">.claude/skills/</code> as markdown files.
       Chain them with <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">## Auto-Chain</code>.
@@ -927,35 +927,35 @@ footer {
     </table>
 
     <div style="margin-top:2.5rem; border:1px solid var(--border2); background:var(--s1); padding:1.5rem 1.75rem;" class="reveal">
-      <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// PYTHON TOOLS THAT SHIP WITH THE KIT</div>
+      <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:.75rem;">// PYTHON TOOLS THAT SHIP WITH THE KIT</div>
+      <div style="font-size:.8rem; line-height:1.8; margin-bottom:1rem;">
+        <span style="color:var(--amber)">tools/memory.py</span> <span style="color:var(--muted)">— all lifecycle behaviors in one script (Full mode). Run via subcommand:</span>
+      </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:.6rem 2rem;">
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">check_memory.py</span> <span style="color:var(--muted)">— drift detection, auto-runs on every file edit via PostToolUse hook</span>
+          <span style="color:var(--amber)">--check-drift</span> <span style="color:var(--muted)">— PostToolUse hook: finds undocumented functions after every file edit</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">session_start.py</span> <span style="color:var(--muted)">— runs on SessionStart hook, loads context and applies lessons</span>
+          <span style="color:var(--amber)">--journal</span> <span style="color:var(--muted)">— Stop hook: auto-captures session summary with timestamp</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: reminds you to save memory; surfaces open plans with unresolved questions</span>
+          <span style="color:var(--amber)">--stop-check</span> <span style="color:var(--muted)">— Stop hook: surfaces open plans; warns when context is getting long</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">precompact.py</span> <span style="color:var(--muted)">— PreCompact hook: saves all in-flight work before context compaction</span>
+          <span style="color:var(--amber)">--precompact</span> <span style="color:var(--muted)">— reinjects memory into compacted context — nothing lost through /compact</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">session_journal.py</span> <span style="color:var(--muted)">— log what happened each session with timestamp</span>
+          <span style="color:var(--amber)">--session-start</span> <span style="color:var(--muted)">— memory health check on session open, applies lessons</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">bootstrap.py</span> <span style="color:var(--muted)">— new project setup, verify env, configure memory and hooks</span>
+          <span style="color:var(--amber)">--bootstrap</span> <span style="color:var(--muted)">— scans codebase, generates quick_index.md for new projects</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">complexity_scan.py</span> <span style="color:var(--muted)">— auto-runs on first Start Session, detects stack + complexity, recommends which skills apply</span>
+          <span style="color:var(--amber)">--complexity-scan</span> <span style="color:var(--muted)">— detects stack + complexity on first Start Session, recommends skills</span>
         </div>
-        <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">setup.py</span> <span style="color:var(--muted)">— first-time setup, Full or Lite mode</span>
-        </div>
-        <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">update.py</span> <span style="color:var(--muted)">— safe updater, shows diff and asks before applying anything</span>
-        </div>
+      </div>
+      <div style="font-size:.75rem; color:var(--dim); margin-top:.9rem; line-height:1.6;">
+        setup.py — first-time setup (Full or Lite) &nbsp;·&nbsp; upgrade.py — Lite → Full &nbsp;·&nbsp; update.py — safe kit updater
       </div>
     </div>
   </div>
@@ -1086,22 +1086,22 @@ footer {
       </div>
       <div class="hook-row">
         <div class="hk-event">SessionStart</div>
-        <div class="hk-file">tools/session_start.py</div>
+        <div class="hk-file">tools/memory.py --session-start</div>
         <div class="hk-does">Load MEMORY.md, check for stale files, apply lessons</div>
       </div>
       <div class="hook-row">
         <div class="hk-event">PostToolUse</div>
-        <div class="hk-file">tools/check_memory.py</div>
+        <div class="hk-file">tools/memory.py --check-drift</div>
         <div class="hk-does">After every file edit — check drift, warn if memory is stale</div>
       </div>
       <div class="hook-row">
         <div class="hk-event">Stop</div>
-        <div class="hk-file">tools/stop_check.py</div>
+        <div class="hk-file">tools/memory.py --stop-check</div>
         <div class="hk-does">Reminds you to save memory; surfaces open plans with unresolved questions</div>
       </div>
       <div class="hook-row">
         <div class="hk-event">PreCompact</div>
-        <div class="hk-file">tools/pre_compact.py</div>
+        <div class="hk-file">tools/memory.py --precompact</div>
         <div class="hk-does">Before context compaction — save all in-flight work to memory</div>
       </div>
     </div>
