@@ -51,7 +51,7 @@ Skill chaining, self-healing, drift detection, and auto end-session run without 
 
 ## Quick Start
 
-**Requires:** Python 3.7+ · [Claude Code](https://claude.ai/claude-code)
+**Requires:** [Claude Code](https://claude.ai/claude-code) · Python 3.7+ for Full mode (Lite is zero-Python)
 
 ```bash
 # 1. Clone once
@@ -78,6 +78,34 @@ Setup asks about your stack, configures itself, and builds everything automatica
 
 No terminal? Paste this into Claude Code chat instead:
 > Analyze this codebase and set up the Claude memory system. Scan all JS, CSS, and backend files. Create CLAUDE.md, STATUS.md, and .claude/memory/ pre-filled with what you find.
+
+---
+
+## Two Modes
+
+Setup asks which mode fits your project:
+
+| | Full | Lite |
+|---|---|---|
+| Memory files | 5 separate files (js_functions, html_css, backend, project_status, user_preferences) | 1 notes file |
+| Static conventions | Inline in CLAUDE.md | `@rules/` files (stack.md, conventions.md, decisions.md) |
+| Drift detection | Automated — runs after every edit via `memory.py` | None — no Python required |
+| Session journal | Auto-captured on every Stop | Not included |
+| Python required | Yes (3.7+) | **No — zero Python** |
+| Best for | Multi-file projects, teams, long-running codebases | Quick experiments, small solo projects |
+| Upgrade later? | — | Yes — `python upgrade.py` |
+
+**Not sure?** Start with Lite — it's instant, requires nothing. Upgrade when you need drift detection.
+
+### Upgrade to Full
+
+When you outgrow Lite mode, one command adds automated drift detection, session journaling, and stop-check reminders:
+
+```bash
+python upgrade.py
+```
+
+Downloads `tools/memory.py`, adds 3 lifecycle hooks to `.claude/settings.json`, keeps your `@rules/` files in parallel. Restart Claude Code after running.
 
 ---
 
@@ -284,39 +312,6 @@ Three hooks run automatically — no commands needed, no configuration required.
 | `Stop` (reminder) | After every response | `memory.py --stop-check` — reminds you to save memory; surfaces open plans with unresolved questions. |
 
 All hooks call a single script — `tools/memory.py` — cross-platform, no dependencies beyond Python 3.7+.
-
----
-
-## Two Modes
-
-Setup offers two modes based on your project size:
-
-| | Full | Lite |
-|---|---|---|
-| Memory files | 5 separate files (js_functions, html_css, backend, project_status, user_preferences) | 1 notes file |
-| Static conventions | Inline in CLAUDE.md | `@rules/` files (stack.md, conventions.md, decisions.md) |
-| Drift detection | Automated — runs after every edit via `memory.py` | None — no Python required |
-| Session journal | Auto-captured on every Stop | Not included |
-| Python required | Yes (3.7+) | No — zero Python |
-| Best for | Multi-file projects, teams, long-running codebases | Quick experiments, small solo projects |
-| Upgrade later? | — | Yes — `python upgrade.py` |
-
-You can upgrade from Lite to Full at any time: `python upgrade.py` adds `tools/memory.py` and lifecycle hooks while keeping your `@rules/` files in parallel.
-
-## Upgrade to Full
-
-When you outgrow Lite mode, one command adds automated drift detection, session journaling, and stop-check reminders:
-
-```bash
-python upgrade.py
-```
-
-What it does:
-1. Downloads `tools/memory.py` (or uses the local copy if present)
-2. Adds 3 lifecycle hooks to `.claude/settings.json` — PostToolUse drift check, Stop journal, Stop reminders
-3. Keeps your `@rules/` files running in parallel — static conventions stay in `rules/`, dynamic session data handled by `memory.py`
-
-Requires Python 3.7+. Restart Claude Code after running.
 
 ---
 
