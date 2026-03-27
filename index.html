@@ -719,6 +719,13 @@ h2 {
 .st-key  { color: var(--text); }
 .st-val  { color: var(--green); }
 .st-note { color: var(--muted); font-size: .74rem; }
+.st-val-lit {
+  animation: val-glow 2s ease-in-out infinite;
+}
+@keyframes val-glow {
+  0%,100% { text-shadow: none; color: var(--green); }
+  50%     { text-shadow: 0 0 10px rgba(109,186,120,.9), 0 0 22px rgba(109,186,120,.4); color: #8ee89a; }
+}
 
 /* ─── HOOKS LIST ─── */
 .hooks-list { margin-top: 2rem; display: flex; flex-direction: column; gap: 1px; background: var(--border); }
@@ -1457,15 +1464,15 @@ footer {
         <div class="td td-g"></div>
         <span style="margin-left:.4rem">yf@recall ~ $</span>
       </div>
-      <div class="stats-body">
+      <div class="stats-body" id="stats-term-body">
         <span class="st-cmd">cat</span> <span style="color:var(--text)">stats.md</span><br>
         <span class="tdim">────────────────────────────────────────</span><br>
-        <span class="st-key">sessions logged         </span><span class="st-val" data-count="128">128</span><br>
-        <span class="st-key">skills in active use    </span><span class="st-val" data-count="23" data-suffix="+">23+</span><br>
-        <span class="st-key">sessions, zero data lost</span><span class="st-val" data-count="128">128</span><br>
-        <span class="st-key">memory files tracked    </span><span class="st-val" data-count="20" data-suffix="+">20+</span><br>
-        <span class="st-key">decisions preserved     </span><span class="st-val" data-count="15" data-suffix="+">15+</span><br>
-        <span class="st-key">rejected approaches logged</span><span class="st-val" data-count="12">12</span><br>
+        <span class="st-key">sessions logged         </span><span class="st-val">128</span><br>
+        <span class="st-key">skills in active use    </span><span class="st-val">23+</span><br>
+        <span class="st-key">sessions, zero data lost</span><span class="st-val">128</span><br>
+        <span class="st-key">memory files tracked    </span><span class="st-val">20+</span><br>
+        <span class="st-key">decisions preserved     </span><span class="st-val">15+</span><br>
+        <span class="st-key">rejected approaches logged</span><span class="st-val">12</span><br>
         <span class="st-key">dependencies            </span><span class="st-val">zero</span><br>
         <span class="st-key">context reset cost      </span><span class="st-val">zero — memory persists</span><br>
         <span class="st-key">setup time              </span><span class="st-val">~5 minutes</span><br>
@@ -2169,10 +2176,98 @@ function copyCmd(btn, text) {
   obs.observe(canvas.parentElement);
 })();
 
+// ─── STATS TYPEWRITER ───
+function initStatsAnim() {
+  var body = document.getElementById('stats-term-body');
+  if (!body) return;
+
+  var LINES = [
+    { key: 'sessions logged         ', val: '128' },
+    { key: 'skills in active use    ', val: '23+' },
+    { key: 'sessions, zero data lost', val: '128' },
+    { key: 'memory files tracked    ', val: '20+' },
+    { key: 'decisions preserved     ', val: '15+' },
+    { key: 'rejected approaches logged', val: '12' },
+    { key: 'dependencies            ', val: 'zero' },
+    { key: 'context reset cost      ', val: 'zero \u2014 memory persists' },
+    { key: 'setup time              ', val: '~5 minutes' },
+  ];
+  var FOOTER = [
+    '// compare to: rwieruch/the-road-to-claude (no loop),\u00a0',
+    '// anthropics/claude-code-examples (no persistence)',
+    '// nothing else ships persistent memory + compound learning loop',
+  ];
+  var DIV = '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500';
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text) e.textContent = text;
+    return e;
+  }
+  function br() { return document.createElement('br'); }
+
+  function typeVal(span, text, cb) {
+    var i = 0;
+    span.textContent = '';
+    (function tick() {
+      if (i < text.length) {
+        span.textContent += text[i++];
+        setTimeout(tick, 55 + Math.random() * 40);
+      } else {
+        span.classList.add('st-val-lit');
+        cb && cb();
+      }
+    })();
+  }
+
+  function run() {
+    body.innerHTML = '';
+
+    // header
+    var hdr = document.createElement('span');
+    hdr.innerHTML = '<span class="st-cmd">cat</span> <span style="color:var(--text)">stats.md</span>';
+    body.appendChild(hdr); body.appendChild(br());
+    var div1 = el('span', 'tdim', DIV);
+    body.appendChild(div1); body.appendChild(br());
+
+    var valSpans = [];
+    LINES.forEach(function(line) {
+      var keyEl = el('span', 'st-key', line.key);
+      var valEl = el('span', 'st-val', '');
+      body.appendChild(keyEl);
+      body.appendChild(valEl);
+      body.appendChild(br());
+      valSpans.push({ el: valEl, val: line.val });
+    });
+
+    body.appendChild(el('span', 'tdim', DIV)); body.appendChild(br());
+    FOOTER.forEach(function(f) {
+      body.appendChild(el('span', 'tmut', f)); body.appendChild(br());
+    });
+
+    // type values sequentially with staggered delay
+    var delay = 300;
+    valSpans.forEach(function(item, idx) {
+      setTimeout(function() {
+        typeVal(item.el, item.val, null);
+      }, delay + idx * 180);
+    });
+  }
+
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { run(); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.3 });
+  obs.observe(body);
+}
+
 // ─── RUN ───
 runTerminal();
 initPlanAnim();
 initMapAnim();
+initStatsAnim();
 
 // ─── PARTICLE BACKGROUND ───
 (function() {
