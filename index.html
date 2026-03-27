@@ -1284,7 +1284,7 @@ footer {
 
 <!-- AGENTIC TIER -->
 <section id="tiers">
-<canvas id="matrixBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.4;"></canvas>
+<canvas id="matrixBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.12;"></canvas>
   <div class="wrap">
     <div class="sec-label">architecture</div>
     <h2>Three tiers.<br><span class="h2-amber">Most tools ship one.</span></h2>
@@ -1950,7 +1950,7 @@ function copyCmd(btn, text) {
   var ctx = canvas.getContext('2d');
   var CHARS = '01>${}[]|</>return;const var if(){}'.split('');
   var cols, drops, W, H;
-  var AMBER = '#d4890a';
+  var AMBER = '#8a7a5a';
   var FONT = 11;
 
   function resize() {
@@ -1961,13 +1961,13 @@ function copyCmd(btn, text) {
   }
 
   function draw() {
-    ctx.fillStyle = 'rgba(13,14,18,.08)';
+    ctx.fillStyle = 'rgba(13,14,18,.12)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = AMBER;
     ctx.font = FONT + 'px monospace';
     for (var i = 0; i < drops.length; i++) {
       var ch = CHARS[Math.random() * CHARS.length | 0];
-      ctx.globalAlpha = 0.35 + Math.random() * 0.4;
+      ctx.globalAlpha = 0.12 + Math.random() * 0.15;
       ctx.fillText(ch, i * FONT, drops[i] * FONT);
       ctx.globalAlpha = 1;
       if (drops[i] * FONT > H && Math.random() > 0.975) drops[i] = 0;
