@@ -1425,8 +1425,64 @@ footer {
   </div>
 </section>
 
+<!-- PLAN VERIFICATION -->
+<section id="plan">
+  <div class="wrap-sm">
+    <div class="sec-label">safe edits</div>
+    <h2>Plans that check<br><span class="h2-amber">their own work.</span></h2>
+    <p class="sec-desc">
+      Before showing you a plan, Claude greps the codebase to verify every
+      function exists at the stated line. After every edit, it reads the file
+      back and confirms it matches. Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">undo</code> — it
+      reverts immediately, no questions.
+    </p>
+
+    <div class="stats-term reveal">
+      <div class="stats-bar">
+        <div class="td td-r"></div>
+        <div class="td td-y"></div>
+        <div class="td td-g"></div>
+        <span style="margin-left:.4rem">yf@clankbrain ~ $</span>
+      </div>
+      <div class="stats-body" style="font-size:.78rem; line-height:1.8;">
+        <span class="tok">plan: add messages field to state object</span><br>
+        <span class="tdim">────────────────────────────────────────────</span><br>
+        <span class="tmut">validating function references...</span><br>
+        <span class="tmut">grep: dash object → DashboardFunctions.js:8 ✓</span><br>
+        <span class="tmut">grep: renderMessages → DashboardFunctions.js:1129 ✓</span><br>
+        <span class="tdim">────────────────────────────────────────────</span><br>
+        <span style="color:var(--amber)">BUG    </span><span class="th">messages: []  </span><span class="tmut">missing from dash state — referenced but never declared</span><br>
+        <span class="tdim">────────────────────────────────────────────</span><br>
+        <span class="tmut">scope: 1 file · 2 lines · refactor · no runtime impact</span><br>
+        <span class="tmut">rollback: git restore DashboardFunctions.js</span><br>
+        <span class="tgap"></span>
+        <span class="tok">bug caught during plan validation — before any edit landed</span>
+      </div>
+    </div>
+
+    <div class="loop-panels" style="margin-top:2rem;">
+      <div class="loop-panel reveal">
+        <div class="lp-label">BEFORE EDIT</div>
+        <div class="lp-title">Validates first</div>
+        <div class="lp-body">Greps every function reference. Wrong line number = reads the wrong code = wrong plan. Fixed before you see it.</div>
+      </div>
+      <div class="loop-panel reveal">
+        <div class="lp-label">AFTER EDIT</div>
+        <div class="lp-title">Reads it back</div>
+        <div class="lp-body">Confirms the file matches the After block. Reports <code style="color:var(--amber);background:var(--s2);padding:.1rem .25rem;">✓ Verified</code> or flags a mismatch before moving on.</div>
+      </div>
+      <div class="loop-panel reveal">
+        <div class="lp-label">IF WRONG</div>
+        <div class="lp-title">One word undo</div>
+        <div class="lp-body">Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .25rem;">undo</code> — Claude runs <code style="color:var(--amber);background:var(--s2);padding:.1rem .25rem;">git restore</code> immediately and confirms the revert.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CHECK-ANTHROPIC -->
 <section id="check-anthropic" style="background:#0b1210; border-top:1px solid rgba(109,186,120,.15);">
+
   <div class="wrap-sm" style="padding:3.5rem 2rem;">
     <div class="sec-label" style="color:var(--green)">stays current</div>
     <h2 style="margin-bottom:.75rem;">Watches for new<br><span style="color:var(--green)">Anthropic features.</span></h2>
