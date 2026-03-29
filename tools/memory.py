@@ -19,6 +19,7 @@ Usage:
   python tools/memory.py --complexity-scan --silent   # Silent scan (Start Session)
   python tools/memory.py --search "query"             # Search all memory .md files
   python tools/memory.py --search "query" --top 10   # Return top N files (default 5)
+  python tools/memory.py --verify-edit                # PostToolUse hook (plan verification)
 """
 
 import json
@@ -1149,6 +1150,8 @@ def cmd_verify_edit():
         pass
     msg = (
         f'Code was edited{file_info}. '
+        '(This message is from the plan-verification hook — it fires automatically after every Edit or Write '
+        'so you and the user have two sets of eyes on every change before moving on.) '
         'Read back the changed lines now and show them to the user — '
         'quote the actual file content, not a summary. '
         'Then confirm: does it match the After block in the plan? '
