@@ -947,20 +947,24 @@ footer {
 <canvas id="particleBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.85;"></canvas>
 <div class="hero">
   <div>
-    <div class="hero-eyebrow"><span class="dot"></span>persistent memory for Claude Code · open source · MIT · built on official Claude Code APIs</div>
+    <div class="hero-eyebrow"><span class="dot"></span>persistent memory for Claude Code · open source · MIT · built on official Claude Code APIs · data stays on your machine</div>
     <h1>
       Claude forgets.<br>
       Your <span class="h1-amber">engineering</span><br>
       environment shouldn't.
     </h1>
     <p class="hero-sub">
-      No API keys. No background service. No database. Just markdown files
-      that git already knows how to handle — and <em>persistent memory that survives
-      every session close, crash, and machine switch.</em>
+      No API keys. No background service. No database. Memory stays on your machine by default — nothing is pushed anywhere unless you choose to. Just markdown files that git already knows how to handle.
     </p>
     <div class="hero-btns">
       <a class="btn btn-primary" href="#install">Get started →</a>
       <a class="btn btn-ghost" href="https://github.com/YehudaFrankel/engram" target="_blank">View on GitHub</a>
+    </div>
+    <div style="display:flex; gap:1.5rem; margin-top:1.25rem; flex-wrap:wrap;">
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Data stays local</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> No server, no cloud</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Sync is opt-in</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Self-host compatible</span>
     </div>
   </div>
 
@@ -1521,6 +1525,80 @@ footer {
       <div class="cmd-row"><div class="cr-cmd">Update Kit</div><div class="cr-desc">Pull latest from GitHub — shows exactly what will change, <em>asks before applying</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Update Kit from [URL]</div><div class="cr-desc">Pull from a fork or branch — <em>your memory files are never touched</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">/check-anthropic</div><div class="cr-desc">Fetch Claude Code releases + docs, cross-reference against hooks/features in use, report gaps rated High/Medium/Low — run every few weeks</div></div>
+      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--muted); font-size:.65rem; letter-spacing:.06em;">SYNC (OPT-IN)</div><div class="cr-desc" style="color:var(--muted)">Memory stays local by default — sync only if you need cross-machine access</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Setup Sync: [repo URL]</div><div class="cr-desc">One-time setup — points memory at your private repo. <em>Your data, your repo, your control.</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">Sync Memory</div><div class="cr-desc">Push memory to your private repo after a session</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Pull Memory</div><div class="cr-desc">Pull memory on a new machine</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Sync Status</div><div class="cr-desc">Check if anything is unpushed</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SYNC -->
+<section id="sync" style="background:var(--s1); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="wrap-sm">
+    <div class="sec-label">cross-machine sync</div>
+    <h2>Works on any machine — <span class="h2-amber">when you want it to</span></h2>
+    <p class="sec-desc">Memory stays on your machine by default. Nothing leaves unless you set this up. When you're ready to work across machines, three commands get you there.</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2rem;" class="reveal">
+      <div style="background:var(--bg); padding:1.5rem 1.75rem;">
+        <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// FIRST TIME</div>
+        <div style="font-family:monospace; font-size:.82rem; color:var(--amber); margin-bottom:.5rem;">Setup Sync: https://github.com/you/my-memory</div>
+        <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Creates a git repo inside <code>.claude/memory/</code> and pushes to your private repo. That's it.</div>
+      </div>
+      <div style="background:var(--bg); padding:1.5rem 1.75rem;">
+        <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// AFTER EACH SESSION</div>
+        <div style="font-family:monospace; font-size:.82rem; color:var(--amber); margin-bottom:.5rem;">Sync Memory</div>
+        <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Pushes memory to your private repo. Run after End Session on any machine.</div>
+      </div>
+      <div style="background:var(--bg); padding:1.5rem 1.75rem;">
+        <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// NEW MACHINE</div>
+        <div style="font-family:monospace; font-size:.82rem; color:var(--amber); margin-bottom:.5rem;">Pull Memory</div>
+        <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Pulls everything down. Then type <code>Start Session</code> — fully up to speed.</div>
+      </div>
+      <div style="background:var(--bg); padding:1.5rem 1.75rem;">
+        <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// CHECK</div>
+        <div style="font-family:monospace; font-size:.82rem; color:var(--amber); margin-bottom:.5rem;">Sync Status</div>
+        <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Shows remote URL and any unpushed changes.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem;" class="reveal">
+      <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1.25rem;">// WHY THIS IS SAFE</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Your repo. Your rules.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Memory goes to a private GitHub repo you create and own. Engram never sees it, never touches it, has no access to it. Delete the repo at any time — no lock-in.</div>
+        </div>
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Code flows one way only.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Kit updates are pulled from engram to your machine. Nothing ever goes the other direction. <code>Sync Memory</code> pushes to your repo — not engram's.</div>
+        </div>
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Fully auditable.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Memory files are plain markdown. Read them, diff them, grep them, restore any version from git history. Nothing is encoded or opaque. If something sensitive lands in a file, you see it immediately.</div>
+        </div>
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">What's actually in memory.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Lessons from past sessions. Architectural decisions. Rejected approaches. Function names. Project status. No passwords, credentials, or customer data — and you can see everything that's there.</div>
+        </div>
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Self-hosted option.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Replace GitHub with GitLab, Bitbucket, or any on-prem git server. <code>sync.py</code> works with any git remote — just swap the URL.</div>
+        </div>
+
+        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
+          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Regulated industries.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Keep memory local (skip sync). Engram adds nothing to your data surface. Claude Code itself sends prompts to Anthropic — for HIPAA/finance, that requires an Anthropic enterprise plan regardless of this kit.</div>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
