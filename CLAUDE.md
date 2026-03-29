@@ -55,6 +55,13 @@ When the user types **"Analyze Codebase"**, do the following:
 5. **Update `tools/memory.py`** — if it exists, make sure JS_FILES and CSS_FILES in the drift-check section include all discovered files
 6. **Report** — "Analyzed: [N] JS functions, [N] CSS classes, [N] endpoints. Memory updated."
 
+### `Loop Check`
+Use `/loop` to run a recurring memory check automatically:
+```
+/loop 30m Check Drift
+```
+This fires `Check Drift` every 30 minutes for the session — no manual prompting needed. Stop it with `/stop-loop` or close the session.
+
 ### `Check Drift`
 When the user types **"Check Drift"**, do the following:
 1. Run `python tools/memory.py --check-drift` (or `python3`) — if the script doesn't exist, manually scan JS files and compare against `js_functions.md`
