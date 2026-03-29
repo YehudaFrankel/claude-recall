@@ -22,6 +22,7 @@
   --muted:   #9a8a6a;
   --dim:     #5a4830;
   --mono: 'SF Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --bg: #1c1508;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -961,10 +962,10 @@ footer {
       <a class="btn btn-ghost" href="https://github.com/YehudaFrankel/clankbrain" target="_blank">View on GitHub</a>
     </div>
     <div style="display:flex; gap:1.5rem; margin-top:1.25rem; flex-wrap:wrap;">
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Data stays local</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> No server, no cloud</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Sync is opt-in</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:#4caf50;">●</span> Self-host compatible</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Data stays local</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> No server, no cloud</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Sync is opt-in</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Self-host compatible</span>
     </div>
   </div>
 
@@ -973,10 +974,10 @@ footer {
       <div class="td td-r"></div>
       <div class="td td-y"></div>
       <div class="td td-g"></div>
-      <span class="term-path"><span class="amber">yf@clankbrain</span> ~ sessions/112</span>
+      <span class="term-path"><span class="amber">yf@clankbrain</span> ~ sessions/139</span>
     </div>
     <div class="term-body" id="hero-term">
-      <span class="tmut"># session 112 / march 23</span><br>
+      <span class="tmut"># session 139 / march 29</span><br>
       <span class="tgap"></span>
       <span class="tp">yf@clankbrain ~ $</span> <span id="typeTarget"></span><span class="cursor" id="typeCursor"></span>
     </div>
@@ -1038,7 +1039,7 @@ footer {
 
     <div style="margin-top:2.5rem; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); font-size:.76rem;" class="reveal">
       <div style="padding:1rem 1.4rem; background:var(--s2); border-bottom:1px solid var(--border); grid-column:1; color:var(--muted); letter-spacing:.08em;">HEAVY TOOLS</div>
-      <div style="padding:1rem 1.4rem; background:var(--s1); border-bottom:1px solid var(--border); border-left:1px solid var(--border2); grid-column:2; color:var(--amber); letter-spacing:.08em;">CLAUDE-RECALL</div>
+      <div style="padding:1rem 1.4rem; background:var(--s1); border-bottom:1px solid var(--border); border-left:1px solid var(--border2); grid-column:2; color:var(--amber); letter-spacing:.08em;">CLANKBRAIN</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); color:var(--muted);">API key required</div>
       <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); color:var(--green);">zero dependencies</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">background service running</div>
@@ -1194,6 +1195,7 @@ footer {
         <tr><td class="td-cmd">verification-loop</td><td class="td-trig">verify, run verification loop, did that work</td><td class="td-desc">After a code change — confirm it compiled, smoke test, self-check quality</td></tr>
         <tr><td class="td-cmd">search-first</td><td class="td-trig">search first, check if this exists</td><td class="td-desc">Enforce research-before-coding: search codebase before implementing anything new</td></tr>
         <tr><td class="td-cmd">strategic-compact</td><td class="td-trig">should I compact, context getting long</td><td class="td-desc">Evaluate whether to compact and guide through safe compaction that preserves all memory</td></tr>
+        <tr><td class="td-cmd">java-reviewer</td><td class="td-trig">review this java, java review</td><td class="td-desc">Deep Java review against your stack's specific patterns — goes beyond generic code review</td></tr>
       </tbody>
     </table>
 
@@ -1472,7 +1474,7 @@ footer {
 <canvas id="radarBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
   <div class="wrap-sm" style="position:relative;z-index:1;">
     <div class="sec-label">proof of concept</div>
-    <h2>128 sessions.<br><span class="h2-amber">One living environment.</span></h2>
+    <h2>139 sessions.<br><span class="h2-amber">One living environment.</span></h2>
     <p class="sec-desc">
       Built and validated on a production project — Java backend, vanilla JS, SQL Server.
       These numbers are from the actual engineering environment this kit grew out of.
@@ -1488,9 +1490,9 @@ footer {
       <div class="stats-body" id="stats-term-body">
         <span class="st-cmd">cat</span> <span style="color:var(--text)">stats.md</span><br>
         <span class="tdim">────────────────────────────────────────</span><br>
-        <span class="st-key">sessions logged         </span><span class="st-val">128</span><br>
+        <span class="st-key">sessions logged         </span><span class="st-val">139</span><br>
         <span class="st-key">skills in active use    </span><span class="st-val">23+</span><br>
-        <span class="st-key">sessions, zero data lost</span><span class="st-val">128</span><br>
+        <span class="st-key">sessions, zero data lost</span><span class="st-val">139</span><br>
         <span class="st-key">memory files tracked    </span><span class="st-val">20+</span><br>
         <span class="st-key">decisions preserved     </span><span class="st-val">15+</span><br>
         <span class="st-key">rejected approaches logged</span><span class="st-val">12</span><br>
@@ -1816,7 +1818,7 @@ footer {
 
 <footer>
   <div class="footer-mark">
-    <div class="yf-mark">YF</div>
+    <img src="logo.jpeg" alt="Clankbrain" style="width:24px;height:24px;object-fit:contain;border-radius:3px;">
     <span>clankbrain</span>
   </div>
   <div class="footer-links">
@@ -1834,11 +1836,11 @@ const lines = [
 ];
 const outputs = [
   { delay: 0,    html: '<span class="tmut">// loading memory from disk...</span>' },
-  { delay: 600,  html: '<span class="tok">✓ MEMORY.md loaded (session 128)</span>' },
+  { delay: 600,  html: '<span class="tok">✓ MEMORY.md loaded (session 139)</span>' },
   { delay: 1000, html: '<span class="tok">✓ lessons.md — 34 patterns applied</span>' },
   { delay: 1400, html: '<span class="tok">✓ decisions.md — 15 settled decisions</span>' },
   { delay: 1900, html: '<span class="tmut">// last session: skill chaining + autonomous hooks</span>' },
-  { delay: 2500, html: '<span class="twarn">→ 128 sessions · zero re-explanations needed</span>' },
+  { delay: 2500, html: '<span class="twarn">→ 139 sessions · zero re-explanations needed</span>' },
   { delay: 3200, html: '<span class="tgap"></span><span class="tp">yf@clankbrain ~ $</span> <span class="cursor"></span>' },
 ];
 
@@ -2507,9 +2509,9 @@ function initStatsAnim() {
   if (!body) return;
 
   var LINES = [
-    { key: 'sessions logged         ', val: '128' },
+    { key: 'sessions logged         ', val: '139' },
     { key: 'skills in active use    ', val: '23+' },
-    { key: 'sessions, zero data lost', val: '128' },
+    { key: 'sessions, zero data lost', val: '139' },
     { key: 'memory files tracked    ', val: '20+' },
     { key: 'decisions preserved     ', val: '15+' },
     { key: 'rejected approaches logged', val: '12' },
