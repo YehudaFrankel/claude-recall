@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://clankbrain.vercel.app/sitemap.xml

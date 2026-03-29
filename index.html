@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clankbrain — Persistent Memory for Claude Code</title>
-<meta name="description" content="Clankbrain (formerly clankbrain) — persistent memory, self-improving skills, and autonomous workflows for Claude Code.">
-<!-- formerly known as clankbrain and Claude-Code-memory-starter-kit -->
+<meta name="description" content="Clankbrain (formerly claude-recall, engram) — persistent memory, self-improving skills, and autonomous workflows for Claude Code.">
+<!-- formerly known as claude-recall, engram, and Claude-Code-memory-starter-kit -->
 <style>
 :root {
   --bg0:     #1c1508;
@@ -973,12 +973,12 @@ footer {
       <div class="td td-r"></div>
       <div class="td td-y"></div>
       <div class="td td-g"></div>
-      <span class="term-path"><span class="amber">yf@recall</span> ~ sessions/112</span>
+      <span class="term-path"><span class="amber">yf@clankbrain</span> ~ sessions/112</span>
     </div>
     <div class="term-body" id="hero-term">
       <span class="tmut"># session 112 / march 23</span><br>
       <span class="tgap"></span>
-      <span class="tp">yf@recall ~ $</span> <span id="typeTarget"></span><span class="cursor" id="typeCursor"></span>
+      <span class="tp">yf@clankbrain ~ $</span> <span id="typeTarget"></span><span class="cursor" id="typeCursor"></span>
     </div>
   </div>
 </div>
@@ -1429,7 +1429,7 @@ footer {
         <div class="td td-r"></div>
         <div class="td td-y"></div>
         <div class="td td-g"></div>
-        <span style="margin-left:.4rem">yf@recall ~ $</span>
+        <span style="margin-left:.4rem">yf@clankbrain ~ $</span>
       </div>
       <div class="stats-body" style="font-size:.78rem; line-height:1.8;">
         <span class="tok">/check-anthropic</span><br>
@@ -1471,7 +1471,7 @@ footer {
         <div class="td td-r"></div>
         <div class="td td-y"></div>
         <div class="td td-g"></div>
-        <span style="margin-left:.4rem">yf@recall ~ $</span>
+        <span style="margin-left:.4rem">yf@clankbrain ~ $</span>
       </div>
       <div class="stats-body" id="stats-term-body">
         <span class="st-cmd">cat</span> <span style="color:var(--text)">stats.md</span><br>
@@ -1585,7 +1585,7 @@ footer {
 
         <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
           <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">What's actually in memory.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Lessons from past sessions. Architectural decisions. Rejected approaches. Function names. Project status. <strong style="color:var(--text);">Never put passwords, API keys, customer PII, or regulated data in memory files</strong> — memory is for code patterns and decisions, not data.</div>
+          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Lessons from past sessions. Architectural decisions. Rejected approaches. Function names. Project status. <strong style="color:var(--text);">Never put passwords, API keys, customer PII, or regulated data in memory files.</strong> If something sensitive accidentally gets in, delete the entry and purge from git history: <code>git filter-repo --path .claude/memory/file.md --invert-paths</code></div>
         </div>
 
         <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
@@ -1792,7 +1792,7 @@ const outputs = [
   { delay: 1400, html: '<span class="tok">✓ decisions.md — 15 settled decisions</span>' },
   { delay: 1900, html: '<span class="tmut">// last session: skill chaining + autonomous hooks</span>' },
   { delay: 2500, html: '<span class="twarn">→ 128 sessions · zero re-explanations needed</span>' },
-  { delay: 3200, html: '<span class="tgap"></span><span class="tp">yf@recall ~ $</span> <span class="cursor"></span>' },
+  { delay: 3200, html: '<span class="tgap"></span><span class="tp">yf@clankbrain ~ $</span> <span class="cursor"></span>' },
 ];
 
 function runTerminal() {
