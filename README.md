@@ -175,7 +175,7 @@ Two commands. Everything else is automatic.
 | `strategic-compact` | "should I compact?" | Safe context compaction without losing memory |
 | `learn` | `/learn`, "End Session" | Extracts lessons, scores skills, logs velocity |
 | `evolve` | `/evolve` | Patches failing skills, clusters patterns into new skills |
-| `java-reviewer` | "review this java" | Deep Java review against your stack's specific patterns |
+| `code-reviewer` | "review this", "check this code" | Reviews code against your project's past lessons, locked decisions, and stack-specific patterns — gets smarter every session |
 
 Type `Generate Skills` and Claude creates additional skills tailored to your exact stack and file structure — fix-bug, code-review, security-check, new-feature, and more, configured for your actual file names and patterns.
 
@@ -418,7 +418,7 @@ Seven hooks run automatically — no commands needed, no configuration required.
 |------|--------------|-------------|
 | `SessionStart` | When a session begins | `memory.py --session-start` — loads MEMORY.md + status into context; surfaces interruption state if last session crashed. |
 | `UserPromptSubmit` | Before every prompt | `memory.py --capture-correction` — detects correction language and queues it for `/learn`. |
-| `PostToolUse` | After every Edit or Write | `memory.py --check-drift --silent` — catches drift immediately after every file change (runs async, no delay). |
+| `PostToolUse` | After every Edit or Write | `memory.py --check-drift --silent` — catches drift immediately after every file change (runs async, no delay). `memory.py --verify-edit` — quotes the changed lines back to you so you confirm the edit matches the plan. |
 | `PreCompact` | Before context compaction | `memory.py --precompact` — surfaces memory checklist before context is compressed. |
 | `PostCompact` | After context compaction | `memory.py --postcompact` — re-injects MEMORY.md so session resumes warm, not cold. |
 | `Stop` (journal) | After every response | `memory.py --journal` — auto-captures session summary. Searchable forever, no `/learn` needed. |
@@ -494,7 +494,7 @@ your-project/
         ├── verification-loop/
         ├── strategic-compact/
         ├── search-first/
-        └── java-reviewer/          ← stack-specific; Generate Skills adds more
+        └── code-reviewer/          ← reads lessons.md + decisions.md; Generate Skills adds more
 ```
 
 Commit `.claude/memory/` and `.claude/skills/` to your repo. Memory and skills travel with the code.
