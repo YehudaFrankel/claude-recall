@@ -64,14 +64,16 @@ Show the plan. Wait for "yes", "go ahead", "do it", or equivalent. Only then edi
 
 ---
 
-## Step 3 — Verify After Every Edit
+## Step 3 — Verify After Every Edit (user must see this)
 
 After applying each edit:
 1. Read back the changed lines from the file
-2. Confirm the actual content matches the After in the plan
-3. Report: `✓ Verified: [file]:[lines] matches plan` — or flag any discrepancy immediately
+2. **Show the user the actual lines** — quote the content, not a summary
+3. Confirm it matches the After block: `✓ Verified [file]:[lines] — [quoted content]`
+4. If it doesn't match — show the diff and stop immediately
 
-Do not move to the next edit until the current one is verified.
+**Do not proceed to the next edit until the user has seen the verification.**
+The user is the confirmation — this is not a background check.
 
 ---
 

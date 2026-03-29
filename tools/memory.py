@@ -1149,9 +1149,12 @@ def cmd_verify_edit():
         pass
     msg = (
         f'Code was edited{file_info}. '
-        'Step 3 of plan-before-edit: read back the changed lines and confirm '
-        'they match your plan After block. '
-        'Report \u2713 Verified:[file]:[lines] or flag any mismatch immediately before continuing.'
+        'Read back the changed lines now and show them to the user — '
+        'quote the actual file content, not a summary. '
+        'Then confirm: does it match the After block in the plan? '
+        'Show the user: \u2713 Verified [file]:[lines] — [quoted content] '
+        'or flag the mismatch with the diff. '
+        'Do not proceed to the next edit until the user has seen this.'
     )
     print(json.dumps({'callback': msg}))
 
