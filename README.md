@@ -16,7 +16,6 @@ No API keys. No background service. No database. Memory stays on your machine by
 
 **Using Clankbrain on a real project? [Tell us what you're building →](https://github.com/YehudaFrankel/clankbrain/discussions) · If it helped, [⭐ star it](https://github.com/YehudaFrankel/clankbrain) — it helps others find it.**
 
-**Using Clankbrain on a real project? [Tell us what you're building →](https://github.com/YehudaFrankel/clankbrain/discussions)**
 
 **[Three Tiers](#three-tiers) · [Quick Start](#quick-start) · [Examples](examples/) · [What Ships](#what-ships-out-of-the-box) · [Optional Skills](#optional-skills----install-when-you-need-them) · [Learning Loop](#skills-fix-their-own-mistakes) · [Autonomous](#workflows-run-themselves) · [Every Command](#every-command) · [Architecture](#architecture) · [Hooks](#lifecycle-hooks) · [Modes](#two-modes) · [File Tree](#what-gets-created) · [Results](#real-results) · [FAQ](#faq)**
 
