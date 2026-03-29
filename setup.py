@@ -749,6 +749,13 @@ type: project
     # .gitignore — HANDOFF.md is point-in-time, never commit it
     _write_gitignore()
 
+    # ── Multi-IDE rules ──
+    ide = _detect_ide_flag()
+    if ide in ('cursor', 'all'):
+        generate_cursor_rule(name, tech)
+    if ide in ('windsurf', 'all'):
+        generate_windsurf_rule(name, tech)
+
     print(f"""
 Done. Lite memory system created in: {ROOT}
 
@@ -1069,6 +1076,78 @@ Things to flag when found in this codebase.
 """)
 
     print("  Created .claude/skills/ (code-review, security-check, fix-bug, new-feature, environment-check, run-verification, refactor)")
+
+
+# ─── Multi-IDE Adapters ───────────────────────────────────────────────────────
+
+_IDE_MEMORY_BODY = """\
+
+## Memory Files — Read at Every Session Start
+
+- `tasks/lessons.md` — lessons from past sessions (apply before touching any code)
+- `tasks/decisions.md` — settled architectural choices (never re-debate these)
+- `tasks/errors.md` — known bugs and their fixes
+- `.claude/memory/project_status.md` — current phase and what is in progress
+- `.claude/memory/user_preferences.md` — how I like to work
+
+## Session Commands
+
+**Start Session** — Read all memory files above. Report: "Ready. [last entry from STATUS.md]. What are we working on?"
+
+**End Session** — Update all relevant memory files for anything changed this session. Update STATUS.md (increment session number, one-line summary). Report: "Session N complete. Updated: [list]."
+
+**remember: [anything]** — Save this instantly to `tasks/draft-lessons.md` with today's date. Never wait for End Session.
+
+**Check Drift** — Run `python tools/memory.py --check-drift` and report any undocumented functions or stale entries.
+
+## Rules
+
+1. Read `tasks/decisions.md` before proposing any architectural approach — settled decisions are not up for debate.
+2. Read `tasks/lessons.md` before touching any code — apply all lessons before starting.
+3. Read `tasks/errors.md` before debugging — check if the bug is already solved.
+4. Never re-explain what is already in memory files — they exist so you don't have to repeat yourself.
+5. After any code change, immediately update the relevant memory file — do not wait for End Session.
+"""
+
+
+def generate_cursor_rule(name, tech):
+    """Write .cursor/rules/memory.mdc — always-on project memory for Cursor."""
+    content = f"""\
+---
+alwaysApply: true
+description: {name} project memory — read at every session
+---
+
+# {name} — Project Memory
+Stack: {tech}
+{_IDE_MEMORY_BODY}"""
+    write(".cursor/rules/memory.mdc", content)
+    print("  Created .cursor/rules/memory.mdc (alwaysApply: true)")
+
+
+def generate_windsurf_rule(name, tech):
+    """Write .windsurf/rules/memory.md — always-on project memory for Windsurf."""
+    content = f"""\
+---
+trigger: always_on
+---
+
+# {name} — Project Memory
+Stack: {tech}
+{_IDE_MEMORY_BODY}"""
+    write(".windsurf/rules/memory.md", content)
+    print("  Created .windsurf/rules/memory.md (trigger: always_on)")
+
+
+def _detect_ide_flag():
+    """Read --ide flag from sys.argv. Returns 'cursor', 'windsurf', 'all', or None."""
+    import sys as _sys
+    for i, arg in enumerate(_sys.argv):
+        if arg == '--ide' and i + 1 < len(_sys.argv):
+            return _sys.argv[i + 1].lower()
+        if arg.startswith('--ide='):
+            return arg.split('=', 1)[1].lower()
+    return None
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
@@ -1408,9 +1487,24 @@ type: reference
     # ── tools/memory.py ──
     _copy_memory_py()
 
+    # ── Multi-IDE rules ──
+    ide = _detect_ide_flag()
+    if ide in ('cursor', 'all'):
+        generate_cursor_rule(name, tech)
+    if ide in ('windsurf', 'all'):
+        generate_windsurf_rule(name, tech)
+
     # ── Done ──
+    ide_note = ""
+    if ide == 'cursor':
+        ide_note = "\nCursor:    .cursor/rules/memory.mdc (alwaysApply: true)"
+    elif ide == 'windsurf':
+        ide_note = "\nWindsurf:  .windsurf/rules/memory.md (trigger: always_on)"
+    elif ide == 'all':
+        ide_note = "\nCursor:    .cursor/rules/memory.mdc\nWindsurf:  .windsurf/rules/memory.md"
+
     print(f"""
-Done. Full memory system created in: {ROOT}
+Done. Full memory system created in: {ROOT}{ide_note}
 
 Next steps:
   1. Fill in CLAUDE.md — tech stack, file paths, coding conventions

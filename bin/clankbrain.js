@@ -54,7 +54,7 @@ async function main() {
     await download(SETUP_URL, tmp);
     console.log('done.\n');
 
-    const result = spawnSync(python, [tmp], {
+    const result = spawnSync(python, [tmp, ...process.argv.slice(2)], {
       stdio: 'inherit',
       cwd:   process.cwd()
     });

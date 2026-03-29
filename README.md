@@ -54,10 +54,23 @@ Skill chaining, self-healing, drift detection, and auto end-session run without 
 **Requires:** [Claude Code](https://claude.ai/claude-code) · Python 3.7+ for Full mode (Lite is zero-Python)
 
 ```bash
-# 1. Run this from your project root (requires Node 14+)
+# Claude Code (default)
 npx clankbrain
 
-# 2. Inside Claude Code — every session from here on:
+# Cursor
+npx clankbrain --ide cursor
+
+# Windsurf
+npx clankbrain --ide windsurf
+
+# All IDEs at once
+npx clankbrain --ide all
+```
+
+> **Warp and GitHub Copilot** get clankbrain automatically — they both read `CLAUDE.md` natively. No extra flag needed.
+
+```
+# Every session, in any IDE:
 Start Session    ←  reads memory, applies lessons, picks up where you left off
 End Session      ←  extracts lessons, saves memory locally, done
 ```
@@ -91,6 +104,7 @@ Setup auto-detects your project name and tech stack from the folder — no quest
 | Framework lock-in | yes | any project, any stack |
 | Config needed | varies | none — auto-detected from folder |
 | GitHub account needed | sometimes | no — sync is optional |
+| IDE lock-in | varies | Claude Code, Cursor, Windsurf, Warp, Copilot |
 | Setup time | 30–60 min | ~5 minutes |
 
 No terminal? Paste this into Claude Code chat instead:
