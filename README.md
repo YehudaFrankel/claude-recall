@@ -97,6 +97,8 @@ python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githu
 
 Setup auto-detects your project name and tech stack from the folder — no questions asked.
 
+**New here?** Start with [`examples/first-week.md`](examples/first-week.md) — day-by-day guide showing what changes as the system learns your project. [`examples/session-walkthrough.md`](examples/session-walkthrough.md) shows a full Start → plan → edit → verify → End session in detail.
+
 | | Heavy tools | Clankbrain |
 |---|---|---|
 | API key | required | none |
