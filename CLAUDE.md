@@ -281,20 +281,31 @@ Run `/learn` before `End Session`. Run `/evolve` when lessons accumulate (every 
 
 ## Advanced: Cross-Machine Sync (opt-in)
 
-Memory is local by default. If you want memory to follow you across machines, push `.claude/memory/` to your own private repo:
+Memory is local by default. Nothing is pushed anywhere unless you set this up.
 
-```bash
-# one-time setup
-cd your-project
-git init   # if not already a git repo
-echo ".claude/memory/" >> .gitignore   # remove this line to track memory
-git add .claude/memory/ && git commit -m "init memory" && git push
+### `Setup Sync`
+When the user types **"Setup Sync"** or **"Setup Sync: [repo URL]"**, do the following:
+1. If no URL provided — ask: "What's the URL of your private GitHub repo for memory? (Create one at github.com/new — make it private)"
+2. Run: `python sync.py setup [repo-url]`
+3. If it fails with an auth error — tell the user to run `gh auth login` first, then retry
+4. Report: "Sync enabled. Memory will push to [repo]. Run `Sync Memory` after each session, or `Pull Memory` on a new machine."
 
-# after each End Session
-git add .claude/memory/ && git commit -m "session update" && git push
-```
+### `Sync Memory`
+When the user types **"Sync Memory"**, do the following:
+1. Run: `python sync.py push`
+2. Report the result — "Memory synced" or surface the error
 
-Kit code always flows **one way only: engram → your machine.** Nothing is ever pushed back to engram.
+### `Pull Memory`
+When the user types **"Pull Memory"**, do the following:
+1. Run: `python sync.py pull`
+2. Report: "Memory pulled — you're up to date" or surface the error
+
+### `Sync Status`
+When the user types **"Sync Status"**, do the following:
+1. Run: `python sync.py status`
+2. Report what it returns
+
+> **Kit code always flows one way: engram → your machine.** Nothing is ever pushed back to engram. Sync goes to your own private repo — you own it, you control it.
 
 ---
 

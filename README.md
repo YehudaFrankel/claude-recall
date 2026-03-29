@@ -4,7 +4,7 @@
 
 ![Session demo](demo.gif)
 
-**Memory that syncs. Skills that evolve. Sessions that compound — not reset.**
+**Memory that compounds. Skills that evolve. Sessions that build — not reset.**
 
 Claude Code is stateless. Every session starts from zero — no memory of yesterday's decisions, no record of bugs already fixed, no knowledge of the approach you rejected last week. You re-explain. Claude re-suggests the same things. The same mistake happens twice.
 
@@ -63,7 +63,7 @@ python /path/to/engram/setup.py
 
 # 3. Inside Claude Code — every session from here on:
 Start Session    ←  reads memory, applies lessons, picks up where you left off
-End Session      ←  extracts lessons, syncs memory, done
+End Session      ←  extracts lessons, saves memory locally, done
 ```
 
 Setup asks about your stack, configures itself, and builds everything automatically.
@@ -249,15 +249,69 @@ No human steps between. Claude reads the chain and runs it. Build your own chain
 
 ---
 
-## It Works on Any Machine
+## Cross-Machine Sync (opt-in)
 
-Memory is stored as plain markdown files, synced to git. Pull your project on a new machine and Claude is fully up to speed:
+Memory stays on your machine by default. Nothing leaves unless you set this up.
+
+If you work across multiple machines — or want a backup — you can sync memory to your own private GitHub repo. Three commands, two minutes.
+
+### Setup (once)
+
+Create a private repo at github.com/new, then inside Claude Code:
+
+```
+Setup Sync: https://github.com/you/my-memory
+```
+
+Claude runs `sync.py setup`, initialises git inside `.claude/memory/`, and pushes to your repo. That's it.
+
+Or from terminal:
 
 ```bash
-git pull
-Install Memory    ←  inside Claude Code — copies memory to Claude's system path
-Start Session     ←  Claude knows everything: all lessons, decisions, skills
+python sync.py setup https://github.com/you/my-memory
 ```
+
+### Day to day
+
+```
+Sync Memory      ←  after End Session, pushes memory to your repo
+Pull Memory      ←  on a new machine, pulls everything down
+Sync Status      ←  check if anything is unpushed
+```
+
+Or from terminal: `python sync.py push` / `python sync.py pull`
+
+### On a new machine
+
+```bash
+git clone https://github.com/you/your-project
+python sync.py pull    ←  pulls memory from your private repo
+```
+
+Then open Claude Code and type `Start Session` — fully up to speed.
+
+---
+
+## Why sync is safe
+
+**Your repo, your rules.** Memory goes to a private GitHub repo you create and own. Engram never sees it, never touches it, has no access to it. You can delete the repo at any time.
+
+**Kit code flows one way only.** Updates are pulled from engram to your machine. Nothing ever goes the other direction. `sync.py push` pushes to your repo — not engram's.
+
+**Plain text — fully auditable.** Memory files are markdown. You can read them, diff them, review them in a PR, grep them, and restore any version from git history. Nothing is encoded or opaque.
+
+**What's actually in memory files:**
+- Lessons learned from past sessions
+- Architectural decisions and why they were made
+- Rejected approaches and why
+- Function names and what they do
+- Project status and what's in progress
+
+No passwords. No customer data. No credentials. If something sensitive accidentally ends up in a memory file, you can see it immediately and delete it — it's just a text file.
+
+**Self-hosted option.** For stricter environments, replace GitHub with GitLab, Bitbucket, or any on-prem git server. The `sync.py` script works with any git remote — just swap the URL.
+
+**Anthropic's role.** Engram memory files are local. Claude Code itself sends your prompts to Anthropic — that's separate from this kit. For regulated industries, use an Anthropic enterprise plan with a signed BAA. Engram adds nothing to that surface.
 
 ---
 
@@ -267,7 +321,7 @@ Start Session     ←  Claude knows everything: all lessons, decisions, skills
 | Command | What it does |
 |---------|-------------|
 | `Start Session` | Reads memory, applies lessons, surfaces open plans, picks up where you left off |
-| `End Session` | Runs /learn, updates STATUS.md, scans plans, syncs all memory files |
+| `End Session` | Runs /learn, updates STATUS.md, scans plans — memory saved locally |
 | `Plan [feature]` | Structured planning — options with ratings, decision logged live, full plan auto-displayed |
 | `Show Plan` | Display full current plan file — no summary, always the complete document |
 | `/learn` | Extracts lessons, scores skills (Y/N), logs velocity — auto-runs at End Session |
@@ -289,6 +343,14 @@ Start Session     ←  Claude knows everything: all lessons, decisions, skills
 | `Install Memory` | New machine — copies memory files to Claude's system path |
 | `Generate Skills` | Auto-creates skills tailored to your actual stack, file names, and patterns |
 | `Update Kit` | Pulls latest kit safely — only the kit commands block in CLAUDE.md is ever touched; your memory, skills, and code are never modified |
+
+### Sync (opt-in)
+| Command | What it does |
+|---------|-------------|
+| `Setup Sync: [repo URL]` | One-time setup — points memory at your private GitHub repo |
+| `Sync Memory` | Push memory to your repo after a session |
+| `Pull Memory` | Pull memory on a new machine |
+| `Sync Status` | Check if anything is unpushed |
 
 ### Planning
 | Command | What it does |
