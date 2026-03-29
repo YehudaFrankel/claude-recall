@@ -5,7 +5,7 @@ Engram memory sync — optional cross-machine sync for your memory files.
 Memory stays local by default. This script is opt-in — run it only if you
 want memory to follow you across machines.
 
-Your memory goes to YOUR private repo. Nothing touches engram.
+Your memory goes to YOUR private repo. Nothing touches clankbrain.
 
 Usage:
   python sync.py setup https://github.com/you/my-memory   # first time setup
@@ -71,7 +71,7 @@ def setup(repo_url):
 
     # Initial commit and push
     run("git add -A", cwd=MEMORY_DIR)
-    result = run('git commit -m "Initial memory sync from engram"', cwd=MEMORY_DIR, capture=True)
+    result = run('git commit -m "Initial memory sync from clankbrain"', cwd=MEMORY_DIR, capture=True)
 
     if "nothing to commit" in (result.stdout + result.stderr):
         print("Memory directory is empty — nothing committed yet.")

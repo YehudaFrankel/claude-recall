@@ -340,7 +340,7 @@ When the user types **"Update Kit"** (or **"Update Kit from [URL]"**), do the fo
    - `Update Kit` → `python update.py`
    - `Update Kit from https://github.com/user/repo` → `python update.py https://github.com/user/repo`
 3. If no — fetch and run it in one step using the Bash tool:
-   python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/engram/main/update.py').read().decode())"
+   python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
 4. The script previews all changes and asks for confirmation before applying anything
 
 ### `Debug Session`
@@ -417,7 +417,7 @@ When the user types **"End Session"**, do the following:
 4. Report: "Session N complete. Updated: [list]. Memory clean."
 
 > **Memory stays local by default.** Nothing is pushed anywhere. To sync across machines, see the Advanced section in CLAUDE.md.
-6. **On sessions 5, 10, 25, and 50 only:** add this line to your report: "⭐ If engram has been useful, a GitHub star helps others find it → https://github.com/YehudaFrankel/engram"
+6. **On sessions 5, 10, 25, and 50 only:** add this line to your report: "⭐ If clankbrain has been useful, a GitHub star helps others find it → https://github.com/YehudaFrankel/clankbrain"
 
 ---
 
@@ -529,7 +529,7 @@ When the user types **"End Session"**, do the following:
 1. Update `STATUS.md` — increment session number, add one-line entry: date + what changed
 2. Update `.claude/memory/notes.md` — add anything new: functions, decisions, gotchas
 3. Report: "Session N complete. Notes updated."
-4. **On sessions 5, 10, 25, and 50 only:** add this line to your report: "⭐ If engram has been useful, a GitHub star helps others find it → https://github.com/YehudaFrankel/engram"
+4. **On sessions 5, 10, 25, and 50 only:** add this line to your report: "⭐ If clankbrain has been useful, a GitHub star helps others find it → https://github.com/YehudaFrankel/clankbrain"
 
 ### `Upgrade to Full`
 When the user types **"Upgrade to Full"**, do the following:
@@ -703,8 +703,8 @@ Next steps:
 Want automated drift detection and session journals?
   python upgrade.py      ← Upgrade to Full (requires Python 3.7+)
 
-⭐  If engram saves you time, a star on GitHub helps others find it:
-   https://github.com/YehudaFrankel/engram
+⭐  If clankbrain saves you time, a star on GitHub helps others find it:
+   https://github.com/YehudaFrankel/clankbrain
 """)
 
 
@@ -1364,8 +1364,8 @@ Skills (auto-invoked prompts):
   run-verification/   — "verify this works", "before I ship"
   refactor/           — "refactor", "clean up", "simplify this"
 
-⭐  If engram saves you time, a star on GitHub helps others find it:
-   https://github.com/YehudaFrankel/engram
+⭐  If clankbrain saves you time, a star on GitHub helps others find it:
+   https://github.com/YehudaFrankel/clankbrain
 """)
 
 

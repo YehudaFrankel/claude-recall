@@ -1,6 +1,6 @@
-# Engram — The Living System for Claude Code
+# Clankbrain — The Living System for Claude Code
 
-[![v2.0.0](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)](https://github.com/YehudaFrankel/engram/releases) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue?style=flat-square)](https://python.org/downloads) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code)
+[![v2.0.0](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue?style=flat-square)](https://python.org/downloads) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code)
 
 ![Session demo](demo.gif)
 
@@ -8,7 +8,7 @@
 
 Claude Code is stateless. Every session starts from zero — no memory of yesterday's decisions, no record of bugs already fixed, no knowledge of the approach you rejected last week. You re-explain. Claude re-suggests the same things. The same mistake happens twice.
 
-Engram is a living system on top of Claude Code. It doesn't just store context — it grows with your project, improves its own skills from failure data, and runs multi-step workflows without human checkpoints between each step.
+Clankbrain is a living system on top of Claude Code. It doesn't just store context — it grows with your project, improves its own skills from failure data, and runs multi-step workflows without human checkpoints between each step.
 
 No API keys. No background service. No database. Memory stays on your machine by default — nothing is pushed anywhere. Plain markdown files that git already knows how to handle.
 
@@ -18,14 +18,14 @@ No API keys. No background service. No database. Memory stays on your machine by
 
 ## Before and After
 
-**Without Engram:**
+**Without Clankbrain:**
 ```
 Monday:    explain your project → work → close
 Tuesday:   explain your project again → work → close
 Wednesday: explain again → re-fix a bug you already fixed → close
 ```
 
-**With Engram:**
+**With Clankbrain:**
 ```
 Monday:    Start Session → work → End Session
 Tuesday:   Start Session → Claude remembers everything → work → End Session
@@ -36,7 +36,7 @@ Wednesday: Start Session → lessons from Monday applied automatically → bette
 
 ## Three Tiers
 
-Most Claude setups are Tier 1 — a CLAUDE.md file and nothing else. Engram ships all three.
+Most Claude setups are Tier 1 — a CLAUDE.md file and nothing else. Clankbrain ships all three.
 
 **Tier 1 — Memory Persistence**
 Persistent context across sessions. Codebase knowledge, decisions, known bugs, rejected approaches. Syncs to git. Travels with the code. Applied at every `Start Session` before any code is touched.
@@ -55,11 +55,11 @@ Skill chaining, self-healing, drift detection, and auto end-session run without 
 
 ```bash
 # 1. Clone once
-git clone https://github.com/YehudaFrankel/engram.git
+git clone https://github.com/YehudaFrankel/clankbrain.git
 
 # 2. Run setup in your project (~2 minutes)
 cd your-project
-python /path/to/engram/setup.py
+python /path/to/clankbrain/setup.py
 
 # 3. Inside Claude Code — every session from here on:
 Start Session    ←  reads memory, applies lessons, picks up where you left off
@@ -68,7 +68,7 @@ End Session      ←  extracts lessons, saves memory locally, done
 
 Setup asks about your stack, configures itself, and builds everything automatically.
 
-| | Heavy tools | Engram |
+| | Heavy tools | Clankbrain |
 |---|---|---|
 | API key | required | none |
 | Background service | running | none — plain files |
@@ -213,7 +213,7 @@ Run `/learn` before `End Session`. Run `/evolve` every 3–5 sessions. The same 
 
 ## It Stays Accurate Without Effort
 
-Most memory tools go stale — you document once, code moves on. Engram runs `memory.py --check-drift` after every file edit. It auto-detects all JS and CSS files, compares live code against Claude's memory, and flags undocumented changes:
+Most memory tools go stale — you document once, code moves on. Clankbrain runs `memory.py --check-drift` after every file edit. It auto-detects all JS and CSS files, compares live code against Claude's memory, and flags undocumented changes:
 
 ```
 DRIFT DETECTED
@@ -294,9 +294,9 @@ Then open Claude Code and type `Start Session` — fully up to speed.
 
 ## Why sync is safe
 
-**Your repo, your rules.** Memory goes to a private GitHub repo you create and own. Engram never sees it, never touches it, has no access to it. You can delete the repo at any time.
+**Your repo, your rules.** Memory goes to a private GitHub repo you create and own. Clankbrain never sees it, never touches it, has no access to it. You can delete the repo at any time.
 
-**Kit code flows one way only.** Updates are pulled from engram to your machine. Nothing ever goes the other direction. `sync.py push` pushes to your repo — not engram's.
+**Kit code flows one way only.** Updates are pulled from clankbrain to your machine. Nothing ever goes the other direction. `sync.py push` pushes to your repo — not clankbrain's.
 
 **Plain text — fully auditable.** Memory files are markdown. You can read them, diff them, review them in a PR, grep them, and restore any version from git history. Nothing is encoded or opaque.
 
@@ -311,7 +311,7 @@ No passwords. No customer data. No credentials. If something sensitive accidenta
 
 **Self-hosted option.** For stricter environments, replace GitHub with GitLab, Bitbucket, or any on-prem git server. The `sync.py` script works with any git remote — just swap the URL.
 
-**Anthropic's role.** Engram memory files are local. Claude Code itself sends your prompts to Anthropic — that's separate from this kit. For regulated industries, use an Anthropic enterprise plan with a signed BAA. Engram adds nothing to that surface.
+**Anthropic's role.** Clankbrain memory files are local. Claude Code itself sends your prompts to Anthropic — that's separate from this kit. For regulated industries, use an Anthropic enterprise plan with a signed BAA. Clankbrain adds nothing to that surface.
 
 ---
 
@@ -503,34 +503,34 @@ A searchable history of every session — what files were edited, what the curre
 `python tools/memory.py --bootstrap` scans your entire project and generates `quick_index.md` — a grouped map of every source file by type (Java, JS, CSS, SQL, etc.). Gives Claude immediate codebase awareness without any manual documentation. Run it once on any new project.
 
 **Does this work with Anthropic's native Auto Memory?**
-Yes — they solve different problems. Anthropic's Auto Memory captures conversational context within a session. Engram persists project knowledge across sessions: your codebase structure, architectural decisions, lessons from past mistakes, and custom workflows. Auto Memory forgets when the session closes. Engram doesn't. Run both — they complement each other.
+Yes — they solve different problems. Anthropic's Auto Memory captures conversational context within a session. Clankbrain persists project knowledge across sessions: your codebase structure, architectural decisions, lessons from past mistakes, and custom workflows. Auto Memory forgets when the session closes. Clankbrain doesn't. Run both — they complement each other.
 
 **Why markdown files instead of a database?**
 Files you can read, diff, commit, and recover without any tooling. Memory stored in a database is opaque — you can't grep it, review it in a PR, or restore a version from last Tuesday. Markdown files travel with your repo, work on any machine with zero setup, and never require an API key or running service. The constraint is the feature.
 
 **Does a big CLAUDE.md actually help?**
-No — and the research backs this up. Large monolithic CLAUDE.md files increase token use by ~20% with only a 5% improvement in output quality, and sometimes a negative effect when the content is AI-generated. Engram is built the opposite way: CLAUDE.md stays lean (commands and gotchas only), and project knowledge lives in separate `.claude/memory/` files that load selectively based on what's relevant. That's what the research actually recommends. The CLAUDE.md template that ships with the kit enforces this — the project-specific section is designed to stay under 50 lines.
+No — and the research backs this up. Large monolithic CLAUDE.md files increase token use by ~20% with only a 5% improvement in output quality, and sometimes a negative effect when the content is AI-generated. Clankbrain is built the opposite way: CLAUDE.md stays lean (commands and gotchas only), and project knowledge lives in separate `.claude/memory/` files that load selectively based on what's relevant. That's what the research actually recommends. The CLAUDE.md template that ships with the kit enforces this — the project-specific section is designed to stay under 50 lines.
 
 **Is this safe for business use?**
 
-**What engram does with your data:** Nothing. Memory files stay on your machine. Kit updates are pulled from engram — nothing goes the other direction. No telemetry, no analytics, no servers.
+**What clankbrain does with your data:** Nothing. Memory files stay on your machine. Kit updates are pulled from clankbrain — nothing goes the other direction. No telemetry, no analytics, no servers.
 
-**What Claude Code does with your data:** Sends your prompts to Anthropic. This is separate from engram and true of any Claude Code use. It is the real data consideration for businesses — not this kit. For sensitive workloads, use an Anthropic enterprise plan with a signed BAA.
+**What Claude Code does with your data:** Sends your prompts to Anthropic. This is separate from clankbrain and true of any Claude Code use. It is the real data consideration for businesses — not this kit. For sensitive workloads, use an Anthropic enterprise plan with a signed BAA.
 
-**GDPR:** Engram itself processes no personal data. Memory files are stored locally and contain code patterns, decisions, and lessons — not personal data. If personal data accidentally ends up in a memory file, you own that file entirely and can delete or edit it. For stricter requirements, keep memory local and off git entirely.
+**GDPR:** Clankbrain itself processes no personal data. Memory files are stored locally and contain code patterns, decisions, and lessons — not personal data. If personal data accidentally ends up in a memory file, you own that file entirely and can delete or edit it. For stricter requirements, keep memory local and off git entirely.
 
-**HIPAA:** Not compliant out of the box. The blocker is Claude Code sending prompts to Anthropic, not engram. Pair with an Anthropic enterprise BAA and keep memory local.
+**HIPAA:** Not compliant out of the box. The blocker is Claude Code sending prompts to Anthropic, not clankbrain. Pair with an Anthropic enterprise BAA and keep memory local.
 
-**SOC 2:** Not applicable — engram is a local developer tool, not a service. There are no engram servers to audit.
+**SOC 2:** Not applicable — clankbrain is a local developer tool, not a service. There are no clankbrain servers to audit.
 
 **Access control (if syncing):** Your private repo controls access. Set it to private and manage collaborators as you would any sensitive codebase. For teams, treat the memory repo like the main repo — same access policies.
 
 **What not to put in memory:** Never put passwords, API keys, customer PII, or regulated data in memory files. Memory is for code patterns, decisions, architecture, and lessons — not data. If something sensitive accidentally lands in a file, delete the entry and purge it from git history with `git filter-repo`.
 
-**For regulated industries:** Keep memory local (skip sync). Use Anthropic enterprise for a BAA. Use self-hosted git if sync is needed. Engram adds nothing to your compliance surface beyond what Claude Code already requires.
+**For regulated industries:** Keep memory local (skip sync). Use Anthropic enterprise for a BAA. Use self-hosted git if sync is needed. Clankbrain adds nothing to your compliance surface beyond what Claude Code already requires.
 
 **What makes it different from other Claude memory tools?**
-Most memory tools are static — you document once and things go stale. Engram is a living system: memory stays accurate via drift detection, skills improve via the compound learning loop, and sessions compound instead of reset. No other tool in this space ships the self-improving skills layer.
+Most memory tools are static — you document once and things go stale. Clankbrain is a living system: memory stays accurate via drift detection, skills improve via the compound learning loop, and sessions compound instead of reset. No other tool in this space ships the self-improving skills layer.
 
 **What if I'm on a new computer?**
 Pull your project, open Claude Code, type `Install Memory`. Claude is fully up to speed in seconds — all lessons, decisions, and skill improvements carried over.
@@ -548,4 +548,4 @@ Lite mode is zero-Python: `CLAUDE.md` + `@rules/` files (static conventions) + o
 
 **Requires:** Python 3.7+ · [Claude Code](https://claude.ai/claude-code) · No other dependencies
 
-If Engram saved you from re-explaining your project one more time, **[⭐ star it on GitHub](https://github.com/YehudaFrankel/engram)** — it helps others find it.
+If Clankbrain saved you from re-explaining your project one more time, **[⭐ star it on GitHub](https://github.com/YehudaFrankel/clankbrain)** — it helps others find it.

@@ -29,7 +29,7 @@ import re
 import sys
 from pathlib import Path
 
-DEFAULT_GITHUB_BASE = "https://raw.githubusercontent.com/YehudaFrankel/engram/main"
+DEFAULT_GITHUB_BASE = "https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main"
 ROOT                = Path.cwd()
 
 # Alternative heading names the updater recognizes, in priority order.
@@ -179,10 +179,11 @@ def _read_local_version():
 
 
 def migrate_old_refs():
-    """Silently rewrite old repo references to the new engram name."""
+    """Silently rewrite old repo references to the new clankbrain name."""
     old_patterns = [
-        ("YehudaFrankel/claude-recall",              "YehudaFrankel/engram"),
-        ("YehudaFrankel/Claude-Code-memory-starter-kit", "YehudaFrankel/engram"),
+        ("YehudaFrankel/claude-recall",              "YehudaFrankel/clankbrain"),
+        ("YehudaFrankel/Claude-Code-memory-starter-kit", "YehudaFrankel/clankbrain"),
+        ("YehudaFrankel/engram",                     "YehudaFrankel/clankbrain"),
     ]
     files_to_check = ["CLAUDE.md", "update.py", "setup.py", "install.py", "upgrade.py"]
     migrated = []
@@ -198,7 +199,7 @@ def migrate_old_refs():
             p.write_text(updated, encoding="utf-8")
             migrated.append(fname)
     if migrated:
-        print(f"  Migrated repo references to engram in: {', '.join(migrated)}")
+        print(f"  Migrated repo references to clankbrain in: {', '.join(migrated)}")
 
 
 def main():
@@ -224,7 +225,7 @@ def main():
     print("\n=== Claude Code Kit Updater ===\n")
     print(f"Source: {source_label}")
 
-    # ── Migrate old repo references (claude-recall / Claude-Code-memory-starter-kit → engram) ──
+    # ── Migrate old repo references (claude-recall / Claude-Code-memory-starter-kit → clankbrain) ──
     migrate_old_refs()
 
     # ── Fetch kit files ──

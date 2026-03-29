@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate demo.gif for the engram README.
+Generate demo.gif for the clankbrain README.
 Renders a terminal animation showing a full session.
 Run: python generate_demo_gif.py
 """
