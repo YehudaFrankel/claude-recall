@@ -22,6 +22,11 @@ Usage:
   python tools/memory.py --verify-edit                # PostToolUse hook (plan verification)
   python tools/memory.py --quick-learn               # Fast lesson capture (no ceremony)
   python tools/memory.py --kit-health                # Check all kit components are wired
+  python tools/memory.py --regret-guard              # UserPromptSubmit: match prompt vs regret.md + decisions.md
+  python tools/memory.py --decision-guard            # UserPromptSubmit: warn if prompt contradicts decisions.md
+  python tools/memory.py --context-score             # Score CLAUDE.md sections by journal usage (dead weight finder)
+  python tools/memory.py --velocity-estimate "task"  # Match task to past velocity entries, report honest estimate
+  python tools/memory.py --mine-patterns             # Cluster lessons.md entries, surface recurring mistakes
 """
 
 import json
@@ -1326,6 +1331,336 @@ def cmd_kit_health():
         print('\nAll systems healthy.')
 
 
+# ─── SHARED KEYWORD HELPER ───────────────────────────────────────────────────
+
+_STOP_WORDS = {
+    'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+    'of', 'with', 'by', 'from', 'as', 'is', 'it', 'its', 'be', 'was',
+    'are', 'were', 'this', 'that', 'have', 'has', 'had', 'do', 'does',
+    'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can',
+    'i', 'we', 'you', 'he', 'she', 'they', 'my', 'our', 'your', 'how',
+    'what', 'when', 'where', 'which', 'who', 'not', 'no', 'so', 'if',
+    'then', 'just', 'now', 'use', 'using', 'add', 'get', 'make', 'let',
+}
+
+
+def _extract_keywords(text, min_len=4):
+    """Extract meaningful keywords from text, filtering stop words."""
+    words = re.findall(r'\b[a-z][a-z0-9_-]{' + str(min_len - 1) + r',}\b', text.lower())
+    return {w for w in words if w not in _STOP_WORDS}
+
+
+def _parse_md_table_rows(text):
+    """Yield non-header, non-divider rows from a markdown table as cell lists."""
+    for line in text.splitlines():
+        if not line.startswith('|') or '---' in line:
+            continue
+        cells = [c.strip() for c in line.split('|') if c.strip()]
+        if cells:
+            yield cells
+
+
+# ─── REGRET GUARD ────────────────────────────────────────────────────────────
+# Scans regret.md + decisions.md for entries matching the current prompt.
+# Hook: UserPromptSubmit
+
+def cmd_regret_guard():
+    """Scan regret.md + decisions.md for keyword matches to the current prompt."""
+    try:
+        raw = sys.stdin.buffer.read().decode('utf-8', errors='replace')
+        data = json.loads(raw)
+        prompt = data.get('prompt', '').strip()
+    except Exception:
+        return
+
+    if len(prompt) < 20:
+        return
+
+    prompt_keywords = _extract_keywords(prompt)
+    if not prompt_keywords:
+        return
+
+    memory_dir = find_memory_dir()
+    matches = []
+
+    for filename, label in [('tasks/regret.md', 'Rejected'), ('decisions.md', 'Decided')]:
+        md_path = memory_dir / filename
+        if not md_path.exists():
+            continue
+        text = md_path.read_text(encoding='utf-8', errors='ignore')
+        for cells in _parse_md_table_rows(text):
+            # Skip header rows
+            if cells[0].lower() in ('approach', 'decision', 'what', 'rule'):
+                continue
+            entry_text = ' '.join(cells)
+            entry_keywords = _extract_keywords(entry_text)
+            overlap = prompt_keywords & entry_keywords
+            if len(overlap) >= 2:
+                approach = cells[0][:80]
+                reason = cells[1][:120] if len(cells) > 1 else ''
+                matches.append(f'[{label}] {approach} — {reason}')
+
+    if not matches:
+        return
+
+    warning = (
+        '\u26a0 REGRET GUARD — Past decisions match your current task:\n'
+        + '\n'.join(f'  \u2022 {m}' for m in matches[:5])
+        + '\nVerify this approach is not already rejected before proceeding.'
+    )
+
+    output = {
+        'hookSpecificOutput': {
+            'hookEventName': 'UserPromptSubmit',
+            'additionalContext': warning
+        }
+    }
+    print(json.dumps(output))
+
+
+# ─── DECISION GUARD ──────────────────────────────────────────────────────────
+# Checks proposed approaches against decisions.md before a plan is shown.
+# Hook: UserPromptSubmit (fires when planning language is detected)
+
+_PLANNING_PATTERNS = [
+    r'(?i)\bplan\b', r'(?i)\bbuild\b', r'(?i)\bimplement\b',
+    r'(?i)\badd\b.{0,30}\bfeature\b', r'(?i)\bcreate\b',
+    r'(?i)\brefactor\b', r'(?i)\bchange\b.{0,20}\bto\b',
+    r'(?i)\bswitch\b.{0,20}\bto\b', r'(?i)\breplace\b', r'(?i)\bupdate\b',
+]
+
+
+def _is_planning_prompt(prompt):
+    return any(re.search(p, prompt) for p in _PLANNING_PATTERNS)
+
+
+def cmd_decision_guard():
+    """Check prompt against decisions.md — warn if it contradicts a settled decision."""
+    try:
+        raw = sys.stdin.buffer.read().decode('utf-8', errors='replace')
+        data = json.loads(raw)
+        prompt = data.get('prompt', '').strip()
+    except Exception:
+        return
+
+    if len(prompt) < 15 or not _is_planning_prompt(prompt):
+        return
+
+    prompt_keywords = _extract_keywords(prompt, min_len=3)
+    if not prompt_keywords:
+        return
+
+    memory_dir = find_memory_dir()
+    decisions_path = memory_dir / 'decisions.md'
+    if not decisions_path.exists():
+        return
+
+    text = decisions_path.read_text(encoding='utf-8', errors='ignore')
+    conflicts = []
+
+    for cells in _parse_md_table_rows(text):
+        if cells[0].lower() in ('decision', 'approach', 'what', 'rule'):
+            continue
+        entry_keywords = _extract_keywords(' '.join(cells), min_len=3)
+        overlap = prompt_keywords & entry_keywords
+        if len(overlap) >= 2:
+            decision = cells[0][:80]
+            reason = cells[1][:120] if len(cells) > 1 else ''
+            conflicts.append(f'{decision} — {reason}')
+
+    if not conflicts:
+        return
+
+    warning = (
+        'DECISION GUARD — Settled decisions relevant to this task:\n'
+        + '\n'.join(f'  \u2022 {c}' for c in conflicts[:4])
+        + '\nConfirm this approach does not re-litigate a closed decision.'
+    )
+
+    output = {
+        'hookSpecificOutput': {
+            'hookEventName': 'UserPromptSubmit',
+            'additionalContext': warning
+        }
+    }
+    print(json.dumps(output))
+
+
+# ─── CONTEXT EFFICIENCY SCORE ─────────────────────────────────────────────────
+# Scores CLAUDE.md sections by how often their keywords appear in session journals.
+# Run: python tools/memory.py --context-score
+
+def cmd_context_score():
+    """Score CLAUDE.md sections by usage frequency in session journals."""
+    claude_md = ROOT / 'CLAUDE.md'
+    if not claude_md.exists():
+        print('CLAUDE.md not found.')
+        return
+
+    memory_dir = find_memory_dir()
+    journal_path = memory_dir / 'session_journal.md'
+    journal_text = journal_path.read_text(encoding='utf-8', errors='ignore').lower() if journal_path.exists() else ''
+
+    text = claude_md.read_text(encoding='utf-8', errors='ignore')
+    sections = re.findall(r'^## (.+)$', text, re.MULTILINE)
+
+    if not sections:
+        print('No ## sections found in CLAUDE.md.')
+        return
+
+    if not journal_text:
+        print('No session_journal.md found — run a few sessions first to build history.')
+        return
+
+    results = []
+    for section in sections:
+        keywords = _extract_keywords(section, min_len=3) or {section.lower()}
+        hits = sum(1 for kw in keywords if kw in journal_text)
+        results.append((hits, section))
+
+    results.sort(reverse=True)
+
+    print('\nContext Efficiency Score\n')
+    print(f'  {"Section":<42} {"Signal":>8}')
+    print('  ' + '-' * 54)
+    for score, section in results:
+        bar = '#' * min(score, 10) + '.' * max(0, 10 - score)
+        tag = '  <- low signal' if score == 0 else ''
+        print(f'  {section[:42]:<42} [{bar}]{tag}')
+
+    low = [s for sc, s in results if sc == 0]
+    print(f'\n{len(low)} section(s) with zero journal signal.')
+    if low:
+        print('These may be dead weight in your context:')
+        for s in low:
+            print(f'  - {s}')
+
+
+# ─── VELOCITY-HONEST ESTIMATES ────────────────────────────────────────────────
+# Reads velocity.md and matches the current task to past entries.
+# Run: python tools/memory.py --velocity-estimate "task description"
+
+def cmd_velocity_estimate():
+    """Match task description to past velocity entries and report honest estimates."""
+    args_list = sys.argv[1:]
+    try:
+        idx = args_list.index('--velocity-estimate')
+        task_desc = ' '.join(args_list[idx + 1:]).strip()
+    except (ValueError, IndexError):
+        task_desc = ''
+
+    if not task_desc:
+        print('Usage: memory.py --velocity-estimate "task description"')
+        return
+
+    memory_dir = find_memory_dir()
+    velocity_path = memory_dir / 'tasks' / 'velocity.md'
+    if not velocity_path.exists():
+        print('velocity.md not found — no history yet.')
+        return
+
+    text = velocity_path.read_text(encoding='utf-8', errors='ignore')
+    task_keywords = _extract_keywords(task_desc, min_len=3)
+    entries = []
+
+    for cells in _parse_md_table_rows(text):
+        if not cells or cells[0].lower() in ('task', 'feature', 'item'):
+            continue
+        task_name = cells[0]
+        estimated = cells[1] if len(cells) > 1 else '?'
+        actual = cells[2] if len(cells) > 2 else '?'
+        overlap = task_keywords & _extract_keywords(task_name, min_len=3)
+        if overlap:
+            entries.append((len(overlap), task_name, estimated, actual))
+
+    if not entries:
+        print(f'No past tasks similar to: "{task_desc}"')
+        print('Keep logging tasks via /learn to build your velocity history.')
+        return
+
+    entries.sort(reverse=True)
+    top = entries[:5]
+
+    actuals = []
+    for _, _, _, actual in top:
+        nums = re.findall(r'\d+', actual)
+        if nums:
+            actuals.append(int(nums[0]))
+
+    print(f'\nVelocity Estimate — "{task_desc}"\n')
+    print(f'  {"Similar past task":<45} {"Est":>5} {"Actual":>8}')
+    print('  ' + '-' * 62)
+    for _, task, est, actual in top:
+        print(f'  {task[:45]:<45} {est:>5} {actual:>8}')
+
+    if actuals:
+        avg = sum(actuals) / len(actuals)
+        print(f'\nAverage actual: {avg:.1f} sessions')
+        print(f'Plan for at least {int(avg) + 1} — history says estimates run short.')
+    else:
+        print('\nCould not parse session counts from velocity entries.')
+
+
+# ─── CROSS-SESSION PATTERN MINING ────────────────────────────────────────────
+# Clusters lessons.md entries to surface recurring mistakes.
+# Run: python tools/memory.py --mine-patterns
+
+def cmd_mine_patterns():
+    """Cluster lessons.md entries to surface recurring patterns across sessions."""
+    memory_dir = find_memory_dir()
+    lessons_path = memory_dir / 'tasks' / 'lessons.md'
+    if not lessons_path.exists():
+        print('lessons.md not found — run /learn after a few sessions.')
+        return
+
+    text = lessons_path.read_text(encoding='utf-8', errors='ignore')
+    lessons = []
+    for cells in _parse_md_table_rows(text):
+        if cells[0].lower() in ('date', 'session', 'when'):
+            continue
+        lesson_text = ' '.join(cells[1:]) if len(cells) > 1 else cells[0]
+        lessons.append(lesson_text)
+
+    if len(lessons) < 5:
+        print(f'Only {len(lessons)} lessons so far — need at least 5 to mine patterns. Keep using /learn.')
+        return
+
+    # Map keywords to matching lessons
+    keyword_to_lessons = {}
+    for lesson in lessons:
+        for kw in _extract_keywords(lesson, min_len=4):
+            keyword_to_lessons.setdefault(kw, []).append(lesson)
+
+    # Keep only keywords appearing in 3+ distinct lessons
+    recurring = {kw: ls for kw, ls in keyword_to_lessons.items() if len(ls) >= 3}
+
+    if not recurring:
+        print(f'Analyzed {len(lessons)} lessons — no recurring patterns yet (need same topic in 3+ lessons).')
+        return
+
+    ranked = sorted(recurring.items(), key=lambda x: -len(x[1]))
+
+    print(f'\nCross-Session Pattern Mining — {len(lessons)} lessons analyzed\n')
+    shown = set()
+    count = 0
+    for kw, matched in ranked[:10]:
+        unique = [l for l in matched if l not in shown]
+        if not unique:
+            continue
+        count += 1
+        print(f'  Pattern: "{kw}" ({len(matched)} occurrences)')
+        for l in unique[:2]:
+            print(f'    \u2022 {l[:100]}')
+            shown.add(l)
+        print()
+
+    if count == 0:
+        print('No distinct patterns after deduplication.')
+        return
+
+    print('Consider converting top patterns to permanent rules in decisions.md or CLAUDE.md.')
+
+
 # ─── DISPATCH ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -1359,6 +1694,16 @@ def main():
         cmd_quick_learn()
     elif '--kit-health' in ARGS:
         cmd_kit_health()
+    elif '--regret-guard' in ARGS:
+        cmd_regret_guard()
+    elif '--decision-guard' in ARGS:
+        cmd_decision_guard()
+    elif '--context-score' in ARGS:
+        cmd_context_score()
+    elif '--velocity-estimate' in ARGS:
+        cmd_velocity_estimate()
+    elif '--mine-patterns' in ARGS:
+        cmd_mine_patterns()
     else:
         print(__doc__)
         sys.exit(1)

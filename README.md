@@ -209,6 +209,11 @@ One file, `tools/memory.py`, runs all lifecycle behaviors via subcommands:
 | `--session-start` | When Claude Code opens | Injects memory into context; runs silent kit health check — flags broken wiring before you start |
 | `--quick-learn` | On demand | Fast lesson capture — writes a stub placeholder immediately, then prompts Claude to fill in 1-3 lessons. No /learn ceremony. |
 | `--kit-health` | On demand (`Kit Health`) | Checks all kit components: hooks wired, MEMORY.md present, skills installed, complexity profile fresh |
+| `--regret-guard` | Before every prompt (UserPromptSubmit) | Scans `regret.md` + `decisions.md` for entries matching the current task — injects relevant warnings before you start. Nobody else does this. |
+| `--decision-guard` | Before every planning prompt (UserPromptSubmit) | Detects planning language, cross-checks `decisions.md`, warns if the proposed approach contradicts a settled decision |
+| `--context-score` | On demand (`Context Score`) | Scores every `## section` in `CLAUDE.md` by how often it appears in session journals — surfaces dead weight bloating your context |
+| `--velocity-estimate "task"` | On demand (`Estimate: [task]`) | Keyword-matches the task against `velocity.md` history, reports what similar tasks actually took vs what was estimated |
+| `--mine-patterns` | On demand (`Mine Patterns`) | Clusters all `lessons.md` entries by keyword frequency — surfaces recurring mistakes you haven't noticed yet |
 | `--bootstrap` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
 | `--complexity-scan` | First `Start Session` on a new project | Detects stack, DB, tests, API surface — scores complexity Low/Medium/High and recommends which skills to use. Auto-refreshes after 30 days. |
 | `--precompact` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
@@ -378,6 +383,10 @@ No passwords. No customer data. No credentials. If something sensitive accidenta
 | `Check Drift` | Manually run the drift detector — find undocumented functions and stale entries |
 | `Analyze Codebase` | Full scan of all JS, CSS, and backend — documents every function, class, and endpoint |
 | `Code Health` | Finds leftover `console.log`, hardcoded values, dead code, missing error handling — reports file + line |
+| `Kit Health` | Check all kit components are wired and healthy |
+| `Context Score` | Score every CLAUDE.md section by journal usage — find dead weight bloating your context |
+| `Mine Patterns` | Cluster lessons.md across all sessions — surface recurring mistakes you haven't noticed |
+| `Estimate: [task]` | Match task to past velocity history — reports what similar tasks actually took, not what felt right |
 | `/check-anthropic` | Fetch Claude Code releases + docs, cross-reference hooks/features in use, report gaps rated High/Medium/Low — run every few weeks |
 
 ### Setup and recovery
