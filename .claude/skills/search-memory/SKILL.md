@@ -40,6 +40,29 @@ Memory root: `[MEM]` = value read from the current project's MEMORY.md
 
 ## Steps
 
+### Step 0 — Resolve [MEM] (required before anything else)
+
+Before searching, confirm the memory root is configured:
+
+1. Check if `[MEM]` is defined in the current session context (set by Start Session or CLAUDE.md)
+2. If not known, look for it in the project's CLAUDE.md: grep for `\[MEM\]` or `memory` path definition
+3. Verify at least one anchor file exists at the resolved path: `lessons.md` or `error-lookup.md`
+
+**If [MEM] cannot be resolved or anchor files are missing — STOP:**
+```
+⚠ Memory root not configured.
+
+[MEM] is not set or the memory files don't exist yet.
+Run: Start Session
+This pulls your memory from GitHub and initializes [MEM] for this session.
+
+If this is a new project, run Start Session once to set up your memory root.
+```
+
+Do not proceed to Step 1 until [MEM] resolves to a real path with at least one memory file present.
+
+---
+
 ### Step 1 — Extract the query
 Identify the search term from the user's question. If vague ("that thing we fixed"), ask one clarifying question.
 
