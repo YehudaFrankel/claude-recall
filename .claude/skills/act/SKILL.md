@@ -91,7 +91,7 @@ If user says "show me the full context":
 ## Notes
 
 - Never propose more than one action at a time — focus wins over completeness
-- If context is genuinely ambiguous (no journal entries, empty todo), say so and ask what to work on
+- If context is genuinely ambiguous (no journal entries, empty todo, silent STATUS.md), say so and ask what to work on — `act` cannot invent intent from nothing; it surfaces what's already been decided
 - This skill is intentionally opinionated — it picks one thing and drives it
 - Pairs with `search-memory` when the proposed action needs prior-art research first
 - "act" on Clankbrain kit tasks = look at D:\claude-memory-starter changes
