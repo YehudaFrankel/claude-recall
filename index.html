@@ -1209,16 +1209,25 @@ footer {
           <span style="color:var(--amber)">--check-drift</span> <span style="color:var(--muted)">— PostToolUse hook: finds undocumented functions after every file edit</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--verify-edit</span> <span style="color:var(--muted)">— PostToolUse hook: requires Claude to quote changed lines verbatim before continuing</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">--journal</span> <span style="color:var(--muted)">— Stop hook: auto-captures session summary with timestamp</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">--stop-check</span> <span style="color:var(--muted)">— Stop hook: surfaces open plans; warns when context is getting long</span>
+          <span style="color:var(--amber)">--stop-check</span> <span style="color:var(--muted)">— Stop hook: surfaces open plans, code-review nudge after significant edits</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--session-start</span> <span style="color:var(--muted)">— injects memory + silent kit health check on session open</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--quick-learn</span> <span style="color:var(--muted)">— fast lesson capture: writes stub immediately, prompts 1-3 lessons. No ceremony.</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--kit-health</span> <span style="color:var(--muted)">— checks hooks wired, MEMORY.md present, skills installed, profile fresh</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">--precompact</span> <span style="color:var(--muted)">— reinjects memory into compacted context — nothing lost through /compact</span>
-        </div>
-        <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">--session-start</span> <span style="color:var(--muted)">— memory health check on session open, applies lessons</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">--bootstrap</span> <span style="color:var(--muted)">— scans codebase, generates quick_index.md for new projects</span>

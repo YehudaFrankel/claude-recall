@@ -201,11 +201,14 @@ One file, `tools/memory.py`, runs all lifecycle behaviors via subcommands:
 | Subcommand | When it runs | What it does |
 |------------|-------------|-------------|
 | `--check-drift` | After every file edit | Drift detector — catches undocumented functions and CSS changes immediately |
+| `--verify-edit` | After every Edit or Write | Requires Claude to quote the changed lines verbatim back to you — not a summary, the actual file content |
 | `--journal` | After every response | Auto-captures what you worked on — searchable forever, no /learn needed |
-| `--stop-check` | After every response | Reminds you to save memory when unsaved changes detected; surfaces open plans with unresolved questions |
+| `--stop-check` | After every response | Reminds you to save memory; surfaces open plans and code-review nudge after significant edits |
+| `--session-start` | When Claude Code opens | Injects memory into context; runs silent kit health check — flags broken wiring before you start |
+| `--quick-learn` | On demand | Fast lesson capture — writes a stub placeholder immediately, then prompts Claude to fill in 1-3 lessons. No /learn ceremony. |
+| `--kit-health` | On demand (`Kit Health`) | Checks all kit components: hooks wired, MEMORY.md present, skills installed, complexity profile fresh |
 | `--bootstrap` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
 | `--complexity-scan` | First `Start Session` on a new project | Detects stack, DB, tests, API surface — scores complexity Low/Medium/High and recommends which skills to use. Auto-refreshes after 30 days. |
-| `--session-start` | When Claude Code opens | Injects memory into context before your first message — Claude starts warm |
 | `--precompact` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
 | `--search "query"` | On demand | Full-text search across all memory `.md` files — scored results with ±2 lines of context. `--top N` limits results (default 5). |
 
@@ -423,7 +426,7 @@ Eight hooks run automatically — no commands needed, no configuration required.
 |------|--------------|-------------|
 | `SessionStart` | When a session begins | `memory.py --session-start` — loads MEMORY.md + status into context; surfaces interruption state if last session crashed. |
 | `UserPromptSubmit` | Before every prompt | `memory.py --capture-correction` — detects correction language and queues it for `/learn`. |
-| `PostToolUse` | After every Edit or Write | `memory.py --check-drift --silent` — catches drift immediately after every file change (runs async, no delay). `memory.py --verify-edit` — quotes the changed lines back to you so you confirm the edit matches the plan. |
+| `PostToolUse` | After every Edit or Write | `memory.py --check-drift --silent` — catches drift immediately after every file change (runs async, no delay). `memory.py --verify-edit` — requires Claude to quote the changed lines verbatim (not a summary) before proceeding to the next edit. |
 | `PreCompact` | Before context compaction | `memory.py --precompact` — surfaces memory checklist before context is compressed. |
 | `PostCompact` | After context compaction | `memory.py --postcompact` — re-injects MEMORY.md so session resumes warm, not cold. |
 | `Stop` (journal) | After every response | `memory.py --journal` — auto-captures session summary. Searchable forever, no `/learn` needed. |
@@ -468,9 +471,12 @@ your-project/
 ├── tools/
 │   └── memory.py                    ← All lifecycle hooks in one script
 │       ├── --check-drift            ← PostToolUse hook: finds undocumented functions
+│       ├── --verify-edit            ← PostToolUse hook: requires verbatim line quote before proceeding
 │       ├── --journal                ← Stop hook: auto-captures session journal
 │       ├── --stop-check             ← Stop hook: open plan + unsaved change reminders
-│       ├── --session-start          ← Run manually: memory health on session start
+│       ├── --session-start          ← SessionStart hook: memory + silent kit health check
+│       ├── --quick-learn            ← On demand: fast lesson capture, writes stub first
+│       ├── --kit-health             ← On demand: checks all kit components are wired
 │       ├── --bootstrap              ← Run once: full codebase index on new projects
 │       └── --search "query"         ← Search all memory files with scored results
 └── .claude/
