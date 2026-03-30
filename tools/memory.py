@@ -48,6 +48,24 @@ def find_memory_dir():
     return ROOT / '.claude' / 'memory'
 
 
+# ─── KIT HEALTH (silent helper) ──────────────────────────────────────────────
+
+def _kit_health_fails():
+    """Returns list of FAIL-level issues for silent check at session start."""
+    fails = []
+    mem_dir = find_memory_dir()
+    if not (mem_dir / 'MEMORY.md').exists():
+        fails.append('MEMORY.md missing — memory index not found')
+    if not (ROOT / 'STATUS.md').exists():
+        fails.append('STATUS.md missing — session tracking not initialized')
+    if not (mem_dir / 'tasks').exists():
+        fails.append('tasks/ directory missing — run Setup Memory')
+    settings_paths = [ROOT / '.claude' / 'settings.json', ROOT / '.claude' / 'settings.local.json']
+    if not any(sp.exists() for sp in settings_paths):
+        fails.append('settings.json not found in .claude/ — hooks not wired, memory will not auto-load')
+    return fails
+
+
 # ─── SESSION START ────────────────────────────────────────────────────────────
 # Injects MEMORY.md + STATUS.md into context before the first message.
 # Hook: SessionStart
@@ -86,6 +104,11 @@ def cmd_session_start():
         if pending:
             parts.append(f'\n\n# Pending Corrections ({len(pending)} — apply this session, will persist at Stop)\n')
             parts.append('\n'.join(pending))
+
+    # Silent kit health check — only surfaces FAILs, never WARNs
+    kit_fails = _kit_health_fails()
+    if kit_fails:
+        parts.append('\n\n# \u26a0 Kit Health FAILs\n' + '\n'.join(f'- {f}' for f in kit_fails))
 
     if not parts:
         return
@@ -1152,14 +1175,13 @@ def cmd_verify_edit():
         pass
     msg = (
         f'Code was edited{file_info}. '
-        '(This message is from the plan-verification hook — it fires automatically after every Edit or Write '
-        'so you and the user have two sets of eyes on every change before moving on.) '
-        'Read back the changed lines now and show them to the user — '
-        'quote the actual file content, not a summary. '
-        'Then confirm: does it match the After block in the plan? '
-        'Show the user: \u2713 Verified [file]:[lines] — [quoted content] '
-        'or flag the mismatch with the diff. '
-        'Do not proceed to the next edit until the user has seen this.'
+        '(This message is from the plan-verification hook — it fires automatically after every Edit or Write.) '
+        'REQUIRED: Read back the changed lines and quote them verbatim to the user. '
+        'Not a paraphrase. Not "the code now does X". The actual raw file content, line by line. '
+        'Then write: \u2713 Verified [file]:[lines] \u2014 [exact quoted lines] '
+        'A summary does NOT count as verification. '
+        'Do not write \u2713 Verified unless you have quoted the specific changed lines back. '
+        'Do not proceed to the next edit until the user has seen the quoted content.'
     )
     print(json.dumps({'callback': msg}))
 
@@ -1171,13 +1193,20 @@ def cmd_verify_edit():
 
 def cmd_quick_learn():
     memory_dir = find_memory_dir()
+    today = datetime.now().strftime('%Y-%m-%d')
     context_parts = []
 
-    # Surface any draft lessons auto-captured this session
     draft_path = memory_dir / 'tasks' / 'draft-lessons.md'
+
+    # Write a timestamped stub FIRST — so there's a record even if session closes before callback
+    stub_entry = f'\n- [{today} QUICK-LEARN PENDING] Review session and fill in key lesson here'
+    draft_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(draft_path, 'a', encoding='utf-8') as f:
+        f.write(stub_entry)
+
+    # Surface any draft notes captured this session
     if draft_path.exists():
         draft_text = draft_path.read_text(encoding='utf-8', errors='ignore').strip()
-        # Only include if there's actual content beyond the header
         useful_lines = [l for l in draft_text.splitlines() if l.strip() and not l.startswith('#') and not l.startswith('_')]
         if useful_lines:
             context_parts.append('Draft notes from this session:\n' + '\n'.join(useful_lines))
@@ -1191,12 +1220,13 @@ def cmd_quick_learn():
             context_parts.append(f'{len(entries)} correction(s) captured:\n' + '\n'.join(entries))
 
     context_str = ('\n\n' + '\n\n'.join(context_parts)) if context_parts else ''
-    today = datetime.now().strftime('%Y-%m-%d')
     msg = (
         f'Quick-learn triggered.{context_str}\n\n'
         f'Write 1-3 concise lessons to tasks/lessons.md right now. '
         f'Format each as: | {today} | short title | what to remember | '
         'No ceremony — just scan this session\'s work, capture the key pattern or gotcha, and done. '
+        'Then replace the QUICK-LEARN PENDING stub in draft-lessons.md with what you actually learned, '
+        'or delete it if you wrote directly to lessons.md. '
         'Then update STATUS.md session summary if anything changed.'
     )
     print(json.dumps({'callback': msg}))
