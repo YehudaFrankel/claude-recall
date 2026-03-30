@@ -1146,6 +1146,10 @@ footer {
         <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">regret.md — never re-proposes bad ideas</div>
         <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">velocity.md — self-calibrating estimates</div>
         <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">skill_scores.md — tracks what failed</div>
+        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">error-lookup.md — known errors → exact fix</div>
+        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">critical-notes.md — non-obvious gotchas</div>
+        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">agreed-flow.md — locked user journeys</div>
+        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">todo.md — current tasks in priority order</div>
       </div>
       <div style="background:var(--s1); padding:1.4rem 1.6rem; border-left:1px solid var(--border);">
         <div style="font-size:.68rem; color:var(--muted); margin-bottom:.6rem; letter-spacing:.06em;">SKILL AUTO-CHAIN</div>
@@ -1173,7 +1177,7 @@ footer {
 <canvas id="hexBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.15;"></canvas>
   <div class="wrap-lg">
     <div class="sec-label">agentic toolkit</div>
-    <h2>7 skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
+    <h2>9 skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
     <p class="sec-desc">
       Skills live in <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">.claude/skills/</code> as markdown files.
       Chain them with <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">## Auto-Chain</code>.
@@ -1196,6 +1200,8 @@ footer {
         <tr><td class="td-cmd">search-first</td><td class="td-trig">search first, check if this exists</td><td class="td-desc">Enforce research-before-coding: search codebase before implementing anything new</td></tr>
         <tr><td class="td-cmd">strategic-compact</td><td class="td-trig">should I compact, context getting long</td><td class="td-desc">Evaluate whether to compact and guide through safe compaction that preserves all memory</td></tr>
         <tr><td class="td-cmd">java-reviewer</td><td class="td-trig">review this java, java review</td><td class="td-desc">Deep Java review against your stack's specific patterns — goes beyond generic code review</td></tr>
+        <tr><td class="td-cmd">mode</td><td class="td-trig">mode develop, mode review, mode safe, mode deploy</td><td class="td-desc">Restrict Claude's tool access to what a task actually needs — develop (full), review (read-only), safe (no writes), deploy (shell only)</td></tr>
+        <tr><td class="td-cmd">debug-session</td><td class="td-trig">debug session, structured debug, debug this error</td><td class="td-desc">7-step structured debugging: reproduce → isolate → hypothesize → fix → verify — then logs cause + fix to error-lookup.md so the same bug never takes time twice</td></tr>
       </tbody>
     </table>
 
@@ -1620,6 +1626,11 @@ footer {
       <div class="cmd-row"><div class="cr-cmd">Generate Skills</div><div class="cr-desc">Auto-create skills tailored to your specific stack and file patterns</div></div>
       <div class="cmd-row"><div class="cr-cmd">Debug Session</div><div class="cr-desc">Reproduce → isolate → hypothesize → fix → verify → <em>log to errors.md</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Code Health</div><div class="cr-desc">Scan for debug leftovers, hardcoded values, missing error handling, dead code, large files</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Pre-Ship Check</div><div class="cr-desc">Run guard-check + code health + open plans check before committing — catches what a final review misses</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Guard Check</div><div class="cr-desc">Scan codebase against all named guards in guard-patterns.md — reports every violation with file + line</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Mode [develop|review|safe|deploy]</div><div class="cr-desc">Switch Claude's tool access for the current task — <em>review</em> = read-only, <em>safe</em> = no writes, <em>deploy</em> = shell only, <em>develop</em> = full access</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Mine Patterns</div><div class="cr-desc">Cluster lessons.md by keyword frequency — surfaces the mistakes that keep recurring across sessions</div></div>
+      <div class="cmd-row"><div class="cr-cmd">Context Score</div><div class="cr-desc">Score every section of CLAUDE.md by actual journal usage — find dead weight that's eating context every prompt</div></div>
       <div class="cmd-row"><div class="cr-cmd">Handoff</div><div class="cr-desc">Generate HANDOFF.md — current state, next tasks, settled decisions, gotchas, how to start</div></div>
       <div class="cmd-row"><div class="cr-cmd">Estimate: [task]</div><div class="cr-desc">Complexity + files that change + risks — <em>writes plan to todo.md on confirm</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">Push Memory</div><div class="cr-desc">Manually save memory — useful mid-session before a risky change. Also pushes to git if you have sync configured.</div></div>
