@@ -126,6 +126,44 @@ No code changes happen without your approval. Every edit is verified against wha
 
 ---
 
+## What End Session looks like
+
+At the end of every session, Claude extracts lessons, updates memory, and pushes everything to GitHub:
+
+```
+End Session
+
+/learn
+
+Extracted 3 lessons:
+
+1. Quill toolbar duplicates when editor variable is nulled before the re-init
+   guard — keep the instance alive, update content only
+
+2. Cookie-based globals bypass URL-only auth checks — gate sessionid on URL
+   params, not the cookie-populated global
+
+3. Plain ?SessionID= from navigation must be immediately rewritten to
+   ?encryptedString= — otherwise refresh loses the session
+
+Updated:
+- lessons.md         +18 lines
+- tasks/skill_scores.md  +2 lines
+- STATUS.md          session 150 summary added
+- MEMORY.md          session count updated: 149 -> 150
+
+Pushing to GitHub...
+
+  4 files changed, 23 insertions(+), 1 deletion(-)
+  To https://github.com/YehudaFrankel/Claude-memory.git
+
+Session complete. Memory pushed to GitHub.
+```
+
+Next session, Claude loads these lessons automatically — before you write a single prompt.
+
+---
+
 ## What you get
 
 - **Persistent memory** — decisions, bugs fixed, rejected approaches, codebase knowledge
