@@ -833,6 +833,12 @@ footer {
   .wrap, .wrap-sm, .wrap-lg { padding: 3.5rem 1.2rem; }
   .hero { padding: 5.5rem 1.2rem 3rem; }
   .skills-tbl { font-size: .72rem; }
+  .mob-stack { grid-template-columns: 1fr !important; }
+  .mob-stack > div { border-left: none !important; }
+  .skills-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .skills-tbl { min-width: 580px; }
+  footer { flex-direction: column; gap: 1rem; text-align: center; }
+  .footer-links { justify-content: center; }
 }
 
 /* ─── VS TABLE ─── */
@@ -1045,7 +1051,7 @@ footer {
       <span style="color:var(--text)">New machine?</span> Run <span style="color:var(--amber)">Install Memory</span> — Claude scans the codebase and rebuilds all knowledge files from scratch.
     </div>
 
-    <div style="margin-top:2.5rem; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); font-size:.76rem;" class="reveal">
+    <div style="margin-top:2.5rem; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); font-size:.76rem;" class="reveal mob-stack">
       <div style="padding:1rem 1.4rem; background:var(--s2); border-bottom:1px solid var(--border); grid-column:1; color:var(--muted); letter-spacing:.08em;">HEAVY TOOLS</div>
       <div style="padding:1rem 1.4rem; background:var(--s1); border-bottom:1px solid var(--border); border-left:1px solid var(--border2); grid-column:2; color:var(--amber); letter-spacing:.08em;">CLANKBRAIN</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); color:var(--muted);">API key required</div>
@@ -1192,6 +1198,7 @@ footer {
       <em>Run Generate Skills — Claude scans your stack and creates skills tailored to your project.</em>
     </p>
 
+    <div class="skills-scroll">
     <table class="skills-tbl reveal">
       <thead>
         <tr>
@@ -1213,6 +1220,7 @@ footer {
         <tr><td class="td-cmd">generate-guards</td><td class="td-trig">generate guards, add guards, what guards should I add</td><td class="td-desc">Mines your error-lookup.md, regret.md, and lessons.md to propose project-specific guards — converts your actual mistake history into automated prevention. Generic guards catch common patterns; these catch yours.</td></tr>
       </tbody>
     </table>
+    </div>
 
     <div style="margin-top:2.5rem; border:1px solid var(--border2); background:var(--s1); padding:1.5rem 1.75rem;" class="reveal">
       <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:.75rem;">// PYTHON TOOLS THAT SHIP WITH THE KIT</div>
@@ -1622,7 +1630,7 @@ footer {
       Type <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">Progress Report</code> and get a dashboard built entirely from your own session history. Not synthetic. Not estimated. Your actual numbers.
     </p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; margin-top:2rem;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; margin-top:2rem;" class="reveal mob-stack">
       <div style="background:var(--s2); border:1px solid var(--border2); padding:1.5rem; font-family:var(--mono); font-size:.78rem; line-height:1.9;">
         <div style="color:var(--dim); margin-bottom:.75rem; font-size:.68rem; letter-spacing:.06em;">// OUTPUT AFTER 8 SESSIONS</div>
         <div style="color:var(--green);">=== Clankbrain Progress Report ===</div>
@@ -1725,7 +1733,7 @@ footer {
     <h2>Works on any machine — <span class="h2-amber">when you want it to</span></h2>
     <p class="sec-desc">Memory stays on your machine by default. Nothing leaves unless you set this up. When you're ready to work across machines, three commands get you there.</p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2rem;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2rem;" class="reveal mob-stack">
       <div style="background:var(--bg); padding:1.5rem 1.75rem;">
         <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// FIRST TIME</div>
         <div style="font-family:monospace; font-size:.82rem; color:var(--amber); margin-bottom:.5rem;">Setup Sync: https://github.com/you/my-memory</div>
@@ -1750,7 +1758,7 @@ footer {
 
     <div style="margin-top:3rem;" class="reveal">
       <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1.25rem;">// WHY THIS IS SAFE</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;" class="mob-stack">
 
         <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
           <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Your repo. Your rules.</div>
@@ -1811,7 +1819,7 @@ footer {
       One private git repo. Six shared files. When a teammate logs a bug fix in <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">error-lookup.md</code>, every developer on the project gets it at their next <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">Team Pull</code>. The debug session that cost them an hour costs you zero.
     </p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2rem;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2rem;" class="reveal mob-stack">
       <div>
         <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// WHAT GETS SHARED</div>
         <div style="display:flex; flex-direction:column; gap:.6rem;">
@@ -1876,7 +1884,7 @@ footer {
     <h2>This system is only as good <span class="h2-amber">as you are</span></h2>
     <p class="sec-desc">Clankbrain is a system, not a plugin. It compounds with use — but only if you use it.</p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2rem;" class="reveal">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2rem;" class="reveal mob-stack">
       <div style="background:var(--bg); padding:1.5rem 1.75rem;">
         <div style="font-size:.65rem; color:#4caf50; letter-spacing:.06em; margin-bottom:1rem;">// AUTOMATIC</div>
         <div style="font-size:.78rem; color:var(--muted); line-height:2;">
