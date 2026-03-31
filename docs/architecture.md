@@ -59,6 +59,7 @@ your-project/
     +-- settings.json                 <- 8 hooks wired
     +-- memory/
     |   +-- MEMORY.md                 <- Index — auto-loaded every session
+    |   +-- memory_embeddings.pkl     <- Semantic search index (optional — built by --build-index)
     |   +-- lessons.md                <- Lessons from /learn — applied each session
     |   +-- decisions.md              <- Settled decisions — never re-debated
     |   +-- error-lookup.md           <- Known errors -> cause -> fix

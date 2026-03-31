@@ -191,6 +191,7 @@ Next session, Claude loads these lessons automatically — before you write a si
 ## What you get
 
 - **Persistent memory** — decisions, bugs fixed, rejected approaches, codebase knowledge
+- **Semantic memory search** — `/recall` finds related memories by meaning, not just keywords. Powered by a local embedding model (~90MB, no API key, runs fully offline)
 - **Skills that self-improve** — each skill scores itself; `/evolve` patches the ones that keep failing
 - **Drift detection** — catches undocumented changes after every file edit
 - **Regret guard** — scans past rejected approaches before every prompt, blocks re-proposing them

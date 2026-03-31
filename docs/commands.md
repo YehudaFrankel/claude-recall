@@ -23,8 +23,32 @@ Type these in Claude Code chat. All commands are plain English.
 
 | Command | What it does |
 |---------|-------------|
-| `/recall [topic]` | Search all memory files for a topic — returns matching entries with context. Fast single-pass. |
+| `/recall [topic]` | Semantic search across all memory files — finds related memories even if the wording is different. Falls back to keyword search automatically if the index isn't built. |
 | `/forget [topic]` | Invalidate a stale or wrong memory — marks it as removed, keeps history intact |
+
+### Semantic search setup (one-time)
+
+`/recall` uses embedding-based search when enabled. To set it up:
+
+```bash
+pip install sentence-transformers
+python tools/memory.py --build-index
+```
+
+This downloads `all-MiniLM-L6-v2` (~90MB, runs fully locally, no API key) and builds `memory_embeddings.pkl` in your memory directory. Rebuild whenever you add significant new memory files:
+
+```bash
+python tools/memory.py --build-index   # rebuild index
+```
+
+You can also run it directly:
+
+```bash
+python tools/memory.py --search-semantic "why did we move files to mobile"
+python tools/memory.py --search-semantic "auth error on admin endpoints" --top 10
+```
+
+Without the index, `/recall` falls back to keyword scoring (the original behavior) — no setup needed to get started.
 
 ---
 
