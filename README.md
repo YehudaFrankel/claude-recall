@@ -167,6 +167,9 @@ Extracted 3 lessons:
 3. Page state (current page, sort column) must be reset on filter change —
    otherwise stale offset returns an empty result set silently
 
+No skills needed correction this session. Now updating STATUS.md and
+MEMORY.md, then pushing.
+
 Updated:
 - lessons.md         +18 lines
 - tasks/skill_scores.md  +2 lines
