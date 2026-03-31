@@ -73,6 +73,28 @@ Two commands. Everything else runs automatically.
 
 ---
 
+## What Start Session looks like
+
+One command pulls everything Claude needs from GitHub and picks up exactly where you left off:
+
+```
+Start Session
+
+Pulling from GitHub...
+Already up to date.
+Done - memory, settings and skills ready.
+
+Ready. Last change: Session 150 — Admin auth hardening (always show login,
+URL-based encryptedString for session persistence, feed->admin session
+rewrite, Quill toolbar duplication fix).
+
+What are we working on?
+```
+
+Claude already knows what changed last session, what was deferred, and what patterns to apply — before you type a word.
+
+---
+
 ## What a session looks like
 
 You describe a bug. Claude presents a plan before touching anything:
