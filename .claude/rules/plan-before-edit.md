@@ -1,3 +1,8 @@
+---
+description: Require a written plan and user approval before any code edit
+alwaysApply: true
+---
+
 # Plan Before Edit — Required for All Code Changes
 
 Before making ANY edit to code files (JS, HTML, CSS, SQL, any backend language), you MUST stop and present a plan. Do NOT apply edits until the user explicitly says to proceed.

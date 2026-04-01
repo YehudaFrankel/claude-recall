@@ -1,3 +1,17 @@
+---
+description: Named grep-based guards against known bug patterns — SQL injection, hardcoded URLs, null access, secrets
+globs:
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.jsx"
+  - "**/*.tsx"
+  - "**/*.java"
+  - "**/*.py"
+  - "**/*.go"
+  - "**/*.rb"
+alwaysApply: false
+---
+
 # Guard Patterns — Named Checks That Prevent Known Mistakes
 
 Each entry: ID, what to check, how to grep for it, which files, and why it matters.

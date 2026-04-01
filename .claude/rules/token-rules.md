@@ -1,3 +1,8 @@
+---
+description: Context management — when to compact, /learn before /compact, 80% stop rule
+alwaysApply: true
+---
+
 # Token Rules — Context Management Guardrails
 
 Context limits cause more lost work than bugs do.

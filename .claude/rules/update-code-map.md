@@ -1,3 +1,16 @@
+---
+description: Keep code-map.md and memory files in sync after every code edit
+globs:
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.java"
+  - "**/*.py"
+  - "**/*.html"
+  - "**/*.css"
+  - "**/*.sql"
+alwaysApply: false
+---
+
 # Update Code Map — After Every Code Change
 
 After ANY code change — JS, backend, CSS, SQL, HTML — check whether memory needs updating and update it immediately. Do not wait until End Session.
