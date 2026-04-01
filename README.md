@@ -260,6 +260,58 @@ Tested across 140 real sessions on a production codebase. Not a demo project.
 
 ---
 
+## Extending Clankbrain
+
+Everything in `.claude/` is yours to modify. The three extension points:
+
+**Add a skill** — drop a `SKILL.md` in `.claude/skills/<name>/`:
+```markdown
+---
+name: my-skill
+description: What triggers this skill (exact phrase Claude watches for)
+allowed-tools: Read, Grep, Edit
+---
+## Steps
+1. ...
+```
+Or ask Claude: `Create a skill called [name] that [does what]` — it writes the file for you.
+
+**Add an agent** — drop a `.md` in `.claude/agents/`:
+```markdown
+---
+name: my-workflow
+description: When to invoke this orchestrator
+---
+## Step 1 — ...
+**BREAKPOINT — describe what to show. Wait for "continue".**
+## Step 2 — ...
+```
+
+**Add a path-scoped rule** — drop a `.md` in `.claude/rules/` with frontmatter:
+```markdown
+---
+description: One-line summary for Claude Code's rule picker
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: false
+---
+## Your rule content
+```
+Remove it from the `@rules/` imports in CLAUDE.md so it only loads when the globs match.
+
+---
+
+## Changelog
+
+| Version | What changed |
+|---------|-------------|
+| v2.1 | Markdown agents with BREAKPOINT markers; path-scoped rule frontmatter; CLAUDE.md trimmed to <150 lines with Skill Map |
+| v2.0 | Semantic memory search (`/recall`); compound learning (velocity tracker, skill scores); guard patterns; complexity scanner |
+| v1.0 | Initial release — persistent memory, skills, lifecycle hooks, cross-machine sync |
+
+---
+
 ## Go deeper
 
 - [Skills and the learning loop](docs/skills.md)
