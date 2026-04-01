@@ -170,13 +170,93 @@ def create_task_files():
 <!-- Claude reads and clears this during /learn. -->
 """)
 
+    write("tasks/regret.md", """\
+# Rejected Approaches
+
+<!-- Log approaches that were tried and discarded — so they're never re-proposed. -->
+<!-- Claude reads at every session start. -->
+
+| Approach | Why rejected |
+|----------|-------------|
+""")
+
+    write("tasks/skill_scores.md", """\
+# Skill Effectiveness Scores
+
+<!-- Binary log: did the skill output need correction? Y = needed fix, N = worked first time. -->
+<!-- /evolve reads this to prune weak skills and strengthen strong ones. -->
+
+| Date | Skill | Fired for | Correction needed | What failed | Improvement applied |
+|------|-------|-----------|-------------------|-------------|---------------------|
+""")
+
+    write("tasks/velocity.md", """\
+# Velocity Tracker
+
+<!-- Estimated vs actual sessions per task. Helps calibrate future estimates. -->
+
+| Date | Task | Estimated sessions | Actual sessions | Notes |
+|------|------|--------------------|-----------------|-------|
+""")
+
     # .gitkeep so tasks/ is committed to the repo even before files have content
     gitkeep = ROOT / "tasks" / ".gitkeep"
     gitkeep.parent.mkdir(parents=True, exist_ok=True)
     if not gitkeep.exists():
         gitkeep.touch()
 
-    print("  Created tasks/ (todo.md, lessons.md, decisions.md, errors.md)")
+    # plans/ folder with template and archive/
+    write("plans/_template.md", """\
+# Plan: [Feature Name]
+**Status:** Draft
+**Created:** [YYYY-MM-DD]
+
+---
+
+## Problem
+<!-- What are we solving? Who is it for? What does "done" look like? -->
+
+## Options
+
+### Option A — [name]
+- **Build cost:** Low / Medium / High
+- **User friction:** None / Low / Medium / High
+- **Payoff:** Low / Medium / High
+- **Notes:**
+
+### Option B — [name]
+- **Build cost:** Low / Medium / High
+- **User friction:** None / Low / Medium / High
+- **Payoff:** Low / Medium / High
+- **Notes:**
+
+## Decision
+- [ ] Undecided
+- [ ] Going with: **Option [X]** — because [reason]
+
+## Technical Spec
+<!-- Fill in once decision is made -->
+
+### Files to change
+| # | File | Change |
+|---|------|--------|
+
+## Open Questions
+<!-- Each item blocks coding until resolved -->
+- [ ]
+
+## Alternatives Considered
+<!-- Options ruled out and why — so they're never re-proposed -->
+""")
+
+    archive = ROOT / "plans" / "archive"
+    archive.mkdir(parents=True, exist_ok=True)
+    gitkeep2 = archive / ".gitkeep"
+    if not gitkeep2.exists():
+        gitkeep2.touch()
+
+    print("  Created tasks/ (todo.md, lessons.md, decisions.md, errors.md, regret.md, skill_scores.md, velocity.md)")
+    print("  Created plans/ (_template.md, archive/)")
 
 
 # ─── Auto-detect ─────────────────────────────────────────────────────────────
@@ -697,6 +777,9 @@ After **any code change**, immediately add a note to `.claude/memory/notes.md` �
     write(".claude/memory/MEMORY.md", f"""# Memory Index
 
 - [Project notes](notes.md) — Functions, decisions, gotchas, recent changes
+- [Plans](../plans/) — Active feature plans with status tracking. Check at Start Session for anything open.
+- [Rejected approaches](../tasks/regret.md) — Approaches tried and discarded — don't re-propose these.
+- [Velocity tracker](../tasks/velocity.md) — Estimated vs actual sessions per task.
 
 # currentDate
 <!-- Update this each session -->
@@ -1336,6 +1419,9 @@ Best used for: generating scaffolding, large refactors where the goal is clear, 
 - [JS functions reference](js_functions.md) — All functions across all JS files with descriptions
 - [HTML & CSS reference](html_css_reference.md) — Page section IDs, component IDs, CSS classes
 - [Backend reference](backend_reference.md) — API endpoints, DB patterns, utility methods
+- [Plans](../plans/) — Active feature plans with status tracking. Check at Start Session for anything open.
+- [Rejected approaches](../tasks/regret.md) — Approaches tried and discarded — don't re-propose these.
+- [Velocity tracker](../tasks/velocity.md) — Estimated vs actual sessions per task.
 
 # currentDate
 <!-- Update this each session -->
