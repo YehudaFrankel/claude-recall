@@ -6,14 +6,46 @@
 
 ![Session demo](demo.gif?v=2)
 
-**Your project knowledge compounds and learns across sessions.**
+## ⚡ What this is (read this first)
 
-Claude Code is stateless. Every session starts from zero, no memory of yesterday's decisions, no record of bugs already fixed, no knowledge of what you tried and rejected last week. You re-explain. Claude re-suggests the same things. The same mistake happens twice.
+> Claude forgets everything every session.  
+> **Clankbrain makes it remember — and get better over time.**
 
-Clankbrain fixes that. It gives Claude Code a living memory that grows with your project, capturing decisions, lessons, and patterns every session, so each session starts smarter than the last.
+Clankbrain gives Claude Code **persistent memory + a learning loop**, so every session starts smarter than the last.
 
 ---
 
+## 🔄 What actually changes
+
+| Without Clankbrain | With Clankbrain |
+|---|---|
+| Re-explain your codebase every session | Claude starts with full context |
+| Same bugs get suggested again | Known mistakes are avoided |
+| Decisions get lost | Decisions are remembered |
+| Sessions reset to zero | Sessions compound over time |
+
+---
+
+## 🧠 The core idea
+
+Session 1 → blank  
+Session 5 → patterns emerge  
+Session 10 → mistakes avoided  
+Session 20 → Claude works with your real history  
+
+---
+
+## 🚨 The Problem
+
+Claude Code is stateless. Every session starts from zero, no memory of yesterday's decisions, no record of bugs already fixed, no knowledge of what you tried and rejected last week.
+
+You re-explain. Claude re-suggests the same things. The same mistake happens twice.
+
+---
+
+## ⚡ The Solution
+
+Clankbrain fixes that. It gives Claude Code a living memory that grows with your project, capturing decisions, lessons, and patterns every session, so each session starts smarter than the last.
 ## Is this for you?
 
 - You use **Claude Code** daily on a real, ongoing project
