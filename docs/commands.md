@@ -98,7 +98,9 @@ Without the index, `/recall` falls back to keyword scoring (the original behavio
 | `Sync Memory` | Push memory to your repo after a session |
 | `Pull Memory` | Pull memory on a new machine |
 | `Sync Status` | Check if anything is unpushed |
-| `Setup Team: [repo URL]` | Set up shared team memory via a private repo |
-| `Team Pull` | Get teammates' additions at Start Session |
-| `Team Push` | Share what you found at End Session |
+| `Setup Team: [repo URL]` | Manager runs once — creates the shared repo and seeds it with your memory |
+| `Join Team: [repo URL]` | New member runs once — loads the team's knowledge into your local memory |
+| `Team Push` | Share what you learned with the team. Run at End Session. |
 | `Team Status` | Check last sync times and recent commits |
+
+Team Pull runs automatically at Start Session — no command needed.

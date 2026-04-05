@@ -45,46 +45,54 @@ Open Claude Code and type `Start Session` — fully up to speed.
 
 ## Team sync
 
-One person's `error-lookup.md` entry benefits the whole team. One person's `decisions.md` means nobody re-debates the same thing.
+One person's `error-lookup.md` entry benefits the whole team. One person's `decisions.md` means nobody re-debates the same thing. One person's session learnings in `lessons.md` — yours, automatically, next Start Session.
 
-Team Sync shares 6 memory files across your team via a single private git repo. Personal memory (velocity, journal, skill scores) stays local.
+Team Sync shares memory files across your team via a single private git repo. Personal memory (velocity, journal, skill scores) stays local.
 
 ### What gets shared
 
 | File | Why |
 |------|-----|
-| `error-lookup.md` | One person debugs it once — zero cost for everyone else |
 | `decisions.md` | The team can't re-debate what the team already settled |
+| `lessons.md` | Every session's learnings benefit everyone — not just the person who had the session |
 | `regret.md` | Rejected approaches are codebase-wide, not per-person |
-| `guard-patterns.md` | Guards protect the whole codebase |
-| `agreed-flow.md` | User journeys are team agreements |
+| `error-lookup.md` | One person debugs it once — zero cost for everyone else |
 | `critical-notes.md` | Gotchas cost time regardless of who hits them |
+| `agreed-flow.md` | User journeys are team agreements |
+| `guard-patterns.md` | Guards protect the whole codebase |
+| `complexity_profile.md` | Shared codebase profile — no need for each person to scan |
 
-### Setup (one person does this once)
+Personal files that never leave your machine: `velocity.md`, `skill_scores.md`, `user_preferences.md`, `session_journal.md`, `todo.md`.
 
-Create a private repo at github.com/new, share the URL with teammates. Each person runs:
+### Setup — manager does this once
+
+Create a **private** repo at github.com/new. Then in Claude Code:
 
 ```
 Setup Team: https://github.com/team/shared-memory
 ```
 
-Or from terminal:
-
-```bash
-python tools/team_sync.py setup-team https://github.com/team/shared-memory
-```
+This seeds the shared repo with your current memory files and prints the join URL to share with teammates.
 
 **Prerequisite:** `gh auth status` — git must be authenticated. If not: `gh auth login`.
+
+### Joining — each new member does this once
+
+Paste the URL your manager sent you:
+
+```
+Join Team: https://github.com/team/shared-memory
+```
+
+This clones the shared repo, shows you what's in it (file names + line counts), and asks before merging anything into your local memory. Nothing overwrites without your confirmation.
 
 ### Day to day
 
 ```
-Team Pull    <-  at Start Session, get teammates' additions
-Team Push    <-  at End Session, share what you found
-Team Status  <-  check last sync times and recent commits
+Start Session  ->  team memory pulls automatically (nothing to type)
+End Session    ->  Team Push   (share what you found with the team)
+Team Status    ->  check last sync times and recent commits
 ```
-
-Or from terminal: `python tools/team_sync.py pull-team` / `push-team`
 
 Merge is append-only, keyed by first column — no git conflicts possible.
 

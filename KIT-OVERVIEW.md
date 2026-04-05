@@ -13,6 +13,7 @@ Quick reference for what ships, what each file does, and how the pieces connect.
 | `update.py` | Pulls latest kit version safely — never touches your memory or skills |
 | `install.py` | Minimal bootstrapper — fetched remotely on very first install |
 | `tools/memory.py` | All lifecycle behaviors in one script (Full mode only) |
+| `tools/team_sync.py` | Optional team sync — shares memory files across developers via a shared private repo |
 | `CLAUDE.md` | Template — kit commands + project-specific sections |
 | `KIT-OVERVIEW.md` | This file |
 

@@ -10,3 +10,6 @@ Thumbs.db
 
 # Local dev config (machine-specific paths)
 .claude/launch.json
+
+# Team sync staging repo (separate git repo — must not be nested inside this one)
+.claude/team_repo/

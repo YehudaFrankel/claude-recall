@@ -2,21 +2,24 @@
 """
 team_sync.py — Clankbrain Team Sync (optional add-on)
 
-Shares 6 memory files across a team via a private git repo.
+Shares memory files across a team via a private git repo.
 Personal memory stays local. Team memory is shared.
 
   PERSONAL (local only)       TEAM (shared)
-  velocity.md                 error-lookup.md
-  skill_scores.md             decisions.md
+  velocity.md                 decisions.md
+  skill_scores.md             lessons.md
   user_preferences.md         regret.md
-  session_journal.md          guard-patterns.md
-  todo.md                     agreed-flow.md
-                              critical-notes.md
+  session_journal.md          error-lookup.md
+  todo.md                     critical-notes.md
+                              agreed-flow.md
+                              guard-patterns.md
+                              complexity_profile.md (if present)
 
 Merge strategy: set-union by first column — append-only, no git conflicts.
 
 Usage:
   python tools/team_sync.py setup-team https://github.com/team/shared-memory
+  python tools/team_sync.py join https://github.com/team/shared-memory
   python tools/team_sync.py pull-team
   python tools/team_sync.py push-team
   python tools/team_sync.py team-status
@@ -37,14 +40,20 @@ ROOT = SCRIPT_DIR.parent
 TEAM_CONFIG_PATH = ROOT / '.claude' / 'team_config.json'
 TEAM_REPO_DIR    = ROOT / '.claude' / 'team_repo'
 
-# Files in memory/ that are shared
+# Files in memory/ that are shared with the team
 TEAM_MEMORY_FILES = [
-    'error-lookup.md',
     'decisions.md',
+    'lessons.md',
     'regret.md',
-    'agreed-flow.md',
+    'error-lookup.md',
     'critical-notes.md',
+    'agreed-flow.md',
 ]
+
+# Some files live in a subdirectory locally but are stored flat in the team repo
+TEAM_FILES_LOCAL_OVERRIDE = {
+    'regret.md': 'tasks/regret.md',
+}
 
 # Table header values to skip during merge (not data rows)
 _HEADER_KEYS = {
@@ -184,7 +193,8 @@ def _copy_to_repo():
     copied = 0
 
     for fname in TEAM_MEMORY_FILES:
-        src = mem_dir / fname
+        local_name = TEAM_FILES_LOCAL_OVERRIDE.get(fname, fname)
+        src = mem_dir / local_name
         if src.exists():
             shutil.copy2(src, TEAM_REPO_DIR / fname)
             copied += 1
@@ -193,6 +203,12 @@ def _copy_to_repo():
     gp = ROOT / '.claude' / 'rules' / 'guard-patterns.md'
     if gp.exists():
         shutil.copy2(gp, TEAM_REPO_DIR / 'guard-patterns.md')
+        copied += 1
+
+    # complexity_profile.md — copy to team if it exists locally
+    cp = mem_dir / 'complexity_profile.md'
+    if cp.exists():
+        shutil.copy2(cp, TEAM_REPO_DIR / 'complexity_profile.md')
         copied += 1
 
     return copied
@@ -283,8 +299,10 @@ def cmd_setup_team(repo_url):
     print(f'\nTeam sync enabled.')
     print(f'Repo:  {repo_url}')
     print(f'Files: {", ".join(TEAM_MEMORY_FILES + ["guard-patterns.md"])}')
+    print('\nShare this URL with your team:')
+    print(f'  python tools/team_sync.py join {repo_url}')
     print('\nWorkflow:')
-    print('  Start Session → "Team Pull"   (get teammates\' additions)')
+    print('  Start Session → team memory pulls automatically')
     print('  End Session   → "Team Push"   (share what you found)')
 
 
@@ -310,8 +328,9 @@ def cmd_pull_team():
     additions = []
 
     for fname in TEAM_MEMORY_FILES:
-        remote = TEAM_REPO_DIR / fname
-        local  = mem_dir / fname
+        remote     = TEAM_REPO_DIR / fname
+        local_name = TEAM_FILES_LOCAL_OVERRIDE.get(fname, fname)
+        local      = mem_dir / local_name
         n = merge_table(local, remote)
         if n:
             additions.append(f'  {fname}: +{n} new entr{"y" if n == 1 else "ies"} from team')
@@ -324,6 +343,14 @@ def cmd_pull_team():
         additions.append(f'  guard-patterns.md: +{n} new guard{"" if n == 1 else "s"} from team')
         total += n
 
+    # complexity_profile.md — copy from team if missing locally
+    remote_cp = TEAM_REPO_DIR / 'complexity_profile.md'
+    local_cp  = mem_dir / 'complexity_profile.md'
+    if remote_cp.exists() and not local_cp.exists():
+        shutil.copy2(remote_cp, local_cp)
+        additions.append('  complexity_profile.md: copied from team')
+        total += 1
+
     cfg['last_pull'] = datetime.now().strftime('%Y-%m-%d %H:%M')
     save_config(cfg)
 
@@ -332,6 +359,88 @@ def cmd_pull_team():
         print(f'\n{total} new entries merged from team.')
     else:
         print('Already up to date — no new entries from team.')
+
+
+def cmd_join_team(repo_url):
+    cfg = load_config()
+    if cfg.get('repo'):
+        print(f'Already on a team: {cfg["repo"]}')
+        print('Run "Team Status" to check, or delete .claude/team_config.json to reset.')
+        return
+
+    if TEAM_REPO_DIR.exists() and (TEAM_REPO_DIR / '.git').exists():
+        print('Team repo already exists locally. Run "Team Pull" to sync.')
+        return
+
+    print(f'Joining team memory at {repo_url}...')
+
+    # Check git auth before doing anything
+    print('Checking git access...')
+    ok, hint = _check_git_auth(repo_url)
+    if not ok:
+        print(f'\n{hint}')
+        return
+
+    TEAM_REPO_DIR.mkdir(parents=True, exist_ok=True)
+    rc, out, err = git(['clone', repo_url, '.'], cwd=TEAM_REPO_DIR)
+    if rc != 0:
+        print(f'Clone failed: {err or out}')
+        shutil.rmtree(TEAM_REPO_DIR, ignore_errors=True)
+        return
+
+    # Show what's in the team repo before touching anything
+    mem_dir   = find_memory_dir()
+    available = []
+    for fname in TEAM_MEMORY_FILES + ['guard-patterns.md', 'complexity_profile.md']:
+        remote = TEAM_REPO_DIR / fname
+        if remote.exists():
+            lines = len(remote.read_text(encoding='utf-8', errors='ignore').splitlines())
+            available.append((fname, lines))
+
+    if not available:
+        print('\nTeam repo is empty — nothing to merge yet.')
+    else:
+        print(f'\nTeam repo contains {len(available)} shared file(s):')
+        for fname, lines in available:
+            print(f'  {fname}: {lines} lines')
+
+        try:
+            answer = input('\nMerge these into your local memory? (y/n): ').strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            answer = 'n'
+
+        if answer != 'y':
+            print('Cancelled. Team repo cloned but not merged.')
+            print('Run "Team Pull" when ready to merge.')
+        else:
+            total = 0
+            for fname in TEAM_MEMORY_FILES:
+                remote     = TEAM_REPO_DIR / fname
+                local_name = TEAM_FILES_LOCAL_OVERRIDE.get(fname, fname)
+                local      = mem_dir / local_name
+                n = merge_table(local, remote)
+                total += n
+
+            remote_gp = TEAM_REPO_DIR / 'guard-patterns.md'
+            local_gp  = ROOT / '.claude' / 'rules' / 'guard-patterns.md'
+            n = merge_guard_patterns(local_gp, remote_gp)
+            total += n
+
+            remote_cp = TEAM_REPO_DIR / 'complexity_profile.md'
+            local_cp  = mem_dir / 'complexity_profile.md'
+            if remote_cp.exists() and not local_cp.exists():
+                shutil.copy2(remote_cp, local_cp)
+                total += 1
+
+            print(f'\n{total} entries merged from team.')
+
+    cfg['repo']        = repo_url
+    cfg['joined_date'] = datetime.now().strftime('%Y-%m-%d')
+    cfg['last_pull']   = datetime.now().strftime('%Y-%m-%d %H:%M')
+    save_config(cfg)
+
+    print(f'\nJoined. Team memory will sync automatically at each Start Session.')
+    print('Run "Team Push" at End Session to share what you learn.')
 
 
 def cmd_push_team():
@@ -427,6 +536,11 @@ def main():
             print('Usage: python tools/team_sync.py setup-team https://github.com/team/shared-memory')
             sys.exit(1)
         cmd_setup_team(args[1])
+    elif cmd == 'join':
+        if len(args) < 2:
+            print('Usage: python tools/team_sync.py join https://github.com/team/shared-memory')
+            sys.exit(1)
+        cmd_join_team(args[1])
     elif cmd == 'pull-team':
         cmd_pull_team()
     elif cmd == 'push-team':

@@ -28,7 +28,8 @@ If `setup.py` exists run it. Otherwise: `python -c "import urllib.request; exec(
 2. Update memory files for everything changed (see Auto-Save Rule)
 3. Update `STATUS.md` — increment session, one-line summary
 4. Run `python tools/memory.py --check-drift`
-5. Report: "Session N complete. Updated: [list]. Memory clean."
+5. If on a team: share what you learned → `Team Push`
+6. Report: "Session N complete. Updated: [list]. Memory clean."
 
 ### `Plan [feature]`
 Invoke the `plan` skill. Opens/creates `memory/plans/[slug].md`, walks problem → research → options → decision → spec. Always show the **full plan file** after every update — never a diff or summary.
@@ -57,10 +58,19 @@ Invoke the `debug-session` skill: reproduce → isolate → hypothesize → fix 
 | `/learn` | Invoke `learn` skill — extract lessons, decisions, rejected approaches |
 | `/evolve` | Invoke `evolve` skill — patch failing skills, cluster patterns (every 3–5 sessions) |
 
-### Team + Sync (opt-in)
-Setup: `python tools/team_sync.py setup-team [repo-url]` / `python sync.py setup [repo-url]`
-- `Team Pull` / `Team Push` → `python tools/team_sync.py pull-team` / `push-team`
+### Team (opt-in)
+| Command | What it does |
+|---------|-------------|
+| `Setup Team [url]` | You're the manager. Run once. Sends teammates the URL to join. |
+| `Join Team [url]` | You're a new member. Run once with the URL your manager sent. |
+| `Team Push` | Share what you learned with the team. Run at End Session. |
+| `Team Status` | Check last sync times and what's been shared. |
+
+Team Pull runs automatically at Start Session — no command needed.
+
+### Sync (opt-in)
 - `Sync Memory` / `Pull Memory` → `python sync.py push` / `python sync.py pull`
+- Setup: `python sync.py setup [repo-url]`
 
 ---
 

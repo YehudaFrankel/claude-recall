@@ -247,6 +247,7 @@ Next session, Claude loads these lessons automatically — before you write a si
 - **Regret guard** — scans past rejected approaches before every prompt, blocks re-proposing them
 - **Progress reports** — real numbers built from your actual session history
 - **Typed decision relationships** — decisions.md tracks whether new decisions supersede, explain, or build on past ones. /evolve flags the connection automatically.
+- **Team sync** — share what you learn with your whole team. One person's session learnings, rejected approaches, and decisions flow to everyone automatically. Manager runs `Setup Team` once, teammates run `Join Team` once, and every Start Session pulls the latest from the shared repo silently. Personal memory stays local.
 ---
 
 ## What /recall looks like
