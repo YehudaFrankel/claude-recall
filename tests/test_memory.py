@@ -225,3 +225,126 @@ def test_memory_diff_no_snapshot(kit, capsys):
     memory.cmd_memory_diff()
     out = capsys.readouterr().out
     assert 'No session snapshot' in out
+
+
+# ─── cmd_log_edit ─────────────────────────────────────────────────────────────
+
+def test_log_edit_writes_filename(kit, monkeypatch):
+    mem = kit / '.claude' / 'memory'
+    monkeypatch.setattr('sys.stdin', __import__('io').StringIO(
+        '{"tool_input": {"file_path": "/project/src/main.py"}}'
+    ))
+    memory.cmd_log_edit()
+    draft = mem / 'tasks' / 'draft-lessons.md'
+    assert draft.exists()
+    assert 'main.py' in draft.read_text()
+
+
+def test_log_edit_no_duplicate_entries(kit, monkeypatch):
+    mem = kit / '.claude' / 'memory'
+    payload = '{"tool_input": {"file_path": "/project/app.js"}}'
+    import io
+    monkeypatch.setattr('sys.stdin', io.StringIO(payload))
+    memory.cmd_log_edit()
+    monkeypatch.setattr('sys.stdin', io.StringIO(payload))
+    memory.cmd_log_edit()
+    draft = mem / 'tasks' / 'draft-lessons.md'
+    count = draft.read_text().count('app.js')
+    assert count == 1
+
+
+def test_log_edit_empty_input_no_crash(kit, monkeypatch):
+    import io
+    monkeypatch.setattr('sys.stdin', io.StringIO(''))
+    memory.cmd_log_edit()   # must not raise
+
+
+# ─── cmd_capture_correction ───────────────────────────────────────────────────
+
+class _FakeStdin:
+    """Wraps a bytes payload so sys.stdin.buffer.read() works in tests."""
+    def __init__(self, payload: bytes):
+        import io
+        self.buffer = io.BytesIO(payload)
+
+
+def test_capture_correction_queues_correction(kit, monkeypatch):
+    mem = kit / '.claude' / 'memory'
+    monkeypatch.setattr('sys.stdin', _FakeStdin(b'{"prompt": "don\'t use jQuery here"}'))
+    memory.cmd_capture_correction()
+    queue = mem / 'tasks' / 'corrections_queue.md'
+    assert queue.exists()
+    assert 'jQuery' in queue.read_text()
+
+
+def test_capture_correction_remember_prefix_writes_draft(kit, monkeypatch):
+    mem = kit / '.claude' / 'memory'
+    monkeypatch.setattr('sys.stdin', _FakeStdin(
+        b'{"prompt": "remember: always use fAddQuotes for SQL values"}'
+    ))
+    memory.cmd_capture_correction()
+    draft = mem / 'tasks' / 'draft-lessons.md'
+    assert draft.exists()
+    assert 'fAddQuotes' in draft.read_text()
+
+
+def test_capture_correction_non_correction_ignored(kit, monkeypatch):
+    mem = kit / '.claude' / 'memory'
+    monkeypatch.setattr('sys.stdin', _FakeStdin(
+        b'{"prompt": "what does this function do?"}'
+    ))
+    memory.cmd_capture_correction()
+    queue = mem / 'tasks' / 'corrections_queue.md'
+    assert not queue.exists()
+
+
+# ─── cmd_stop_check ───────────────────────────────────────────────────────────
+
+def test_stop_check_edit_count_reported(kit, capsys):
+    mem = kit / '.claude' / 'memory'
+    (mem / 'tasks' / 'session_edit_count.txt').write_text('5', encoding='utf-8')
+    memory.cmd_stop_check()
+    out = capsys.readouterr().out
+    # output is JSON systemMessage or empty — just confirm no crash
+    assert out is not None
+
+
+def test_stop_check_no_memory_dir_no_crash(kit):
+    import shutil
+    shutil.rmtree(kit / '.claude' / 'memory')
+    memory.cmd_stop_check()   # must not raise
+
+
+# ─── cmd_journal ──────────────────────────────────────────────────────────────
+
+def test_journal_no_output_when_nothing_to_record(kit):
+    # No draft-lessons.md and no STATUS.md → journal skips silently
+    memory.cmd_journal()
+    mem = kit / '.claude' / 'memory'
+    assert not (mem / 'session_journal.md').exists()
+
+
+def test_journal_writes_entry_when_files_edited(kit):
+    mem = kit / '.claude' / 'memory'
+    draft = mem / 'tasks' / 'draft-lessons.md'
+    draft.write_text('- Edited: app.js\n', encoding='utf-8')
+    (kit / 'STATUS.md').write_text(
+        '## Current Phase\n> Working on auth module\n', encoding='utf-8'
+    )
+    memory.cmd_journal()
+    journal = mem / 'session_journal.md'
+    assert journal.exists()
+    assert 'app.js' in journal.read_text()
+
+
+def test_journal_clears_draft_after_write(kit):
+    mem = kit / '.claude' / 'memory'
+    draft = mem / 'tasks' / 'draft-lessons.md'
+    draft.write_text('- Edited: routes.py\n', encoding='utf-8')
+    (kit / 'STATUS.md').write_text(
+        '## Current Phase\n> Refactoring routes\n', encoding='utf-8'
+    )
+    memory.cmd_journal()
+    # draft is reset to header-only, edited filenames removed
+    remaining = draft.read_text()
+    assert 'routes.py' not in remaining

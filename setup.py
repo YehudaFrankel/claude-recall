@@ -803,18 +803,20 @@ type: project
 
 | Function | File | What it does |
 |----------|------|-------------|
+| example | src/main.py | Replace this row with real functions as you discover them |
 
 ---
 
 ## Current State
 
-<!-- What's working, what's in progress, what's broken -->
+Project just set up. No sessions yet.
 
 ---
 
 ## Recent Changes
 
 <!-- Quick log: what changed and why — update after every code change -->
+<!-- Example: 2026-04-05 — Added auth middleware, required by all /api routes -->
 """)
 
     write(".claude/memory/lessons.md", f"""---
@@ -826,6 +828,9 @@ type: feedback
 <!-- Each entry: what to do (or avoid), and why -->
 <!-- Format: - [Lesson] — Why: [reason] -->
 
+<!-- Example entries — replace with real lessons as you discover them: -->
+<!-- - Always run tests before committing. Why: caught 3 regressions in first week. -->
+<!-- - Don't edit generated files directly. Why: they get overwritten on next build. -->
 """)
 
     write(".claude/memory/decisions.md", f"""---
@@ -834,8 +839,18 @@ description: Settled architectural choices — don't re-litigate these
 type: project
 ---
 
-<!-- Format: ## [Short title] / **Decision:** ... / **Why:** ... / **Rejected:** ... -->
+<!-- Format: ## [Short title] -->
+<!-- **Decision:** what was chosen -->
+<!-- **Why:** the reason -->
+<!-- **Rejected:** what was considered and discarded -->
 
+<!-- Example — replace with real decisions: -->
+<!--
+## Auth approach
+**Decision:** JWT tokens, not sessions
+**Why:** stateless, works across multiple servers
+**Rejected:** server-side sessions — adds Redis dependency
+-->
 """)
 
     if ask_yn("Generate skill files? (code-review, fix-bug — auto-invoked)", "y"):

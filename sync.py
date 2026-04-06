@@ -22,6 +22,7 @@ Team sync commands:
 
 Diagnostics:
   python sync.py diagnose         Show last 20 sync operations with status and any error detail
+  python sync.py migrate          Check which version migrations are needed and print instructions
 """
 
 import json
@@ -157,6 +158,14 @@ def _check_dependencies():
     Call before any command that needs git.
     """
     failures = []
+
+    # Python version
+    if sys.version_info < (3, 7):
+        hint = (
+            f'Python 3.7+ required. You have {sys.version_info.major}.{sys.version_info.minor}.\n'
+            '  Download the latest Python from https://python.org/downloads/'
+        )
+        failures.append(('python', hint))
 
     # git
     try:
@@ -831,6 +840,77 @@ def cmd_team_status():
     print(f'\nPersonal (never shared): {", ".join(personal)}')
 
 
+# ─── MIGRATE ──────────────────────────────────────────────────────────────────
+
+_MIGRATIONS = [
+    {
+        'version': 'v2.2',
+        'description': 'personal_sync.py + team_sync.py merged into sync.py',
+        'check': lambda: (ROOT / 'tools' / 'personal_sync.py').exists()
+                      or (ROOT / 'tools' / 'team_sync.py').exists(),
+        'fix': (
+            'Replace all references to tools/personal_sync.py and tools/team_sync.py\n'
+            'in your CLAUDE.md with sync.py:\n'
+            '  Old: python tools/personal_sync.py push\n'
+            '  New: python sync.py push\n'
+            '  Old: python tools/team_sync.py team-push\n'
+            '  New: python sync.py team-push\n'
+            'Then delete the old files:\n'
+            '  del tools/personal_sync.py\n'
+            '  del tools/team_sync.py'
+        ),
+    },
+    {
+        'version': 'v2.3',
+        'description': 'Lite mode: single notes.md → 3 typed files',
+        'check': lambda: (MEMORY_DIR / 'notes.md').exists()
+                      and not (MEMORY_DIR / 'lessons.md').exists(),
+        'fix': (
+            'Create lessons.md and decisions.md alongside notes.md:\n'
+            '  1. Create .claude/memory/lessons.md — move lessons (things to do/avoid) from notes.md\n'
+            '  2. Create .claude/memory/decisions.md — move architectural choices from notes.md\n'
+            '  3. Update your CLAUDE.md Start Session + End Session to reference all 3 files'
+        ),
+    },
+    {
+        'version': 'v2.4',
+        'description': 'End Session memory diff',
+        'check': lambda: _migrate_check_missing_memory_diff(),
+        'fix': (
+            'Add this step to your CLAUDE.md End Session section:\n'
+            '  python tools/memory.py --memory-diff'
+        ),
+    },
+]
+
+
+def _migrate_check_missing_memory_diff():
+    """Return True if CLAUDE.md exists but doesn't mention --memory-diff."""
+    claude_md = ROOT / 'CLAUDE.md'
+    if not claude_md.exists():
+        return False
+    text = claude_md.read_text(encoding='utf-8', errors='ignore')
+    return 'End Session' in text and '--memory-diff' not in text
+
+
+def cmd_migrate():
+    """Check which migrations are needed and print instructions."""
+    print('Clankbrain migration check\n')
+    needed = [(m['version'], m['description'], m['fix'])
+              for m in _MIGRATIONS if m['check']()]
+
+    if not needed:
+        print('Up to date — no migrations needed.')
+        return
+
+    print(f'{len(needed)} migration(s) needed:\n')
+    for version, description, fix in needed:
+        print(f'── {version}: {description}')
+        print(f'   {fix.strip()}\n')
+
+    print('See CHANGELOG.md for full details on each version.')
+
+
 # ─── DISPATCH ─────────────────────────────────────────────────────────────────
 
 def main():
@@ -882,6 +962,9 @@ def main():
 
     elif cmd == 'diagnose':
         cmd_diagnose()
+
+    elif cmd == 'migrate':
+        cmd_migrate()
 
     else:
         print(f"Unknown command: {cmd}")
