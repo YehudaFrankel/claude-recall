@@ -53,20 +53,38 @@
    **Apply when:** [trigger]
    ```
 
-7. **Skill scoring:** Log each skill that fired this session to `tasks/skill_scores.md`:
-   - If N (worked correctly): `| [date] | [skill] | [step] | [used for] | N | minor | - | - |`
-   - If Y (needed correction): `| [date] | [skill] | [step N] | [used for] | Y | [minor/major/silent] | Step [N]: produced [X], needed [Y]. Fixed by [Z]. | - |`
+7. **Skill scoring (interactive — ask, don't assume):**
 
-   The "What Failed" column MUST contain all three:
-   - The step number that failed (e.g. "Step 3")
-   - What it produced vs what was needed (e.g. "produced INSERT, needed addRow")
-   - What the correction was (e.g. "switched to addRow pattern")
+   For each skill that fired this session, ask the user:
 
-   Entries like "didn't work", "needed correction", or "wrong output" are NOT acceptable.
-   /evolve cannot patch what it cannot read precisely. If you cannot describe the failure
-   in this format, write: `INSUFFICIENT DATA — re-run with more detail before /evolve.`
+   > "Did **[skill name]** work correctly this session, or did it need a correction?"
 
-   Severity guide: `minor` = small correction, close output | `major` = wrong approach, significant rework | `silent` = failure not caught until later
+   If it worked: log a single N row silently — no further questions needed.
+   ```
+   | [date] | [skill] | all | [what it was used for] | N | minor | - | - |
+   ```
+
+   If it needed a correction: ask two follow-up questions:
+   > "Which step went wrong — and what did it produce vs what you needed?"
+   > "How bad was it? (minor = small fix / major = wrong approach / silent = not caught until later)"
+
+   Take their natural-language answer and translate it into the structured row:
+   ```
+   | [date] | [skill] | step [N] | [used for] | Y | [severity] | Step [N]: produced [X], needed [Y]. Fixed by: [Z]. | - |
+   ```
+
+   **Translation rules:**
+   - Extract a step number from their description (or infer from the skill's step list)
+   - "Produced X" = what Claude actually did or output
+   - "Needed Y" = what should have happened
+   - "Fixed by Z" = the correction given (brief)
+
+   If the user's answer is too vague to extract step + produced + needed, ask one more time:
+   > "What specifically did it produce vs what you wanted?"
+
+   Only write `INSUFFICIENT DATA` as a last resort — never skip scoring entirely.
+
+   **Severity guide:** `minor` = small correction, close output | `major` = wrong approach or significant rework | `silent` = failure not caught until later, discovered downstream
 
 8. **Velocity log:** If this session had an estimated task, append to `tasks/velocity.md`:
    `| [date] | [task] | [estimated] | [actual] | [complexity 1-5] | [notes] |`

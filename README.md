@@ -305,6 +305,7 @@ Tested across 160 real sessions on a production codebase. Not a demo project.
 - [Every command](docs/commands.md)
 - [Cross-machine sync and team sync](docs/sync.md)
 - [Skills and the learning loop](docs/skills.md)
+- [The loop in practice — a real case study](docs/loop-proof.md)
 - [Agents and breakpoint patterns](docs/agents.md)
 - [Rules — always-load vs. path-scoped](docs/rules.md)
 - [Extending Clankbrain — skills, agents, rules](docs/extending.md)

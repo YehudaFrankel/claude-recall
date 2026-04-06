@@ -1,0 +1,38 @@
+[
+  {
+    "ts": "2026-04-05 20:25",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+3 entries merged from team"
+  },
+  {
+    "ts": "2026-04-05 20:25",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+3 entries merged from team"
+  },
+  {
+    "ts": "2026-04-05 20:25",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+4 entries merged from team"
+  },
+  {
+    "ts": "2026-04-05 20:38",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+3 entries merged from team"
+  },
+  {
+    "ts": "2026-04-05 20:38",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+3 entries merged from team"
+  },
+  {
+    "ts": "2026-04-05 20:38",
+    "op": "team-pull",
+    "status": "ok",
+    "detail": "+4 entries merged from team"
+  }
+]

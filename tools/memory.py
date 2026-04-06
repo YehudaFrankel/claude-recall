@@ -311,18 +311,46 @@ def cmd_session_start():
 # Hook: UserPromptSubmit
 
 _CORRECTION_PATTERNS = [
-    r'(?i)^no[,!\. ]',
-    r"(?i)don't do that",
-    r"(?i)don't add ",
-    r"(?i)don't use ",
-    r"(?i)stop doing",
-    r"(?i)that's wrong",
-    r"(?i)you're wrong",
-    r"(?i)never do ",
-    r"(?i)never use ",
-    r"(?i)not what i (asked|wanted|meant|said)",
-    r"(?i)that's not (right|correct)",
-    r"(?i)wrong approach",
+    # Direct correction starters
+    r'(?i)^no[,!\. ]',                                         # "No, that's not right"
+    r'(?i)^wrong[,!\. ]',                                      # "Wrong, I meant..."
+    r'(?i)^actually[,\. ].{0,60}(wrong|not right|not what|didn|shouldn|mistake|incorrect)',
+    r'(?i)^wait[,\. ].{0,40}(wrong|not right|not what|didn|stop)',
+
+    # Imperative corrections
+    r"(?i)\bdon'?t do that\b",
+    r"(?i)\bdon'?t add ",
+    r"(?i)\bdon'?t use ",
+    r"(?i)\bplease don'?t ",
+    r"(?i)\bstop doing\b",
+    r"(?i)\bnever do \b",
+    r"(?i)\bnever use \b",
+
+    # Wrongness assertions
+    r"(?i)that'?s wrong",
+    r"(?i)that was wrong",
+    r"(?i)you'?re wrong",
+    r"(?i)you got it wrong",
+    r"(?i)that'?s not (right|correct|what i|what we)",
+    r"(?i)that'?s (incorrect|backwards|the wrong)",
+    r"(?i)\bwrong approach\b",
+    r"(?i)\bwrong (way|direction|method|pattern|function|table|file)\b",
+
+    # "not what I" family
+    r"(?i)not what i (asked|wanted|meant|said|needed)",
+    r"(?i)that (was|is|isn'?t) what i (asked|wanted|meant|needed)",
+
+    # Misunderstanding / mistake
+    r"(?i)you misunderstood",
+    r"(?i)you (missed|skipped) (the point|step|that)",
+    r"(?i)i didn'?t (want|ask|need|mean) you to",
+    r"(?i)i didn'?t (ask for|want) that",
+    r"(?i)that'?s not what i (asked|said|wanted|needed)",
+
+    # Undo / revert requests
+    r"(?i)\bundo\b.{0,30}(just|last|that|you|added|wrote|changed)",
+    r"(?i)\brevert\b.{0,20}(that|the last|what you)",
+    r"(?i)\broll.?back\b.{0,20}(that|the last|what you)",
 ]
 
 
