@@ -23,15 +23,15 @@ Setup asks which mode fits your project.
 
 | | Full | Lite |
 |---|---|---|
-| Memory files | 5 separate files (js_functions, html_css, backend, project_status, user_preferences) | 1 notes file |
+| Memory files | 5 typed memory files (lessons, decisions, error-lookup, critical-notes, project_status) | 3 typed memory files (notes, lessons, decisions) |
 | Static conventions | `@rules/` files (stack.md, conventions.md, decisions.md) | Inline in CLAUDE.md |
 | Drift detection | Automated — runs after every edit via `memory.py` | None |
-| Session journal | Auto-captured on every Stop | Not included |
-| Python required | Yes (3.7+) | No |
-| Best for | Multi-file projects, long-running codebases, teams | Quick experiments, small solo projects |
+| Session journal | Auto-captured on every Stop | Manual (End Session) |
+| Python required | Yes (3.7+) | Yes (3.7+) |
+| Best for | Complex, long-running codebases, teams | Any project |
 | Upgrade later? | — | Yes — `Upgrade to Full` |
 
-**Not sure?** Start with Lite — instant, zero Python required. Upgrade when you need drift detection.
+**Not sure?** Start with Lite. `Upgrade to Full` adds everything any time.
 
 ### Upgrading from Lite to Full
 
