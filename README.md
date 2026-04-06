@@ -86,11 +86,11 @@ Setup asks which mode fits your project.
 
 | | Lite | Full |
 |---|---|---|
-| Setup | Zero dependencies | Python 3.7+ |
-| Memory | 1 notes file | 5 typed memory files |
+| Setup | Python 3.7+ | Python 3.7+ |
+| Memory | 3 typed memory files | 5 typed memory files |
 | Drift detection | None | Automated after every edit |
-| Session journal | Not included | Auto-captured on every Stop |
-| Best for | Quick experiments | Long-running codebases |
+| Session journal | Manual (End Session) | Auto-captured on every Stop |
+| Best for | Any project | Complex, long-running codebases |
 
 Not sure? Start with Lite. `Upgrade to Full` adds everything any time.
 
