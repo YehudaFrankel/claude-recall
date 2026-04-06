@@ -34,6 +34,8 @@ npx clankbrain
 
 No API keys. No background service. No database. **Requires:** [Claude Code](https://claude.ai/claude-code)
 
+> Used by 600+ developers in its first two weeks. No signup. No cloud. Runs entirely on your machine.
+
 > Anonymous usage stats are collected on setup and session start (mode, platform, Python version — no project data). Opt out: `CLANKBRAIN_NO_TELEMETRY=1`.
 
 ---
@@ -64,6 +66,8 @@ After 8 sessions:
 
   -> 8 sessions in. Compounding is happening.
 ```
+
+From a real project — 160 sessions on a production Java/SQL Server codebase, not a demo.
 
 ---
 
@@ -212,7 +216,16 @@ Claude ships built-in Auto Memory since v2.1.59, and dozens of community tools e
 
 Every one of them remembers. None of them learn.
 
-Clankbrain is the only tool where skills score themselves, `/evolve` patches failing steps, and rejected approaches permanently block themselves from being re-proposed. The gap is small at session 5. By session 50 it's measurable.
+| | Other tools | Clankbrain |
+|---|---|---|
+| Remembers context across sessions | ✓ | ✓ |
+| Skills that self-improve from feedback | ✗ | ✓ |
+| Permanently blocks rejected approaches | ✗ | ✓ |
+| Semantic memory search (offline, no API) | ✗ | ✓ |
+| Team sync with personal memory kept local | ✗ | ✓ |
+| Works without API keys or cloud | varies | ✓ |
+
+The gap is small at session 5. By session 50 it's measurable.
 
 → [Does this work with Auto Memory? How does it compare to other kits?](docs/faq.md)
 
