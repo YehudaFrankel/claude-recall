@@ -54,8 +54,19 @@
    ```
 
 7. **Skill scoring:** Log each skill that fired this session to `tasks/skill_scores.md`:
-   `| [date] | [skill] | [used for] | Y/N | [what specifically failed — be precise, /evolve uses this to patch the right step] | - |`
-   If Y: the "What Failed" column is critical — describe the exact step that was wrong, not just "it didn't work".
+   - If N (worked correctly): `| [date] | [skill] | [step] | [used for] | N | minor | - | - |`
+   - If Y (needed correction): `| [date] | [skill] | [step N] | [used for] | Y | [minor/major/silent] | Step [N]: produced [X], needed [Y]. Fixed by [Z]. | - |`
+
+   The "What Failed" column MUST contain all three:
+   - The step number that failed (e.g. "Step 3")
+   - What it produced vs what was needed (e.g. "produced INSERT, needed addRow")
+   - What the correction was (e.g. "switched to addRow pattern")
+
+   Entries like "didn't work", "needed correction", or "wrong output" are NOT acceptable.
+   /evolve cannot patch what it cannot read precisely. If you cannot describe the failure
+   in this format, write: `INSUFFICIENT DATA — re-run with more detail before /evolve.`
+
+   Severity guide: `minor` = small correction, close output | `major` = wrong approach, significant rework | `silent` = failure not caught until later
 
 8. **Velocity log:** If this session had an estimated task, append to `tasks/velocity.md`:
    `| [date] | [task] | [estimated] | [actual] | [complexity 1-5] | [notes] |`

@@ -54,16 +54,30 @@ Read `tasks/skill_scores.md`. Find all rows where:
 - `Correction Needed = Y`
 - `Improvement Applied = -` (not yet fixed)
 
-### Step B — For each failing skill
+Group by skill name. **Only proceed with skills that have 2 or more Y entries.**
+Single failures are noise. Patterns are signal.
+
+Log skipped skills: "Skipped [skill] — only 1 failure logged. Need 2+ to patch."
+
+### Step B — For each qualifying skill
 1. Read the skill's SKILL.md at `.claude/skills/[name]/SKILL.md`
-2. Read the "What Failed" description from skill_scores.md
-3. Identify which step caused the failure
-4. Rewrite that step to prevent the same failure — be specific, not generic
-5. Add an improvement note at the bottom of the changed step:
+2. Read ALL "What Failed" entries for this skill from skill_scores.md
+3. **Quality gate:** Check each entry contains a step number, what was produced,
+   and what was needed. If any entry is vague (no step number, no specific output):
+   - Skip this skill entirely
+   - Log: "Skipped [skill] — insufficient failure data in row [date]. Re-run /learn
+     with structured format before patching."
+   - Do not guess at what failed.
+4. Identify the step number cited most often across the Y entries
+5. Rewrite that specific step to prevent the failure — be concrete, not generic
+6. Add an improvement note at the bottom of the changed step:
 
    [YYYY-MM-DD] Improved: [one line — what changed and why]
 
-6. Save the updated SKILL.md
+7. Update `Improvement Applied` column in skill_scores.md for all patched rows
+8. Log to `tasks/skill_improvements.md`:
+   `| [date] | [skill] | Step [N] | [what failed before] | [what was fixed] | skill_scores.md [dates] |`
+9. Save all updated files
 
 ### Step C — Log the improvement
 Append to `tasks/skill_improvements.md`:
