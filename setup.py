@@ -585,7 +585,7 @@ When the user types **"Install Memory"**, do the following:
    - Find all API endpoints / backend methods
 2. **Copy bundle to system path** — copy all `.claude/memory/*.md` files to the system memory path:
    - **Mac/Linux:** `~/.claude/projects/[encoded]/memory/`
-   - **Windows:** `%USERPROFILE%\.claude\projects\[encoded]\memory\`
+   - **Windows:** `%USERPROFILE%\\.claude\\projects\\[encoded]\\memory\\`
    - **How to encode:** replace every `/`, `\\`, and `:` with `-`
    - Example: `/home/user/myproject` → `home-user-myproject`
    - Example: `D:\\projects\\myapp` → `D--projects-myapp`

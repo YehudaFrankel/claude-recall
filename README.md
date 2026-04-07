@@ -2,7 +2,7 @@
 
 <p align="center"><img src="logo.jpeg" alt="Clankbrain" width="160" /></p>
 
-[![v2.6.1](https://img.shields.io/badge/version-2.6.1-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
+[![v2.6.4](https://img.shields.io/badge/version-2.6.4-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 ![Session demo](demo.gif)
 
@@ -290,10 +290,29 @@ Tested across 160 real sessions on a production codebase. Not a demo project.
 
 ---
 
+## Blank conversation? (Start Session shows nothing)
+
+This means a hook is failing before Claude can respond. One command fixes it — run this directly in your terminal from the project folder:
+
+**Mac/Linux:**
+```bash
+python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+**Windows:**
+```
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+This fetches and runs the updater without needing Claude at all. After it completes, start a fresh conversation and type `Start Session`.
+
+---
+
 ## Changelog
 
 | Version | What changed |
 |---------|-------------|
+| v2.6.4 | Fix blank conversation on Mac/Linux (python vs python3) + Windows (missing tools/memory.py); 22 new tests for update.py |
 | v2.6.1 | skill_scores.md 9-column schema; `sync.py migrate-scores` auto-migration; starter lessons in session 1 |
 | v2.6 | Content-aware memory diff; guided first-run; 69 automated tests; telemetry (opt-out: `CLANKBRAIN_NO_TELEMETRY=1`) |
 | v2.5 | CHANGELOG + `sync.py migrate`; starter content in Lite; CI workflow; Python version check |
