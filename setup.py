@@ -487,7 +487,7 @@ When the user types **"Start Session"**, do the following:
 5. Read `tasks/decisions.md` — understand past architectural choices
 6. Read `tasks/errors.md` — know which runtime errors have already been seen and solved
 7. Read `tasks/todo.md` — understand current state; create it if it doesn't exist
-8. Report: "Session N ready. Last change: [X]. Memory: [OK or what was fixed]. [N] lessons loaded. What are we working on?"
+8. Report: "Session N ready. Last change: [X]. Memory: [OK or what was fixed]. [N] lessons loaded. What are we working on?" — if lessons count is 0, say "No lessons yet — add some at End Session." instead of "0 lessons loaded."
 
 ### `Check Drift`
 When the user types **"Check Drift"**, do the following:
