@@ -91,7 +91,14 @@ def _copy_memory_py():
         shutil.copy2(src, dst)
         print("  Created tools/memory.py")
     else:
-        print("  WARN: tools/memory.py not found in kit — skipping")
+        print("  ⚠ WARN: tools/memory.py not found in kit — hooks will fail without it!")
+        print("    Fix: copy tools/memory.py from the kit into your project's tools/ directory.")
+
+    # Post-copy validation: if settings.json references memory.py hooks, warn if file is missing
+    settings_path = ROOT / ".claude" / "settings.json"
+    if settings_path.exists() and not dst.exists():
+        print("  ⚠ CRITICAL: .claude/settings.json has hooks that reference tools/memory.py")
+        print("    but the file could not be copied. Every user message will fail until fixed.")
 
 
 def _copy_upgrade_script():

@@ -47,6 +47,15 @@ from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Windows: default stdout encoding (cp1252) can't handle Unicode arrows, em-dashes, etc.
+# Reconfigure to UTF-8 so hooks don't crash when printing status messages.
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent
 ARGS = set(sys.argv[1:])
