@@ -78,7 +78,7 @@
    - "Produced X" = what Claude actually did or output
    - "Needed Y" = what should have happened
    - "Fixed by Z" = the correction given (brief)
-   - `Code Fixed` = `manual` (user fixed it), `auto` (Claude self-corrected), or `-` (no code change)
+   - `Code Fixed` = `manual` (code was corrected in the session) or `-` (no code change needed)
    - `Skill Patched` = always `-` when first logged; /evolve fills this in when it patches the skill
 
    If the user's answer is too vague to extract step + produced + needed, ask one more time:

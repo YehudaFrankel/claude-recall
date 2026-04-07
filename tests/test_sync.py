@@ -481,7 +481,7 @@ def test_migrate_scores_preserves_comment_lines(kit):
     f = _scores()
     f.write_text(
         '# Skill Effectiveness Scores\n\n'
-        '<!-- Code Fixed = manual / auto / - -->\n\n'
+        '<!-- Code Fixed = manual / - -->\n\n'
         f'{_8COL_HEADER}\n{_8COL_SEP}\n'
         '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - |\n',
         encoding='utf-8'
@@ -489,7 +489,7 @@ def test_migrate_scores_preserves_comment_lines(kit):
     sync.cmd_migrate_skill_scores()
     result = f.read_text(encoding='utf-8')
     assert '# Skill Effectiveness Scores' in result
-    assert '<!-- Code Fixed = manual / auto / - -->' in result
+    assert '<!-- Code Fixed = manual / - -->' in result
     assert _9COL_HEADER in result
 
 

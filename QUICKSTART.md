@@ -18,9 +18,11 @@ Claude reads memory (empty so far) and asks what you're working on. Describe you
 ```
 End Session
 ```
-Claude extracts lessons from the session and saves them. Even if nothing broke, patterns get captured.
+Claude will ask: **"What are three things about this codebase I should never forget?"**
 
-**What gets saved:** `lessons.md`, `decisions.md`, `STATUS.md`. The memory files exist now.
+Answer with anything that trips up AI assistants — constraints, gotchas, patterns unique to your stack. Each answer gets written to `lessons.md` and loaded from session 2 onward. If you have nothing yet, say "nothing yet" and Claude moves on.
+
+**What gets saved:** `lessons.md` (with your answers), `decisions.md`, `STATUS.md`. The memory files exist now.
 
 ---
 

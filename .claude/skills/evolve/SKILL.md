@@ -54,7 +54,7 @@ Read `tasks/skill_scores.md`. Find all rows where:
 - `Correction Needed = Y`
 - `Skill Patched = -` (not yet patched by /evolve)
 
-**Why `Skill Patched` not `Code Fixed`:** `Code Fixed` records how the immediate code issue was resolved at the time (manual/auto/-). `Skill Patched` records whether the SKILL.md itself was updated to prevent recurrence. A row can have `Code Fixed = manual` and `Skill Patched = -` — meaning the code was fixed in the session, but the skill hasn't been improved yet. This column is the gate.
+**Why `Skill Patched` not `Code Fixed`:** `Code Fixed` records how the immediate code issue was resolved at the time (manual/-). `Skill Patched` records whether the SKILL.md itself was updated to prevent recurrence. A row can have `Code Fixed = manual` and `Skill Patched = -` — meaning the code was fixed in the session, but the skill hasn't been improved yet. This column is the gate.
 
 Group by skill name. **Only proceed with skills that have 2 or more Y entries with `Skill Patched = -`.**
 Single failures are noise. Patterns are signal.

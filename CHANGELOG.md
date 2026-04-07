@@ -4,7 +4,7 @@
 
 ### Changed
 - `tasks/skill_scores.md` schema updated to 9 columns — `Improvement Applied` split into two unambiguous columns:
-  - `Code Fixed` — how the code was corrected at the time of the session (manual / auto / -)
+  - `Code Fixed` — how the code was corrected at the time of the session (manual / -)
   - `Skill Patched` — date when `/evolve` updated the SKILL.md, or `-` if not yet patched
   - The split eliminates a silent gate bypass: entries with `Code Fixed=manual` still have `Skill Patched=-`, so `/evolve` correctly finds them as unpatched
 - `/evolve-check` now classifies skills with all Y entries patched as 🔵 PATCHED (awaiting confirmation) rather than collapsing them into 🟢 STABLE

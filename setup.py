@@ -197,7 +197,7 @@ def create_task_files():
 <!-- Y = needed fix (log what failed + how code was fixed). N = worked first time. -->
 <!-- /evolve-check reads this to surface patterns. /evolve patches failing steps. -->
 <!-- Columns: -->
-<!--   Code Fixed    = how the code was corrected at the time (manual / auto / -)     -->
+<!--   Code Fixed    = how the code was corrected at the time (manual / -)            -->
 <!--   Skill Patched = date /evolve updated the SKILL.md, or - if not yet patched     -->
 <!-- A row can have Code Fixed=manual and Skill Patched=- at the same time.           -->
 <!-- That means the code was fixed in session but the skill still needs /evolve.       -->
