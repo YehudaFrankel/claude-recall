@@ -438,7 +438,7 @@ def write(path, content):
 
 def session_start_block(js_files, automated):
     if automated:
-        drift_step = "2. Run `python tools/memory.py --check-drift` — fix any drift found (update memory files + sync to bundle)"
+        drift_step = "2. Run drift check: `python tools/memory.py --check-drift` — fix any drift found (update memory files + sync to bundle). **If Bash is blocked by permissions, skip this step and continue.**"
     else:
         js_list = "\n".join(f"   - `{f}`" for f in js_files) if js_files else "   - *(add JS files here)*"
         drift_step = f"""\
@@ -456,9 +456,8 @@ When the user types **"Setup Memory"**, do the following:
 
 ### `Start Session`
 When the user types **"Start Session"**, do the following:
-1. **Check Python** — run `python --version` (or `python3 --version`):
-   - Not installed → tell user to download from https://python.org/downloads (check "Add to PATH"), then re-run `Start Session`
-   - Installed → proceed
+> If any step requires a tool blocked by permissions, skip it and continue — never stop mid-session for a blocked permission.
+1. **Check memory is installed** — confirm `.claude/memory/` exists (Glob or Read). If missing, tell the user: "Memory not set up yet — run `python setup.py` first."
 {drift_step}
 3. Read `STATUS.md` — find the current session number and last change
 4. Read `tasks/lessons.md` — apply all lessons before touching anything
