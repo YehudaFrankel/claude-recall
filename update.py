@@ -233,6 +233,7 @@ def main():
     kit_claude   = get_content(source, "CLAUDE.md",             github_base)
     kit_setup    = get_content(source, "setup.py",              github_base)
     kit_check    = get_content(source, "tools/check_memory.py", github_base)
+    kit_memory   = get_content(source, "tools/memory.py",       github_base)
     kit_version  = get_content(source, "VERSION",               github_base)
 
     if not all([kit_claude, kit_setup, kit_check]):
@@ -284,6 +285,7 @@ def main():
     else:
         print("  CLAUDE.md             — session commands block only (your project config is safe)")
     print("  setup.py              — full replacement")
+    print("  tools/memory.py       — full replacement (hooks depend on this file)")
     print("  tools/check_memory.py — full replacement")
     print("\nFiles that will NOT be touched:")
     print("  .claude/memory/       — all your memory files")
@@ -311,6 +313,8 @@ def main():
     tools_dir = ROOT / "tools"
     tools_dir.mkdir(exist_ok=True)
     (tools_dir / "check_memory.py").write_text(kit_check, encoding="utf-8")
+    if kit_memory:
+        (tools_dir / "memory.py").write_text(kit_memory, encoding="utf-8")
 
     # Write VERSION file so future runs can detect "already up to date"
     if remote_version:
