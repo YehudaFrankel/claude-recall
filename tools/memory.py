@@ -348,6 +348,17 @@ def cmd_session_start():
     if not parts:
         return
 
+    # Auto-greet: Claude announces session state on first user message without requiring "Start Session"
+    auto_greet = (
+        'SESSION AUTO-START: Memory is pre-loaded above. '
+        'When the user sends their FIRST message this session, begin your response with one line: '
+        '"Ready. [last meaningful change from STATUS.md]. [memory count summary]. What are we working on?" '
+        '-- then answer their message normally. '
+        'Do NOT wait for them to type "Start Session". '
+        'If they already asked a specific question, answer it after the one-line greeting.'
+    )
+    parts.insert(0, auto_greet)
+
     output = {
         'hookSpecificOutput': {
             'hookEventName': 'SessionStart',
@@ -2986,10 +2997,12 @@ Session 1 — Project initialized.
 | **Core** | `Start Session` - `End Session` |
 | **On Demand** | `Plan` - `Debug Session` - `/learn` - `Check Drift` - `Guard Check` - `Search Memory` |
 
-### `Start Session`
-1. Run `python tools/memory.py --session-start`
-2. Read `.claude/memory/STATUS.md` then `lessons.md` then `decisions.md` then `tasks/todo.md`
-3. Report: "Session ready. Last change: [X]. What are we working on?"
+### Session Start (Automatic)
+Memory loads automatically via the `SessionStart` hook -- no command needed.
+On your first message each session, Claude greets you with:
+"Ready. [last change]. [memory count]. What are we working on?"
+
+If the hook is not wired, run manually: `python tools/memory.py --session-start`
 
 ### `End Session`
 1. Run `/learn` -- extract lessons and decisions from this session
@@ -3079,8 +3092,8 @@ Done. {project_name} is ready.
 
 Next steps:
   1. Edit .claude/rules/project-context.md -- add your tech stack and conventions
-  2. Run: python tools/memory.py --session-start
-  3. Tell Claude: "Start Session"
+  2. Open Claude Code -- memory loads automatically on first message (no command needed)
+  3. Optional: run `python tools/memory.py --session-start` if the hook is not wired
 ''')
 
 
