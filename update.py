@@ -6,7 +6,7 @@ Safely updates the kit portions of your project without touching your project-sp
 What it updates:
   CLAUDE.md          — session commands block only (## Session Commands → ## If Your Session Crashes)
   setup.py           — full replacement
-  tools/check_memory.py — full replacement
+  tools/memory.py    — full replacement
 
 What it never touches:
   .claude/memory/    — all your memory files
@@ -243,13 +243,12 @@ def main():
 
     # ── Fetch kit files ──
     print("\nFetching kit files...")
-    kit_claude   = get_content(source, "CLAUDE.md",             github_base)
-    kit_setup    = get_content(source, "setup.py",              github_base)
-    kit_check    = get_content(source, "tools/check_memory.py", github_base)
-    kit_memory   = get_content(source, "tools/memory.py",       github_base)
-    kit_version  = get_content(source, "VERSION",               github_base)
+    kit_claude   = get_content(source, "CLAUDE.md",       github_base)
+    kit_setup    = get_content(source, "setup.py",        github_base)
+    kit_memory   = get_content(source, "tools/memory.py", github_base)
+    kit_version  = get_content(source, "VERSION",         github_base)
 
-    if not all([kit_claude, kit_setup, kit_check, kit_memory]):
+    if not all([kit_claude, kit_setup, kit_memory]):
         print("\nAborted — could not load all kit files.")
         sys.exit(1)
 
@@ -299,7 +298,6 @@ def main():
         print("  CLAUDE.md             — session commands block only (your project config is safe)")
     print("  setup.py              — full replacement")
     print("  tools/memory.py       — full replacement (hooks depend on this file)")
-    print("  tools/check_memory.py — full replacement")
     print("\nFiles that will NOT be touched:")
     print("  .claude/memory/       — all your memory files")
     print("  STATUS.md             — your session log")
@@ -325,9 +323,7 @@ def main():
     (ROOT / "setup.py").write_text(kit_setup, encoding="utf-8")
     tools_dir = ROOT / "tools"
     tools_dir.mkdir(exist_ok=True)
-    (tools_dir / "check_memory.py").write_text(kit_check, encoding="utf-8")
-    if kit_memory:
-        (tools_dir / "memory.py").write_text(kit_memory, encoding="utf-8")
+    (tools_dir / "memory.py").write_text(kit_memory, encoding="utf-8")
 
     # Fix hooks in settings.json to use the correct Python binary (python vs python3)
     settings_path = ROOT / ".claude" / "settings.json"
