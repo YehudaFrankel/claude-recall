@@ -33,6 +33,13 @@
         "hooks": [
           {
             "type": "command",
+            "command": "python tools/memory.py --session-title",
+            "timeout": 8,
+            "refreshInterval": 60,
+            "statusMessage": "Checking session state…"
+          },
+          {
+            "type": "command",
             "command": "python tools/memory.py --capture-correction"
           },
           {
@@ -116,6 +123,18 @@
             "type": "command",
             "command": "python tools/memory.py --permission-denied",
             "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python tools/memory.py --permission-denied",
+            "timeout": 8,
+            "async": true
           }
         ]
       }

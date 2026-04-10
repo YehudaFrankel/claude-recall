@@ -2432,6 +2432,60 @@ def cmd_permission_denied():
         print(f'[kit] Permission denied: {tool_name} — logged to tasks/permission_denials.md')
 
 
+# ─── SESSION TITLE ────────────────────────────────────────────────────────────
+# Returns hookSpecificOutput.sessionTitle for the Claude Code status bar.
+# Hook: UserPromptSubmit (with refreshInterval: 60)
+
+def cmd_session_title():
+    memory_dir = find_memory_dir()
+    title = 'Clankbrain'
+    status_msg = ''
+    try:
+        status_file = memory_dir / 'STATUS.md'
+        if status_file.exists():
+            lines = status_file.read_text(encoding='utf-8').splitlines()
+            for line in lines:
+                if line.startswith('Session') or 'Session' in line[:20]:
+                    title = line.strip()[:50]
+                    break
+    except Exception:
+        pass
+
+    try:
+        # Count open plans
+        plans_dir = memory_dir / 'plans'
+        open_plans = 0
+        if plans_dir.exists():
+            for f in plans_dir.glob('*.md'):
+                if 'archive' in str(f).lower():
+                    continue
+                text = f.read_text(encoding='utf-8')
+                if 'Status: In Progress' in text or 'Status: Draft' in text or 'Status: On Hold' in text:
+                    open_plans += 1
+
+        # Count open todos
+        open_todos = 0
+        todo_file = memory_dir / 'todo.md'
+        if todo_file.exists():
+            todo_text = todo_file.read_text(encoding='utf-8')
+            open_todos = todo_text.count('- [ ]')
+
+        parts = []
+        if open_plans:
+            parts.append(f'{open_plans} plan{"s" if open_plans != 1 else ""}')
+        if open_todos:
+            parts.append(f'{open_todos} todo{"s" if open_todos != 1 else ""}')
+        status_msg = ' | '.join(parts) if parts else 'All clear'
+    except Exception:
+        status_msg = ''
+
+    out = {
+        'hookSpecificOutput': {'sessionTitle': title},
+        'statusMessage': status_msg,
+    }
+    print(json.dumps(out))
+
+
 # ─── FILE CHANGED ─────────────────────────────────────────────────────────────
 # Alerts when CLAUDE.md or memory files change outside Claude Code.
 # Hook: FileChanged
@@ -2618,6 +2672,8 @@ def main():
         cmd_memory_diff()
     elif '--permission-denied' in ARGS:
         cmd_permission_denied()
+    elif '--session-title' in ARGS:
+        cmd_session_title()
     elif '--file-changed' in ARGS:
         cmd_file_changed()
     elif '--pre-edit' in ARGS:

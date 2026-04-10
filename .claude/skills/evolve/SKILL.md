@@ -1,3 +1,8 @@
+---
+name: evolve
+keep-coding-instructions: true
+---
+
 # Skill: evolve
 
 **Trigger:** `/evolve` or "evolve lessons into skills" or "cluster patterns into skills"

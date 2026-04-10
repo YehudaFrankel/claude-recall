@@ -1,3 +1,8 @@
+---
+name: learn
+keep-coding-instructions: true
+---
+
 # Skill: learn
 
 **Trigger:** `/learn` or "extract patterns" or "learn from this session"
