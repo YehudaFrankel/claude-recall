@@ -5,7 +5,7 @@ description: Use at the end of every working session. Chains learn → memory up
 
 # End Session Agent
 
-Closes the session cleanly. Run in order — do not skip steps.
+Closes the session cleanly. Run ALL steps in order — every step is mandatory, every session. The system compounds: skipping one step degrades every future session.
 
 ---
 
@@ -32,7 +32,17 @@ For everything changed this session, update the relevant memory file immediately
 
 ---
 
-## Step 3 — Drift Check
+## Step 3 — Guard Scan
+Run `/guard` or scan changed files against `guard-patterns.md`.
+- Check all code files edited this session for known antipatterns
+- Fix any violations found before closing
+- Even if no code was edited this session — pre-existing violations exist; scan anyway
+
+**BREAKPOINT:** "Guard scan: [clean / N violations found and fixed]. Proceed to drift check?"
+
+---
+
+## Step 4 — Drift Check
 Run `python tools/memory.py --check-drift`
 - Fix any drift found before closing
 
@@ -40,14 +50,14 @@ Run `python tools/memory.py --check-drift`
 
 ---
 
-## Step 4 — Update STATUS.md
+## Step 5 — Update STATUS.md
 - Increment session number
 - Write one-line summary of what changed this session
 - Update `currentDate` in `memory/MEMORY.md` to today's date
 
 ---
 
-## Step 5 — Evolve Check
+## Step 6 — Evolve Check
 Run `/evolve-check` — scan `memory/tasks/skill_scores.md` and report each skill:
 - 🔴 URGENT — multiple unpatched failures
 - 🟡 WATCH — 1–2 unpatched failures
@@ -58,12 +68,12 @@ Run `/evolve` only if 🔴 or 🟡 with structured failure data.
 
 ---
 
-## Step 6 — Sync (if configured)
+## Step 7 — Sync (if configured)
 If cross-machine or team sync is set up, run `Sync Memory` / `Team Push` now.
 
 ---
 
-## Step 7 — Final Report (always show this)
+## Step 8 — Final Report (always show this)
 
 End every session with this exact format:
 
