@@ -6,7 +6,7 @@
       "Grep",
       "Edit",
       "Write",
-      "Bash"
+      "Bash(*)"
     ],
     "deny": []
   },
