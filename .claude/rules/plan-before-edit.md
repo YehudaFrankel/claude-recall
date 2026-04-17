@@ -60,6 +60,18 @@ git restore path/to/file.ext
 ```
 (If already committed: `git revert HEAD` or the specific commit hash)
 
+### Evaluation (REQUIRED — honest self-assessment before the user approves)
+An honest critique of your own plan. Never skip. Structure:
+
+- **Strong points** — what this plan gets right; what makes it more than a minimal fix. One or two bullets. Use these to justify the approach over simpler alternatives.
+- **Risks / things that could go sideways** — every concrete failure mode you can think of. Include: unverified line numbers, assumptions about method signatures, synchronous-vs-async tradeoffs, timezone/locale quirks, UX regressions, silent failure modes. Each with a one-line mitigation or explicit acceptance ("acceptable tradeoff for now because X").
+- **Confidence** — `low` / `medium` / `medium-high` / `high`, with a short reason. Never "high" unless every line number is verified AND all external assumptions (method signatures, schema, existing behaviors) have been grep/read-confirmed.
+- **Recommend proceeding / hold / redesign** — one-word verdict. If anything above is a blocker, say "hold" and explain what to resolve first. Do not write "proceed" just because you want to move on.
+
+**Why this section is non-negotiable:** the person approving the plan cannot see what you can't see. A two-sentence "evaluation" is the one spot where you transfer hidden risk to them in writing. Without it, every unexpected failure looks like a surprise when really it was a known-unknown you silently accepted. This is the single most valuable piece of the plan rule — it turns a plan from a recipe into a decision.
+
+**Tone rule:** if you wouldn't say it out loud to a senior engineer reviewing this code, don't put it here. No flowery justifications, no CYA hedging, no "may work" when you mean "might break." Concrete or don't bother.
+
 ---
 
 ## Step 2 — Wait for Approval
