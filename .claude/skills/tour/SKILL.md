@@ -184,7 +184,7 @@ You've seen all 4 magic moments:
 Two things to do now:
 
 1. Type "Start Session" to begin real work
-2. Read CHEATSHEET.md (one page) for the 5 commands you'll use daily
+2. Read docs/CHEATSHEET.md (one page) for the 5 commands you'll use daily
 
 Everything else is automatic. The kit gets better as you use it.
 

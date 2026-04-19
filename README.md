@@ -24,7 +24,7 @@ Start Session   ->  reads memory, applies past lessons, picks up where you left 
 End Session     ->  extracts lessons, saves everything to memory
 ```
 
-**New here?** After install, type `tour` for a 5-minute interactive walkthrough. Or open [CHEATSHEET.md](CHEATSHEET.md) — the whole kit fits on one page.
+**New here?** After install, type `tour` for a 5-minute interactive walkthrough. Or open [CHEATSHEET.md](docs/CHEATSHEET.md) — the whole kit fits on one page.
 
 ---
 
@@ -62,9 +62,9 @@ tour           → 5-minute interactive walkthrough — see the magic by doing i
 Start Session  → begin real work
 ```
 
-The whole kit fits on one page: **[CHEATSHEET.md](CHEATSHEET.md)** — print it, screenshot it, keep it open. 5 commands, that's the whole interface.
+The whole kit fits on one page: **[CHEATSHEET.md](docs/CHEATSHEET.md)** — print it, screenshot it, keep it open. 5 commands, that's the whole interface.
 
-Want depth? **[QUICKSTART.md](QUICKSTART.md)** walks through your first 3 sessions in detail.
+Want depth? **[QUICKSTART.md](docs/QUICKSTART.md)** walks through your first 3 sessions in detail.
 
 ---
 
