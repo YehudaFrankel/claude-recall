@@ -16,7 +16,7 @@ Inspects the Clankbrain install, confirms each piece is in place, and reports a 
 ## Steps
 
 1. **Find the kit root.** Either:
-   - Current working directory if `.claude/` exists
+   - Current working directory if `.claude/` exists (shared memory root for both apps)
    - Or ask: "Where did you install Clankbrain? (path to project root)"
 
 2. **Check each piece. Report green/red for each.**
@@ -106,4 +106,5 @@ Example:
 
 ## Why this skill exists
 
-A new user's first 60 seconds with the kit determine whether they keep going. Without this skill, install is silent — they don't know if it worked. With this skill, they get instant confirmation + a clear next step.
+A new user's first 60 seconds with the kit determine whether they keep going. This matters even more now that people may open the same repo in Claude or Codex. Without this skill, install is silent — they don't know if it worked. With this skill, they get instant confirmation + a clear next step.
+

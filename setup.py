@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Claude Code memory system setup.
+Claude Code + Codex memory system setup.
 Run from your project root: python setup.py
 
 Creates:
-  CLAUDE.md, STATUS.md
+  CLAUDE.md, AGENTS.md, STATUS.md
   .claude/memory/  (MEMORY.md + 5 memory files)
   tools/memory.py         (all lifecycle behaviors: drift, journal, stop-check, session-start, precompact)
   All hooks are optional — only created when automated drift/journaling is chosen.
@@ -454,6 +454,12 @@ def write(path, content):
     print(f"  Created {path.relative_to(ROOT)}")
 
 
+def write_instruction_files(content):
+    """Write the shared instruction file for both Claude and Codex."""
+    write("CLAUDE.md", content)
+    write("AGENTS.md", content)
+
+
 # ─── CLAUDE.md Generation ─────────────────────────────────────────────────────
 
 def session_start_block(js_files, automated):
@@ -696,7 +702,7 @@ After **any code change** this session, immediately update the relevant memory f
 def _generate_lite(name, tech):
     """Generate zero-Python Lite memory system — @rules/ files, no hooks."""
 
-    write("CLAUDE.md", f"""# {name} — Claude Code Project Context
+    write_instruction_files(f"""# {name} — Claude Code + Codex Project Context
 
 @rules/stack.md
 @rules/conventions.md
@@ -733,7 +739,7 @@ When the user types **"Upgrade to Full"**, do the following:
 
 ### `Generate Skills`
 When the user types **"Generate Skills"**, do the following:
-1. Read CLAUDE.md, `.claude/memory/notes.md`, `.claude/memory/lessons.md` to understand the stack and patterns
+1. Read `CLAUDE.md` or `AGENTS.md`, plus `.claude/memory/notes.md` and `.claude/memory/lessons.md` to understand the stack and patterns
 2. Create useful skills for this project — at minimum `fix-bug` and `code-review`; add more based on what you find (e.g. `new-feature`, `write-query`, `run-tests`)
 3. For each skill, create `.claude/skills/<name>/SKILL.md` with frontmatter (`name`, `description`, `allowed-tools`) and step-by-step instructions tailored to this project
 4. Report what was created and what phrase triggers each skill
@@ -747,7 +753,7 @@ After **any code change**, immediately update `.claude/memory/notes.md` with wha
 ---
 
 ## Session Starter Prompt
-> "Read CLAUDE.md and STATUS.md. We're continuing {name}. Check what was last changed and let's pick up where we left off."
+> "Read CLAUDE.md or AGENTS.md, plus STATUS.md. We're continuing {name}. Check what was last changed and let's pick up where we left off."
 """)
 
     write("STATUS.md", f"""# {name} — Status
@@ -778,7 +784,7 @@ python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.gith
 python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
 ```
 
-After it completes, open a fresh Claude Code conversation and type `Start Session`.
+After it completes, open a fresh Claude Code or Codex conversation and type `Start Session`.
 
 ## Still stuck?
 
@@ -1450,7 +1456,7 @@ def _print_friendly_error(exc):
 def main():
     _preflight_check()
     version = _get_version()
-    print(f"\n=== Claude Code Memory Starter Kit v{version} ===\n")
+    print(f"\n=== Claude Code + Codex Memory Starter Kit v{version} ===\n")
 
     name = ROOT.name
     tech = detect_tech_stack()
@@ -1519,7 +1525,7 @@ def main():
     print()
 
     # ── CLAUDE.md ──
-    write("CLAUDE.md", f"""# {name} — Claude Code Project Context
+    write_instruction_files(f"""# {name} — Claude Code + Codex Project Context
 
 {session_start_block(js_files, automated).strip()}
 
@@ -1605,7 +1611,7 @@ Best used for: generating scaffolding, large refactors where the goal is clear, 
 ---
 
 ## Session Starter Prompt
-> "Read CLAUDE.md and STATUS.md. We're continuing {name}. Check which phases are complete and let's pick up where we left off."
+> "Read CLAUDE.md or AGENTS.md, plus STATUS.md. We're continuing {name}. Check which phases are complete and let's pick up where we left off."
 """)
 
     # ── STATUS.md ──
@@ -1640,7 +1646,7 @@ python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.gith
 python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
 ```
 
-After it completes, open a fresh Claude Code conversation and type `Start Session`.
+After it completes, open a fresh Claude Code or Codex conversation and type `Start Session`.
 
 ## Still stuck?
 
@@ -1872,3 +1878,4 @@ if __name__ == "__main__":
         raise
     except Exception as e:
         _print_friendly_error(e)
+

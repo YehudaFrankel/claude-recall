@@ -2,17 +2,17 @@
 
 <p align="center"><img src="logo.jpeg" alt="Clankbrain" width="160" /></p>
 
-[![v2.8.0](https://img.shields.io/badge/version-2.8.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
+[![v2.8.0](https://img.shields.io/badge/version-2.8.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code + Codex](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 ![Session demo](demo.gif)
 
-Every session, Claude wakes up a stranger.
+Every session, your coding agent wakes up a stranger.
 
 You re-explain the stack. Re-describe what you were building. Re-establish why certain approaches won't work here. Every day, for a tool that spent yesterday learning all of it.
 
-Clankbrain ends that. It gives Claude a memory that compounds — decisions, mistakes, patterns, lessons — loaded automatically at the start of every session, updated automatically at the end.
+Clankbrain ends that. It gives Claude Code and Codex a shared memory that compounds — decisions, mistakes, patterns, lessons — loaded automatically at the start of every session, updated automatically at the end.
 
-Session 1: Claude learns your stack.
+Session 1: the agent learns your stack.
 Session 10: it knows every mistake you've made, every approach you've rejected, every shortcut that works in your codebase.
 Session 20: you stop explaining. You just build.
 
@@ -44,7 +44,7 @@ Five questions. Creates your memory directory, hooks config, and starter files. 
 
 If anything goes wrong, the installer tells you exactly what's broken and how to fix it (no Python tracebacks).
 
-No API keys. No background service. No database. Zero pip dependencies — stdlib Python only. **Requires:** [Claude Code](https://claude.ai/claude-code) + Python 3.7+
+No API keys. No background service. No database. Zero pip dependencies — stdlib Python only. **Requires:** [Claude Code](https://claude.ai/claude-code) or Codex + Python 3.7+
 
 > Semantic search (`/recall`) optionally uses `sentence-transformers` for meaning-based matching. Without it, `/recall` falls back to keyword grep — still works, just less fuzzy.
 
@@ -70,7 +70,7 @@ Want depth? **[QUICKSTART.md](docs/QUICKSTART.md)** walks through your first 3 s
 
 ## What it feels like
 
-After `Start Session`, Claude doesn't wait for you to re-explain anything:
+After `Start Session`, the agent doesn't wait for you to re-explain anything:
 
 ```
 Start Session
@@ -176,7 +176,7 @@ From a real project — 160 sessions on a production Java/SQL Server codebase, n
 
 ## Is this for you?
 
-- You use **Claude Code** on a real, ongoing project — not just experimenting
+- You use **Claude Code + Codex** on a real, ongoing project — not just experimenting
 - You've felt the pain of re-explaining your codebase every session
 - You're willing to run two commands: `Start Session` and `End Session`
 
@@ -244,7 +244,7 @@ Not sure? Start with Lite. `Upgrade to Full` adds everything any time.
 
 ## How automation works (Full mode)
 
-Full setup wires Claude Code lifecycle hooks into `.claude/settings.json`. They fire automatically — nothing to remember, nothing to run manually.
+Full setup wires Claude Code lifecycle hooks into `.claude/settings.json`. Codex still benefits from the shared memory plus `AGENTS.md`, but Claude Code remains the richer automation environment. They fire automatically — nothing to remember, nothing to run manually.
 
 | Hook | Fires when | What it does |
 |------|-----------|-------------|
@@ -258,7 +258,7 @@ Full setup wires Claude Code lifecycle hooks into `.claude/settings.json`. They 
 
 Lite mode has none of these — memory updates only when you run `End Session` manually.
 
-> **`disableSkillShellExecution`** — Claude Code v2.1.91 setting that prevents skills from running inline shell commands. Add `"disableSkillShellExecution": true` to your `.claude/settings.json` if you want to restrict this.
+> **`disableSkillShellExecution`** — Claude Code + Codex v2.1.91 setting that prevents skills from running inline shell commands. Add `"disableSkillShellExecution": true` to your `.claude/settings.json` if you want to restrict this.
 
 → [Full hook reference](docs/hooks.md)
 
@@ -338,7 +338,7 @@ One file, loaded at `Start Session` on every project. Good for things that are t
 - Never force-push to main — find the root cause instead
 ```
 
-Lives at `~/.claude/global-lessons.md`. Clankbrain creates it on first install.
+Lives at `~/.claude/global-lessons.md`. Clankbrain creates it on first install. Shared project memory still lives in `.claude/memory/`; the kit now writes both `CLAUDE.md` and `AGENTS.md` so Claude and Codex can point at the same memory.
 
 ---
 
@@ -484,3 +484,6 @@ If you want to split the marketing site from the kit cleanly, migrate Pages to a
 **Built by [Yehuda Frankel](https://github.com/YehudaFrankel).** Using it on a real project? [Tell us what you're building →](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 > Anonymous usage stats collected on setup (mode, platform, Python version — no project data). Opt out: `CLANKBRAIN_NO_TELEMETRY=1`
+
+
+

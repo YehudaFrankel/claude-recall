@@ -1,6 +1,6 @@
 # Every Command
 
-Type these in Claude Code chat. All commands are plain English.
+Type these in Claude Code + Codex chat. All commands are plain English.
 
 ---
 
@@ -119,7 +119,7 @@ In all three cases, keyword search continues to work. `/recall` will never silen
 | `Mine Patterns` | Cluster lessons.md across all sessions — surface recurring mistakes you haven't noticed |
 | `Guard Check` | Run all named guards from `guard-patterns.md` against the codebase, report violations |
 | `Estimate: [task]` | Match task to past velocity history — reports what similar tasks actually took, not what felt right |
-| `/check-anthropic` | Fetch Claude Code releases and docs, cross-reference hooks and features in use, report gaps |
+| `/check-anthropic` | Fetch Claude Code + Codex releases and docs, cross-reference hooks and features in use, report gaps |
 
 ---
 
@@ -158,3 +158,4 @@ In all three cases, keyword search continues to work. `/recall` will never silen
 | `Team Status` | Check last sync times and recent commits |
 
 Team Pull runs automatically at Start Session — no command needed.
+

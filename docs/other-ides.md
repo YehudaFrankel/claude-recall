@@ -1,6 +1,6 @@
 # Other IDEs and Install Options
 
-Clankbrain is built and tested for Claude Code. It also works with Cursor, Windsurf, Warp, and GitHub Copilot — with some limitations on lifecycle hooks.
+Clankbrain is built and tested for Claude Code, and it now also supports Codex by generating `AGENTS.md` alongside `CLAUDE.md`. It also works with Cursor, Windsurf, Warp, and GitHub Copilot — with some limitations on lifecycle hooks.
 
 ---
 
@@ -12,19 +12,19 @@ npx clankbrain --ide windsurf
 npx clankbrain --ide all       <-  all IDEs at once
 ```
 
-Warp and GitHub Copilot read `CLAUDE.md` natively — no extra flag needed, use the default install.
+Codex reads `AGENTS.md` natively. Claude Code, Warp, and GitHub Copilot read `CLAUDE.md` natively. Clankbrain now writes both instruction files from the same template.
 
 ## What works in each IDE
 
-| | Claude Code | Cursor | Windsurf | Warp | Copilot |
-|---|---|---|---|---|---|
-| Memory persistence | Full | Full | Full | Full | Full |
-| Lifecycle hooks | Full (8 hooks) | Partial | Partial | Limited | Limited |
-| Drift detection | Auto after every edit | Manual | Manual | Manual | Manual |
-| Session journal | Auto on every Stop | Manual | Manual | Manual | Manual |
-| Skills | Full | Full | Full | Full | Full |
+| | Claude Code | Codex | Cursor | Windsurf | Warp | Copilot |
+|---|---|---|---|---|---|---|
+| Memory persistence | Full | Full | Full | Full | Full | Full |
+| Lifecycle hooks | Full (8 hooks) | Project-level instructions only | Partial | Partial | Limited | Limited |
+| Drift detection | Auto after every edit | Via shared project workflow | Manual | Manual | Manual | Manual |
+| Session journal | Auto on every Stop | Via shared project workflow | Manual | Manual | Manual | Manual |
+| Skills | Full | Full | Full | Full | Full | Full |
 
-Memory persistence — CLAUDE.md + `.claude/memory/` — works everywhere. Lifecycle hooks require IDE-level hook support. Claude Code has the most complete implementation.
+Memory persistence — `CLAUDE.md` + `AGENTS.md` + `.claude/memory/` — works across Claude Code, Codex, and the fallback IDEs. Lifecycle hooks still require IDE-level hook support; Claude Code remains the most complete implementation.
 
 ---
 
@@ -44,5 +44,7 @@ python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githu
 
 **Manual:** Download and run `setup.py` directly from the repo.
 
-**No terminal:** Paste this into Claude Code chat:
+**No terminal:** Paste this into Claude Code or Codex chat:
 > Analyze this codebase and set up the Claude memory system. Scan all JS, CSS, and backend files. Create CLAUDE.md, STATUS.md, and .claude/memory/ pre-filled with what you find.
+
+
