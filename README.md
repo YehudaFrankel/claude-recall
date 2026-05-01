@@ -24,6 +24,8 @@ Start Session   ->  reads memory, applies past lessons, picks up where you left 
 End Session     ->  extracts lessons, saves everything to memory
 ```
 
+> Built and battle-tested across 220+ real sessions on a production Java/SQL Server codebase — not a demo project.
+
 **New here?** After install, type `tour` for a 5-minute interactive walkthrough. Or open [CHEATSHEET.md](docs/CHEATSHEET.md) — the whole kit fits on one page.
 
 ---
@@ -47,8 +49,6 @@ If anything goes wrong, the installer tells you exactly what's broken and how to
 No API keys. No background service. No database. Zero pip dependencies — stdlib Python only. **Requires:** [Claude Code](https://claude.ai/claude-code) or Codex + Python 3.7+
 
 > Semantic search (`/recall`) optionally uses `sentence-transformers` for meaning-based matching. Without it, `/recall` falls back to keyword grep — still works, just less fuzzy.
-
-> Used by 600+ developers in its first two weeks. If it helps, [star it ★](https://github.com/YehudaFrankel/clankbrain)
 
 ---
 
@@ -170,7 +170,7 @@ Next session, Claude loads these lessons automatically — before you write a si
   -> 8 sessions in. Compounding is happening.
 ```
 
-From a real project — 160 sessions on a production Java/SQL Server codebase, not a demo.
+From a real project — 220 sessions on a production Java/SQL Server codebase, not a demo.
 
 ---
 
@@ -378,7 +378,7 @@ Claude stops at every `BREAKPOINT` and waits for your explicit "continue". Add y
 
 Clankbrain compounds with use — but only if you use it. Run `Start Session` / `End Session` every session, `/evolve` every few weeks, and Claude gets measurably better at your specific codebase over time.
 
-Tested across 160 real sessions on a production codebase. Not a demo project.
+Tested across 220 real sessions on a production codebase. Not a demo project.
 
 ---
 
@@ -418,7 +418,7 @@ Most tools help you build faster. This one stops you from building the wrong thi
 
 Which product? > Clankbrain
 
-Value (Will they buy?)      Green — 600 installs in 2 weeks, active discussions
+Value (Will they buy?)      Green — active installs, discussions
 Usability (Can they use?)   Yellow — requires Git + Python + manual push/pull
 Feasibility (Can we build?) Green — already built and shipping
 Viability (Should we do?)   Green — MIT license, no infra costs, compounds with use
@@ -512,6 +512,3 @@ If you want to split the marketing site from the kit cleanly, migrate Pages to a
 **Built by [Yehuda Frankel](https://github.com/YehudaFrankel).** Using it on a real project? [Tell us what you're building →](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 > Anonymous usage stats collected on setup (mode, platform, Python version — no project data). Opt out: `CLANKBRAIN_NO_TELEMETRY=1`
-
-
-
