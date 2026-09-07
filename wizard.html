@@ -433,7 +433,7 @@
 
   <div class="hero">
     <h1>Claude Code that gets smarter every session.</h1>
-    <p>35 structured files that give Claude a learning system — not just memory, but a regret log, skill scoring, and self-improving workflows. <span>Free. Instant. No account.</span></p>
+    <p>35+ structured files that give Claude a learning system — not just memory, but a regret log, skill scoring, self-improving workflows, and a codebase scanner that generates project-specific rules from your actual code. <span>Free. Instant. No account.</span></p>
     <div style="margin-top:10px; font-size:0.78rem; color:var(--muted);">Built from 335 real sessions on a production codebase. <a href="https://github.com/YehudaFrankel/clankbrain" style="color:var(--accent); text-decoration:none;">See the source →</a></div>
     <a href="#" onclick="var d=document.getElementById('heroDetails');d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='none'?'What do I get? ▾':'Hide details ▴';return false;" style="color:var(--accent); font-size:0.8rem; text-decoration:none; display:inline-block; margin-top:8px;">Hide details ▴</a>
     <div id="heroDetails" style="text-align:left; max-width:560px; margin:12px auto 0; padding:16px 20px; background:var(--card); border:1px solid var(--border); border-radius:10px; font-size:0.8rem; color:var(--muted); line-height:1.7; box-shadow:0 1px 3px rgba(0,0,0,0.06);">
@@ -570,6 +570,7 @@
         <div class="checkbox-grid" style="margin-bottom:8px;">
           <label class="checkbox-item"><input type="checkbox" value="memory-system" checked onchange="updatePreview()"> Memory system <span class="help-icon">?<span class="tip">Lessons, decisions, and mistakes saved. Every session builds on the last.</span></span></label>
           <label class="checkbox-item"><input type="checkbox" value="naming-conventions" checked onchange="updatePreview()"> Naming rules <span class="help-icon">?<span class="tip">Consistent variable, function, file naming for your language.</span></span></label>
+          <label class="checkbox-item"><input type="checkbox" value="scan-codebase" checked onchange="updatePreview()"> Scan codebase <span class="help-icon">?<span class="tip">On first Start Session, Claude reads your actual code and generates project-specific rules — coding conventions, file paths, protected files, and a code map. All from your real patterns, not templates.</span></span></label>
         </div>
         <div style="font-size:0.7rem; color:var(--muted); margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;">Output Quality</div>
         <div class="checkbox-grid">
@@ -708,7 +709,7 @@
     var currentMode = 'full';
 
     var LITE_CHECKS = ['plan-before-edit', 'memory-system'];
-    var FULL_CHECKS = ['plan-before-edit', 'naming-conventions', 'code-review', 'protected-files', 'memory-system'];
+    var FULL_CHECKS = ['plan-before-edit', 'naming-conventions', 'code-review', 'protected-files', 'memory-system', 'scan-codebase'];
 
     function setMode(mode) {
       currentMode = mode;
@@ -1064,7 +1065,7 @@
         if (cv === 'memory-system') { fileCount += 9; }
       }
       // Always-included files
-      fileCount += 17; // skills(7) + rules(2) + agents(2) + modes(4) + settings + SYNC.md
+      fileCount += 18; // skills(8) + rules(2) + agents(2) + modes(4) + settings + SYNC.md
 
       s += '<span class="dim">' + fileCount + ' files will be generated:</span>\n\n';
 
@@ -1095,6 +1096,7 @@
       s += '<span class="blue">  skills/plan/</span>\n';
       s += '<span class="blue">  skills/smoke-test/</span>\n';
       s += '<span class="blue">  skills/ui-design-first/</span>\n';
+      s += '<span class="blue">  skills/scan-codebase/</span>\n';
       for (var j3 = 0; j3 < conventions.length; j3++) {
         if (conventions[j3] === 'code-review') { s += '<span class="blue">  skills/code-review/</span>\n'; }
         if (conventions[j3] === 'security') { s += '<span class="blue">  skills/security-review/</span>\n'; }

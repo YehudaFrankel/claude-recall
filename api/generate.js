@@ -402,6 +402,7 @@ function generateFiles(body) {
   files['skills/plan/SKILL.md'] = generatePlanSkill();
   files['skills/smoke-test/SKILL.md'] = generateSmokeTestSkill(lang);
   files['skills/ui-design-first/SKILL.md'] = generateUiDesignFirstSkill();
+  files['skills/scan-codebase/SKILL.md'] = generateScanCodebaseSkill(lang);
   files['rules/karpathy-principles.md'] = generateKarpathyPrinciples();
   files['rules/feedback-update-codemap.md'] = generateFeedbackUpdateCodemap();
 
@@ -753,8 +754,9 @@ function generateStartSessionSkill(body) {
   s += '## Steps\n\n';
   s += '1. Read `memory/STATUS.md` - get last session summary\n';
   s += '2. Read `memory/MEMORY.md` - get current context\n';
-  s += '3. Report: "Ready. Last change: [summary]. What are we working on?"\n';
-  s += '4. Add one observation if worth noting (optional, max one line)\n';
+  s += '3. **First-session auto-scan:** If `rules/code-map.md` does not exist, run `/scan-codebase` automatically to generate project-specific rules from the actual code.\n';
+  s += '4. Report: "Ready. Last change: [summary]. What are we working on?"\n';
+  s += '5. Add one observation if worth noting (optional, max one line)\n';
   return s;
 }
 
@@ -1099,5 +1101,106 @@ function generateFeatureBuildAgent(lang) {
   s += '- Manual smoke test if applicable\n\n';
   s += '## 6. Learn\n';
   s += '- Run `/learn` to extract patterns from this feature build\n';
+  return s;
+}
+
+// --- Scan Codebase Skill ---
+
+function generateScanCodebaseSkill(lang) {
+  var s = '# Skill: scan-codebase\n\n';
+  s += '**Trigger:** `/scan-codebase` or "scan the codebase" or "analyze the project" or "generate rules from code"\n\n';
+  s += '**Description:** Scans the current project and generates project-specific rules by reading actual code patterns, file structure, and conventions. Run automatically on first Start Session if no code-map exists.\n\n';
+  s += '**Allowed Tools:** Read, Glob, Grep, Write, Bash\n\n---\n\n';
+  s += '## Steps\n\n';
+
+  s += '### 1. Discover Project Structure\n';
+  s += '- Glob for all source files: `**/*' + lang.ext + '`, `**/*.html`, `**/*.css`, `**/*.sql`, config files\n';
+  s += '- Read package/build config (`' + lang.lockFile + '`, etc.) for dependencies\n';
+  s += '- Identify entry points, main directories, test directories\n';
+  s += '- Count files per directory to understand project shape\n\n';
+
+  s += '### 2. Sample Code Patterns (read 5-10 representative files)\n';
+  s += '- Pick the largest files (likely core logic)\n';
+  s += '- Pick files from different directories (coverage)\n';
+  s += '- For each file, extract:\n';
+  s += '  - Naming conventions (variables, functions, classes, files)\n';
+  s += '  - Import/require patterns\n';
+  s += '  - Error handling patterns\n';
+  s += '  - Comment style and density\n';
+  s += '  - Indentation (tabs vs spaces, width)\n';
+  s += '  - String quote style (single vs double)\n';
+  s += '  - Function length patterns\n';
+  s += '  - Any project-specific patterns that repeat across files\n\n';
+
+  s += '### 3. Generate `rules/code-map.md`\n';
+  s += '- List all major directories with purpose\n';
+  s += '- List key files with one-line descriptions\n';
+  s += '- Map entry points (API routes, main functions, page components)\n';
+  s += '- Document the data flow (request path from entry to database)\n';
+  s += '- Format:\n';
+  s += '  ```\n';
+  s += '  # Code Map\n';
+  s += '  ## Directory Structure\n';
+  s += '  | Directory | Purpose |\n';
+  s += '  | src/api/ | API route handlers |\n';
+  s += '  ## Key Files\n';
+  s += '  | File | Purpose |\n';
+  s += '  | src/api/users.js | User CRUD endpoints |\n';
+  s += '  ## Entry Points\n';
+  s += '  | Entry | What it does |\n';
+  s += '  ```\n\n';
+
+  s += '### 4. Generate `rules/coding-conventions.md`\n';
+  s += '- Document ONLY patterns observed in the actual code — do not invent conventions\n';
+  s += '- Include copy-paste examples from real files (with file path references)\n';
+  s += '- Organize by category: naming, structure, error handling, imports, etc.\n';
+  s += '- If a pattern appears in 3+ files, it is a convention\n';
+  s += '- If two conflicting patterns exist, note both and ask which to standardize on\n';
+  s += '- Format:\n';
+  s += '  ```\n';
+  s += '  ## Naming\n';
+  s += '  - Functions: camelCase (observed in src/api/*.js)\n';
+  s += '  - Components: PascalCase (observed in src/components/*.jsx)\n';
+  s += '  ## Error Handling\n';
+  s += '  - Pattern: try/catch with custom AppError class (src/utils/errors.js)\n';
+  s += '  ```\n\n';
+
+  s += '### 5. Generate `rules/file-paths.md`\n';
+  s += '- Map canonical locations for each file type\n';
+  s += '- Note any files that live in unexpected places\n';
+  s += '- Document URL-to-file mapping if applicable (routes, pages)\n\n';
+
+  s += '### 6. Update `rules/protected-files.md`\n';
+  s += '- Identify files that should never be restructured:\n';
+  s += '  - Config files (env, build config, CI)\n';
+  s += '  - Migration files\n';
+  s += '  - Lock files\n';
+  s += '  - Generated/minified files\n';
+  s += '  - Files over 1000 lines (likely core, fragile)\n';
+  s += '- Add them to the existing protected-files list\n\n';
+
+  s += '### 7. Seed `memory/decisions.md`\n';
+  s += '- If the project has clear architectural decisions visible in the code:\n';
+  s += '  - Framework choice and why (from README or config)\n';
+  s += '  - Database choice\n';
+  s += '  - Auth pattern\n';
+  s += '  - API style (REST, GraphQL, RPC)\n';
+  s += '  - State management approach\n';
+  s += '- Only record what is clearly settled — do not guess\n\n';
+
+  s += '### 8. Report\n';
+  s += '- Output: "Scan complete. Generated:\n';
+  s += '  - rules/code-map.md ([N] directories, [N] key files)\n';
+  s += '  - rules/coding-conventions.md ([N] conventions observed)\n';
+  s += '  - rules/file-paths.md ([N] paths mapped)\n';
+  s += '  - rules/protected-files.md ([N] files protected)\n';
+  s += '  - memory/decisions.md ([N] decisions seeded)"\n';
+  s += '- If conflicting patterns were found, list them and ask which to standardize\n\n';
+
+  s += '## Notes\n\n';
+  s += '- This skill is READ-HEAVY — it reads many files but only writes rule files\n';
+  s += '- Never invent conventions — only document what the code actually does\n';
+  s += '- If the project is too small (< 5 source files), say so and skip convention extraction\n';
+  s += '- Re-run anytime with `/scan-codebase` to refresh after major refactors\n';
   return s;
 }
