@@ -1,28 +1,4 @@
 const JSZip = require('jszip');
-const https = require('https');
-
-var GITHUB_FILES = [
-  { path: 'tools/memory.py', zipPath: 'tools/memory.py' },
-  { path: 'tools/team_sync.py', zipPath: 'tools/team_sync.py' },
-  { path: 'tools/telemetry.py', zipPath: 'tools/telemetry.py' }
-];
-
-var GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/';
-
-function fetchFile(url) {
-  return new Promise(function(resolve, reject) {
-    https.get(url, function(res) {
-      if (res.statusCode !== 200) {
-        resolve(null);
-        return;
-      }
-      var data = [];
-      res.on('data', function(chunk) { data.push(chunk); });
-      res.on('end', function() { resolve(Buffer.concat(data).toString('utf8')); });
-      res.on('error', function() { resolve(null); });
-    }).on('error', function() { resolve(null); });
-  });
-}
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -42,12 +18,19 @@ module.exports = async function handler(req, res) {
     var zip = new JSZip();
     var claudeFolder = zip.folder('.claude');
 
+    // Files that belong at the project root, not inside .claude/
+    var rootFiles = { 'memory.ps1': true, 'setup.ps1': true };
+
     // Add generated template files
     var fileNames = Object.keys(filesJson);
     for (var i = 0; i < fileNames.length; i++) {
       var fileName = fileNames[i];
       var content = filesJson[fileName];
-      claudeFolder.file(fileName, content);
+      if (rootFiles[fileName]) {
+        zip.file(fileName, content);
+      } else {
+        claudeFolder.file(fileName, content);
+      }
     }
 
 

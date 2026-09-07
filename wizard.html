@@ -593,7 +593,6 @@
 
       <div style="margin-top:10px; text-align:center; display:flex; justify-content:center; gap:16px;">
         <a href="#" onclick="var d=document.getElementById('modeSection');d.style.display=d.style.display==='none'?'block':'none';return false;" style="color:var(--muted); font-size:0.75rem; text-decoration:none;">Lite / Full mode</a>
-        <a href="#" onclick="var d=document.getElementById('importSection');d.style.display=d.style.display==='none'?'block':'none';return false;" style="color:var(--muted); font-size:0.75rem; text-decoration:none;">Import existing</a>
         <a href="#" onclick="var d=document.getElementById('optionalFields');d.style.display=d.style.display==='none'?'block':'none';return false;" style="color:var(--muted); font-size:0.75rem; text-decoration:none;">Advanced</a>
       </div>
 
@@ -612,32 +611,7 @@
         </div>
       </div>
 
-      <div id="importSection" style="display:none; margin-top:8px;">
-        <div class="form-group">
-          <label>Import existing setup <span class="help-icon">?<span class="tip">Already have a CLAUDE.md, rules, or conventions from any source? Upload the file or paste the content. The wizard merges your existing work into the generated setup — nothing gets lost.</span></span></label>
-          <div style="display:flex; gap:8px; margin-bottom:6px;">
-            <label style="flex:1; padding:8px; border:1px dashed var(--border); border-radius:6px; text-align:center; cursor:pointer; font-size:0.75rem; color:var(--muted); transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-              <input type="file" id="importFolder" webkitdirectory multiple onchange="handleFolderUpload(this)" style="display:none;">
-              Upload .claude/ folder
-            </label>
-            <label style="flex:1; padding:8px; border:1px dashed var(--border); border-radius:6px; text-align:center; cursor:pointer; font-size:0.75rem; color:var(--muted); transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-              <input type="file" id="importFile" accept=".md,.txt" onchange="handleFileUpload(this)" style="display:none;">
-              Upload single file
-            </label>
-          </div>
-          <div id="importFileName" style="display:none; font-size:0.75rem; color:var(--accent); margin:6px 0; padding:8px 12px; background:rgba(217,119,6,0.08); border-radius:6px;"></div>
-          <div id="importEditor" style="display:none;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <span class="hint" style="margin:0;">Edit imported content:</span>
-              <a href="#" onclick="document.getElementById('importEditor').style.display='none';return false;" style="color:var(--muted); font-size:0.7rem; text-decoration:none;">hide</a>
-            </div>
-            <div style="display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--input-bg);">
-              <div id="importLineNums" style="padding:10px 8px; font-size:0.72rem; font-family:'SF Mono','Consolas',monospace; line-height:1.65; color:#444; text-align:right; user-select:none; min-width:32px; border-right:1px solid var(--border); background:#111;">1</div>
-              <textarea id="importExisting" placeholder="Paste content here..." oninput="updateLineNums(); updatePreview();" onscroll="document.getElementById('importLineNums').scrollTop=this.scrollTop;" style="flex:1; min-height:150px; max-height:300px; font-size:0.78rem; font-family:'SF Mono','Consolas','Fira Code',monospace; line-height:1.65; padding:10px; tab-size:2; white-space:pre; overflow:auto; border:none; background:transparent; color:var(--text); resize:vertical; outline:none;"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Duplicate import section removed — use the inline import at the top of the form instead -->
 
       <div id="optionalFields" style="display:none; margin-top:8px;">
         <div class="form-group">
@@ -1070,7 +1044,7 @@
         if (cv === 'memory-system') { fileCount += 9; }
       }
       // Always-included files
-      fileCount += 19; // skills(8) + rules(2) + agents(2) + modes(4) + settings + SYNC.md + memory.ps1
+      fileCount += 21; // skills(10) + rules(2) + agents(2) + modes(4) + settings + SYNC.md + memory.ps1
 
       s += '<span class="dim">' + fileCount + ' files will be generated:</span>\n\n';
 
