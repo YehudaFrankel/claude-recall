@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Production Diff</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; padding:20px; }
+.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.page-title { font-size:1.1rem; font-weight:600; color:var(--neon); }
+.page-back { color:var(--sub); text-decoration:none; font-size:0.75rem; }
+.page-back:hover { color:var(--neon); }
+.summary { display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+.summary-card { background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:12px 18px; min-width:120px; }
+.summary-label { font-size:0.65rem; color:var(--sub); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+.summary-value { font-size:1.4rem; font-weight:700; }
+.summary-value.files { color:var(--neon); }
+.summary-value.added { color:#4ec971; }
+.summary-value.removed { color:#e55; }
+.prod-path { font-size:0.7rem; color:var(--sub); margin-bottom:16px; }
+
+.file-group { margin-bottom:16px; }
+.file-group-header { font-size:0.72rem; font-weight:600; color:var(--sub); text-transform:uppercase; letter-spacing:0.5px; padding:6px 0; border-bottom:1px solid var(--border); margin-bottom:4px; }
+.file-row { display:flex; align-items:center; gap:8px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.03); cursor:pointer; font-size:0.72rem; }
+.file-row:hover { background:var(--glass); }
+.file-path { flex:1; color:var(--text); }
+.file-dir { color:var(--sub); }
+.file-name { color:var(--text); font-weight:500; }
+.file-badge { font-size:0.6rem; padding:1px 6px; border-radius:8px; font-weight:500; }
+.file-badge.new { background:var(--neon-bg); color:var(--neon); }
+.file-badge.modified { background:var(--yellow-bg); color:var(--yellow); }
+.file-stats { display:flex; gap:6px; font-size:0.62rem; }
+.file-stats .add { color:#4ec971; }
+.file-stats .rem { color:#e55; }
+.file-reason { font-size:0.6rem; color:var(--sub); margin-top:2px; font-style:italic; }
+.session-desc { font-weight:400; color:var(--sub); font-size:0.65rem; }
+.risk-badge { font-size:0.58rem; padding:1px 6px; border-radius:8px; font-weight:500; margin-right:4px; }
+.risk-high { background:rgba(248,113,113,0.15); color:#f87171; }
+.risk-med { background:rgba(251,191,36,0.15); color:#fbbf24; }
+
+.pkg-btn { background:var(--neon); color:#fff; border:none; padding:6px 16px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer; }
+.pkg-btn:hover { opacity:0.9; }
+.pkg-btn:disabled { opacity:0.5; cursor:default; }
+.pkg-result { background:var(--glass); border:1px solid var(--border); border-radius:8px; padding:14px 18px; margin-bottom:16px; font-size:0.72rem; }
+.pkg-result .pkg-title { font-weight:600; color:var(--neon); margin-bottom:6px; font-size:0.78rem; }
+.pkg-result .pkg-path { color:var(--sub); font-family:monospace; font-size:0.65rem; margin-bottom:8px; }
+.pkg-result .pkg-files { color:var(--text); }
+.pkg-result .pkg-warn { color:var(--yellow); margin-top:8px; font-size:0.65rem; }
+.pkg-result .pkg-count { color:var(--green); font-weight:600; }
+.loading { text-align:center; color:var(--sub); padding:40px; font-size:0.8rem; }
+.error-msg { color:var(--red); background:var(--red-bg); padding:12px; border-radius:8px; font-size:0.75rem; }
+
+.diff-popup { position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.45); z-index:99999; display:flex; align-items:stretch; justify-content:center; padding:16px; }
+.bc-viewer { background:#fff; border-radius:12px; width:100%; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 12px 48px rgba(0,0,0,0.25); }
+
+.bc-toolbar { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:linear-gradient(to bottom, #fafafa, #f3f3f3); border-bottom:1px solid #e0e0e0; }
+.bc-title { font-size:0.88rem; font-weight:600; color:#222; letter-spacing:-0.01em; }
+.bc-close { background:none; border:none; color:#bbb; font-size:1.1rem; cursor:pointer; padding:2px 6px; border-radius:4px; }
+.bc-close:hover { color:#666; background:#eee; }
+
+.bc-actionbar { display:flex; align-items:center; justify-content:space-between; padding:6px 16px; background:#fff; border-bottom:1px solid #eee; }
+.bc-nav { display:flex; align-items:center; gap:6px; }
+.bc-sm { background:#fff; border:1px solid #ddd; color:#888; width:24px; height:24px; border-radius:4px; font-size:0.6rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.bc-sm:hover { border-color:#7c6bff; color:#7c6bff; background:#f8f7ff; }
+.bc-change-count { font-size:0.62rem; color:#999; min-width:55px; text-align:center; }
+.bc-toggle { display:flex; margin-left:10px; border:1px solid #ddd; border-radius:6px; overflow:hidden; }
+.bc-tog { background:#fff; border:none; border-right:1px solid #eee; color:#888; padding:4px 12px; font-size:0.6rem; cursor:pointer; transition:all 0.15s; }
+.bc-tog:last-child { border-right:none; }
+.bc-tog:hover { background:#f5f4ff; color:#7c6bff; }
+.bc-tog-on { background:#7c6bff; color:#fff; }
+.bc-actions { display:flex; gap:6px; }
+.bc-act { background:#fff; border:1px solid #ddd; color:#666; padding:4px 12px; border-radius:6px; font-size:0.62rem; cursor:pointer; transition:all 0.15s; font-weight:500; }
+.bc-act:hover { border-color:#7c6bff; color:#7c6bff; background:#f8f7ff; }
+.bc-act-claude { border-color:#e8a020; color:#c88a10; }
+.bc-act-claude:hover { background:#fffbf0; border-color:#d49710; color:#b07800; }
+.bc-act-vs { border-color:#3b82f6; color:#3b82f6; }
+.bc-act-vs:hover { background:#f0f6ff; }
+.bc-copied { background:#16a34a !important; border-color:#16a34a !important; color:#fff !important; }
+.bc-skip { display:flex; align-items:center; justify-content:center; height:1.6em; color:#bbb; font-size:0.58rem; font-style:italic; background:#fafafa; border-top:1px dashed #e8e8e8; border-bottom:1px dashed #e8e8e8; }
+
+.bc-headers { display:flex; border-bottom:1px solid #ddd; }
+.bc-file-header { flex:1; padding:6px 14px; font-size:0.6rem; font-family:'Cascadia Code','Fira Code',monospace; background:#f8f8f8; color:#888; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; letter-spacing:-0.02em; }
+.bc-file-header.bc-left { border-right:1px solid #ddd; }
+.bc-file-header.bc-right { }
+.bc-content { flex:1; display:flex; overflow:hidden; }
+.bc-pane { flex:1; overflow-y:auto; font-family:'Cascadia Code','Fira Code',monospace; font-size:0.68rem; line-height:1.6; }
+.bc-pane-left { border-right:1px solid #e0e0e0; }
+
+.bc-line { display:flex; min-height:1.6em; }
+.bc-ln { width:42px; min-width:42px; text-align:right; padding:0 8px 0 0; color:#c0c0c0; background:#fafafa; border-right:1px solid #f0f0f0; user-select:none; font-size:0.58rem; line-height:1.6; }
+.bc-code { flex:1; padding:0 10px; white-space:pre-wrap; word-break:break-all; }
+.bc-line.unchanged .bc-code { color:#444; }
+.bc-line.deleted .bc-code { color:#9a2020; background:#fff0f0; }
+.bc-line.deleted .bc-ln { background:#fff5f5; color:#cc6666; }
+.bc-line.added .bc-code { color:#1a7a30; background:#f0fff4; }
+.bc-line.added .bc-ln { background:#f5fff8; color:#66aa77; }
+.bc-line.empty { background:#fafafa; }
+.bc-line.empty .bc-code { color:transparent; }
+.bc-line.empty .bc-ln { background:#fafafa; color:transparent; }
+.bc-line.change-start { border-top:1px solid #e8e8e8; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-title">&#9651; PRODUCTION DIFF</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button type="button" class="pkg-btn" id="createPkgBtn" onclick="createPackage()">Create Deploy Package</button>
+    <a href="/" class="page-back">&larr; Dashboard</a>
+  </div>
+</div>
+
+<div id="pkgResult" style="display:none"></div>
+<div id="summary" class="summary"></div>
+<div id="prodPath" class="prod-path"></div>
+<div id="fileList"></div>
+
+<div id="diffPopup" style="display:none" class="diff-popup">
+  <div class="bc-viewer">
+    <div class="bc-toolbar">
+      <div class="bc-title" id="bcTitle"></div>
+      <button type="button" class="bc-close" onclick="closeDiff()">&#10005;</button>
+    </div>
+    <div class="bc-actionbar">
+      <div class="bc-nav">
+        <button type="button" class="bc-sm" onclick="navChange(-1)">&#9650;</button>
+        <span id="bcChangeCount" class="bc-change-count"></span>
+        <button type="button" class="bc-sm" onclick="navChange(1)">&#9660;</button>
+        <div class="bc-toggle">
+          <button type="button" class="bc-tog" id="viewChanges" onclick="setView('changes')">Diff</button>
+          <button type="button" class="bc-tog" id="viewContext" onclick="setView('context')">±5</button>
+          <button type="button" class="bc-tog bc-tog-on" id="viewFull" onclick="setView('full')">All</button>
+        </div>
+      </div>
+      <div class="bc-actions">
+        <button id="diffClaudeBtn" type="button" class="bc-act bc-act-claude" title="Copy diff for Claude review">Claude</button>
+        <button id="diffBCBtn" type="button" class="bc-act" title="Open in Beyond Compare">BC</button>
+        <button id="diffOpenBtn" type="button" class="bc-act bc-act-vs" title="Open in VS Code">VS Code</button>
+      </div>
+    </div>
+    <div class="bc-headers">
+      <div class="bc-file-header bc-left" id="bcLeftHeader">Production</div>
+      <div class="bc-file-header bc-right" id="bcRightHeader">Current</div>
+    </div>
+    <div class="bc-content" id="bcContent">
+      <div class="bc-pane bc-pane-left" id="bcLeft"></div>
+      <div class="bc-pane bc-pane-right" id="bcRight"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var REPO_BASE = '';
+
+function load() {
+    document.getElementById('fileList').innerHTML = '<div class="loading">Scanning files against production...</div>';
+    fetch('/api/proddiff')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.error) {
+                document.getElementById('fileList').innerHTML = '<div class="error-msg">' + d.error + '</div>';
+                return;
+            }
+            REPO_BASE = d.repoBase || '';
+            fileDataStore = [];
+            renderSummary(d);
+            document.getElementById('prodPath').textContent = 'Comparing against: ' + d.prodFolder;
+            renderFiles(d.files);
+        })
+        .catch(function(e) {
+            document.getElementById('fileList').innerHTML = '<div class="error-msg">Failed to load: ' + e.message + '</div>';
+        });
+}
+
+function renderSummary(d) {
+    var html = '';
+    html += '<div class="summary-card"><div class="summary-label">Files Changed</div><div class="summary-value files">' + d.totalFiles + '</div></div>';
+    html += '<div class="summary-card"><div class="summary-label">Lines Added</div><div class="summary-value added">+' + d.totalAdded + '</div></div>';
+    html += '<div class="summary-card"><div class="summary-label">Lines Removed</div><div class="summary-value removed">-' + d.totalRemoved + '</div></div>';
+    document.getElementById('summary').innerHTML = html;
+}
+
+function renderFiles(files) {
+    var groups = {};
+    var groupOrder = [];
+    for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var sessions = f.sessions || ['other'];
+        var groupName = 'Session ' + sessions[0];
+        if (sessions[0] === 'other') { groupName = 'Other'; }
+        if (!groups[groupName]) { groups[groupName] = []; groupOrder.push(groupName); }
+        groups[groupName].push(f);
+    }
+    groupOrder.sort(function(a, b) {
+        var na = parseInt(a.replace(/\D/g, '')) || 0;
+        var nb = parseInt(b.replace(/\D/g, '')) || 0;
+        return nb - na;
+    });
+    var html = '';
+    for (var g = 0; g < groupOrder.length; g++) {
+        var name = groupOrder[g];
+        var gFiles = groups[name];
+        html += '<div class="file-group">';
+        var sessionDesc = '';
+        if (gFiles[0] && gFiles[0].reasons) {
+            for (var rd = 0; rd < gFiles[0].reasons.length; rd++) {
+                if (gFiles[0].reasons[rd].indexOf(name.replace('Session ', 'Session ')) === 0) {
+                    sessionDesc = gFiles[0].reasons[rd].replace(/^Session \d+:\s*/i, '');
+                    break;
+                }
+            }
+        }
+        html += '<div class="file-group-header">' + name + ' (' + gFiles.length + ' files)' + (sessionDesc ? ' <span class="session-desc"> - ' + sessionDesc.replace(/</g, '&lt;') + '</span>' : '') + '</div>';
+        for (var j = 0; j < gFiles.length; j++) {
+            var f = gFiles[j];
+            var parts = f.path.split('/');
+            var fileName = parts.pop();
+            var dirPath = parts.join('/');
+            var badge = f.status === 'new' ? '<span class="file-badge new">NEW</span>' : '<span class="file-badge modified">MODIFIED</span>';
+            var stats = '';
+            if (f.added > 0 || f.removed > 0) {
+                stats = '<div class="file-stats"><span class="add">+' + f.added + '</span><span class="rem">-' + f.removed + '</span></div>';
+            }
+            var dataIdx = fileDataStore.length;
+            fileDataStore.push({ path: f.path, reasons: f.reasons || [] });
+            var riskBadge = '';
+            if (f.risk === 'high') { riskBadge = '<span class="risk-badge risk-high">CORE (' + f.dependents + ' files)</span>'; }
+            else if (f.risk === 'medium') { riskBadge = '<span class="risk-badge risk-med">' + f.dependents + ' files</span>'; }
+            html += '<div class="file-row" onclick="showFileDiff(' + dataIdx + ')">';
+            html += '<div class="file-path"><span class="file-dir">' + (dirPath ? dirPath + '/' : '') + '</span><span class="file-name">' + fileName + '</span></div>';
+            html += riskBadge + badge + stats;
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+    if (files.length === 0) {
+        html = '<div class="loading">No differences found. Working copy matches production.</div>';
+    }
+    document.getElementById('fileList').innerHTML = html;
+}
+
+var changePositions = [];
+var currentChangeIdx = -1;
+var fileDataStore = [];
+var parsedRows = [];
+var currentView = 'full';
+var CONTEXT_LINES = 5;
+
+function showFileDiff(idx) {
+    var data = fileDataStore[idx];
+    var filePath = data.path;
+    var reasons = data.reasons;
+    var popup = document.getElementById('diffPopup');
+    document.getElementById('bcTitle').textContent = filePath.split('/').pop();
+    document.getElementById('bcLeft').innerHTML = '<div style="padding:20px;color:#888;text-align:center">Loading...</div>';
+    document.getElementById('bcRight').innerHTML = '';
+    popup.style.display = 'flex';
+    document.getElementById('diffOpenBtn').onclick = function() {
+        fetch('/api/open?file=' + encodeURIComponent(REPO_BASE + '/' + filePath)).catch(function() {});
+    };
+    document.getElementById('diffBCBtn').onclick = function() {
+        fetch('/api/openbc?file=' + encodeURIComponent(filePath)).catch(function() {});
+    };
+    document.getElementById('diffClaudeBtn').onclick = function() {
+        var reasonsText = '';
+        if (reasons && reasons.length > 0) { reasonsText = reasons.join('\n'); }
+        var diffText = '';
+        for (var pi = 0; pi < parsedRows.length; pi++) {
+            var r = parsedRows[pi];
+            if (r.type === 'del') { diffText += '-' + r.esc.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>') + '\n'; }
+            else if (r.type === 'add') { diffText += '+' + r.esc.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>') + '\n'; }
+        }
+        var prompt = 'Review this change to ' + filePath + '.\n\n';
+        prompt += 'Why it was changed:\n' + reasonsText + '\n\n';
+        prompt += 'Changes (- = removed from production, + = added):\n```\n' + diffText + '```\n\n';
+        prompt += 'Questions:\n1. Could this change break any existing functionality elsewhere in the codebase?\n2. Are there any other files that depend on the changed code that might need updating?\n3. Any edge cases or risks I should watch for?';
+        navigator.clipboard.writeText(prompt).then(function() {
+            var btn = document.getElementById('diffClaudeBtn');
+            btn.textContent = 'Copied!';
+            btn.className = 'bc-act bc-copied';
+            setTimeout(function() { btn.textContent = 'Claude'; btn.className = 'bc-act bc-act-claude'; }, 2000);
+        });
+    };
+    fetch('/api/proddifffile?file=' + encodeURIComponent(filePath))
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            document.getElementById('bcLeftHeader').textContent = (d.prodPath || 'Production') + (d.prodDate ? '  (' + d.prodDate + ')' : '');
+            document.getElementById('bcRightHeader').textContent = (d.repoPath || 'Current') + (d.repoDate ? '  (' + d.repoDate + ')' : '');
+            buildSideBySide(d.lines);
+            syncScroll();
+        })
+        .catch(function() {
+            document.getElementById('bcLeft').innerHTML = '<div style="padding:20px;color:#c00">Failed to load diff</div>';
+        });
+}
+
+function buildSideBySide(lines) {
+    parsedRows = [];
+    var leftLine = 0;
+    var rightLine = 0;
+
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (line.indexOf('@@') === 0) {
+            var hm = line.match(/@@ -(\d+).*\+(\d+)/);
+            if (hm) { leftLine = parseInt(hm[1]); rightLine = parseInt(hm[2]); }
+            continue;
+        }
+        var text = line.substring(1);
+        var esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        if (line.indexOf('-') === 0) {
+            parsedRows.push({ type: 'del', leftLn: leftLine, rightLn: '', esc: esc });
+            leftLine++;
+        } else if (line.indexOf('+') === 0) {
+            parsedRows.push({ type: 'add', leftLn: '', rightLn: rightLine, esc: esc });
+            rightLine++;
+        } else {
+            parsedRows.push({ type: 'ctx', leftLn: leftLine, rightLn: rightLine, esc: esc });
+            leftLine++;
+            rightLine++;
+        }
+    }
+    renderView();
+}
+
+function renderView() {
+    var visible = [];
+    if (currentView === 'full') {
+        for (var i = 0; i < parsedRows.length; i++) { visible.push(i); }
+    } else {
+        var changed = [];
+        for (var i = 0; i < parsedRows.length; i++) {
+            if (parsedRows[i].type !== 'ctx') { changed.push(i); }
+        }
+        if (currentView === 'changes') {
+            visible = changed;
+        } else {
+            var show = {};
+            for (var c = 0; c < changed.length; c++) {
+                var idx = changed[c];
+                var start = Math.max(0, idx - CONTEXT_LINES);
+                var end = Math.min(parsedRows.length - 1, idx + CONTEXT_LINES);
+                for (var k = start; k <= end; k++) { show[k] = true; }
+            }
+            for (var i = 0; i < parsedRows.length; i++) {
+                if (show[i]) { visible.push(i); }
+            }
+        }
+    }
+
+    var leftHtml = '';
+    var rightHtml = '';
+    changePositions = [];
+    var inChange = false;
+    var lastIdx = -2;
+
+    for (var v = 0; v < visible.length; v++) {
+        var i = visible[v];
+        var r = parsedRows[i];
+        var isChange = r.type !== 'ctx';
+        var changeClass = '';
+
+        if (i !== lastIdx + 1 && v > 0) {
+            leftHtml += '<div class="bc-skip">...</div>';
+            rightHtml += '<div class="bc-skip">...</div>';
+        }
+        lastIdx = i;
+
+        if (isChange && !inChange) {
+            changeClass = ' change-start';
+            changePositions.push(v);
+            inChange = true;
+        } else if (!isChange) {
+            inChange = false;
+        }
+
+        if (r.type === 'del') {
+            leftHtml += '<div class="bc-line deleted' + changeClass + '" data-row="' + v + '"><div class="bc-ln">' + r.leftLn + '</div><div class="bc-code">' + r.esc + '</div></div>';
+            rightHtml += '<div class="bc-line empty' + changeClass + '" data-row="' + v + '"><div class="bc-ln"></div><div class="bc-code"> </div></div>';
+        } else if (r.type === 'add') {
+            leftHtml += '<div class="bc-line empty' + changeClass + '" data-row="' + v + '"><div class="bc-ln"></div><div class="bc-code"> </div></div>';
+            rightHtml += '<div class="bc-line added' + changeClass + '" data-row="' + v + '"><div class="bc-ln">' + r.rightLn + '</div><div class="bc-code">' + r.esc + '</div></div>';
+        } else {
+            leftHtml += '<div class="bc-line unchanged' + changeClass + '" data-row="' + v + '"><div class="bc-ln">' + r.leftLn + '</div><div class="bc-code">' + r.esc + '</div></div>';
+            rightHtml += '<div class="bc-line unchanged' + changeClass + '" data-row="' + v + '"><div class="bc-ln">' + r.rightLn + '</div><div class="bc-code">' + r.esc + '</div></div>';
+        }
+    }
+
+    document.getElementById('bcLeft').innerHTML = leftHtml;
+    document.getElementById('bcRight').innerHTML = rightHtml;
+    currentChangeIdx = -1;
+    document.getElementById('bcChangeCount').textContent = changePositions.length + ' changes';
+    syncScroll();
+}
+
+function setView(mode) {
+    currentView = mode;
+    var btns = document.querySelectorAll('.bc-tog');
+    for (var i = 0; i < btns.length; i++) { btns[i].className = 'bc-tog'; }
+    document.getElementById('view' + mode.charAt(0).toUpperCase() + mode.slice(1)).className = 'bc-tog bc-tog-on';
+    renderView();
+}
+
+function syncScroll() {
+    var left = document.getElementById('bcLeft');
+    var right = document.getElementById('bcRight');
+    var syncing = false;
+    left.onscroll = function() { if (!syncing) { syncing = true; right.scrollTop = left.scrollTop; syncing = false; } };
+    right.onscroll = function() { if (!syncing) { syncing = true; left.scrollTop = right.scrollTop; syncing = false; } };
+}
+
+function navChange(dir) {
+    if (changePositions.length === 0) { return; }
+    currentChangeIdx = currentChangeIdx + dir;
+    if (currentChangeIdx < 0) { currentChangeIdx = changePositions.length - 1; }
+    if (currentChangeIdx >= changePositions.length) { currentChangeIdx = 0; }
+    var row = changePositions[currentChangeIdx];
+    var el = document.querySelector('#bcLeft [data-row="' + row + '"]');
+    if (el) { el.scrollIntoView({ block: 'center' }); }
+    document.getElementById('bcChangeCount').textContent = (currentChangeIdx + 1) + ' / ' + changePositions.length;
+}
+
+function closeDiff() {
+    document.getElementById('diffPopup').style.display = 'none';
+}
+
+function createPackage() {
+    var btn = document.getElementById('createPkgBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating...';
+    var resultDiv = document.getElementById('pkgResult');
+    resultDiv.style.display = 'none';
+    fetch('/api/createpackage')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            btn.disabled = false;
+            btn.textContent = 'Create Deploy Package';
+            if (!d.ok) {
+                resultDiv.innerHTML = '<div class="pkg-result"><div class="pkg-title" style="color:var(--red)">Error</div><div>' + d.msg + '</div></div>';
+                resultDiv.style.display = '';
+                return;
+            }
+            var html = '<div class="pkg-result">';
+            html += '<div class="pkg-title">Deploy Package Created</div>';
+            html += '<div class="pkg-path">' + d.packagePath + '</div>';
+            html += '<div class="pkg-files">Full copy of apps/, mobile/, mfimp/ — <span class="pkg-count">' + d.changedCount + ' files changed vs production</span></div>';
+            if (d.changedFiles.length > 0) {
+                html += '<div style="margin-top:6px;font-size:0.62rem;color:var(--sub)">';
+                for (var i = 0; i < d.changedFiles.length; i++) {
+                    html += d.changedFiles[i].split('/').pop();
+                    if (i < d.changedFiles.length - 1) { html += ', '; }
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = '';
+        })
+        .catch(function(e) {
+            btn.disabled = false;
+            btn.textContent = 'Create Deploy Package';
+            resultDiv.innerHTML = '<div class="pkg-result"><div class="pkg-title" style="color:var(--red)">Failed</div><div>' + e.message + '</div></div>';
+            resultDiv.style.display = '';
+        });
+}
+
+load();
+</script>
+</body>
+</html>

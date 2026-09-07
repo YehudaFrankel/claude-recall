@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "name": "Start",
+    "text": "Start Session"
+  },
+  {
+    "name": "End",
+    "text": "End Session"
+  },
+  {
+    "name": "Smoke",
+    "text": "/smoke-test"
+  },
+  {
+    "name": "Guard",
+    "text": "/guard"
+  },
+  {
+    "name": "Learn",
+    "text": "/learn"
+  },
+  {
+    "name": "Mem Push",
+    "text": "Push Memory"
+  },
+  {
+    "name": "Git Push",
+    "text": "git push"
+  }
+]

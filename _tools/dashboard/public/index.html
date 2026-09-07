@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DEV DASHBOARD</title>
+<title>INFOGRASP</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="app">
 
   <header>
-    <div class="logo">&#9651; DEV DASHBOARD</div>
+    <div class="logo">&#9651; INFOGRASP</div>
     <div class="meta">
       <span id="sessionBadge" class="session-badge">S—</span>
       <span id="lastUpdated" class="muted small">—</span>
@@ -18,13 +18,21 @@
   </header>
 
   <div class="row">
-    <div class="pill" id="healthPill">
-      <span class="dot" id="healthDot"></span>
-      <span id="healthLabel">SERVER</span>
+    <div class="pill" id="resinPill">
+      <span class="dot" id="resinDot"></span>
+      <span id="resinLabel">RESIN</span>
     </div>
-    <div class="pill" id="gitPill">
-      <span class="dot" id="gitDot"></span>
-      <span id="gitLabel">GIT</span>
+    <div class="pill" id="uncommittedPill" onclick="pillClick('uncommitted')" title="Click to copy commit prompt">
+      <span class="dot"></span>
+      <span id="uncommittedLabel">UNCOMMITTED</span>
+    </div>
+    <div class="pill" id="pushPill" onclick="pillClick('push')" title="Click to copy push prompt">
+      <span class="dot"></span>
+      <span id="pushLabel">PUSH</span>
+    </div>
+    <div class="pill" id="memorySyncPill" onclick="pillClick('memory')" title="Click to copy push memory prompt">
+      <span class="dot"></span>
+      <span id="memorySyncLabel">MEMORY</span>
     </div>
   </div>
 
@@ -35,23 +43,43 @@
   </div>
 
   <div class="card">
+    <div class="card-label" style="display:flex;justify-content:space-between;align-items:center">
+      <span>SESSION CHANGES</span>
+      <a href="/production.html" style="font-size:0.6rem;color:var(--sub);text-decoration:none;font-weight:400">PRODUCTION DIFF &rarr;</a>
+    </div>
+    <input type="text" id="historySearch" class="history-search" placeholder="Search commits...">
+    <div id="historyGroups" class="history-groups">Loading...</div>
+  </div>
+
+  <div class="card">
     <div class="card-label">SAVED PROMPTS</div>
     <div class="actions" id="savedPromptsArea"></div>
     <div id="copyMsg" class="copy-msg"></div>
   </div>
 
   <div class="card">
-    <div class="card-label">QUICK PROMPT</div>
-    <div class="qp-form">
-      <input type="text" id="qpTarget" class="qp-input" placeholder="Target  (e.g. auth flow)">
-      <input type="text" id="qpAction" class="qp-input" placeholder="Action  (e.g. trace the bug where login fails)">
-      <div class="qp-row">
-        <input type="text" id="qpSaveName" class="qp-input qp-name" placeholder="Save as (optional)">
-        <button type="button" class="btn btn-send" onclick="sendQuickPrompt()">&#9654; Send</button>
-      </div>
+    <div class="card-label">DEPLOY</div>
+    <div class="actions">
+      <button type="button" class="btn" onclick="runSessionDiff(this)" style="background:#1a56db;color:#fff">Session Diff</button>
     </div>
+    <pre id="diffOutput" style="display:none;margin-top:8px;font-size:11px;max-height:200px;overflow-y:auto;white-space:pre-wrap;color:#9ca3af"></pre>
   </div>
 
+</div>
+<div id="diffPopup" class="diff-popup" style="display:none" onclick="if(event.target===this)closeDiff()">
+  <div class="diff-panel">
+    <div class="diff-header">
+      <div>
+        <div id="diffTitle" class="diff-title"></div>
+        <div id="diffNote" class="diff-note"></div>
+      </div>
+      <div class="diff-actions">
+        <button id="diffOpenBtn" class="diff-btn" type="button">Open in VS Code</button>
+        <button onclick="closeDiff()" class="diff-btn diff-close" type="button">Close</button>
+      </div>
+    </div>
+    <div id="diffBody" class="diff-body"></div>
+  </div>
 </div>
 <script src="app.js"></script>
 </body>

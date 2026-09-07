@@ -127,6 +127,49 @@ def _copy_memory_py():
         print("    but the file could not be copied. Every user message will fail until fixed.")
 
 
+def _generate_memory_ps1(memory_repo, code_repo):
+    """Generate memory.ps1 with the user's GitHub repo URLs filled in."""
+    if not memory_repo:
+        print("  Skipped memory.ps1 -- no memory repo URL provided")
+        return
+    src = HERE / 'memory.ps1'
+    dst = ROOT / 'memory.ps1'
+    if not src.exists():
+        print("  WARN: memory.ps1 template not found in kit -- skipping")
+        return
+    if dst.exists():
+        overwrite = input("  memory.ps1 already exists. Overwrite? [y/N] ").strip().lower()
+        if overwrite != 'y':
+            print("  Skipped memory.ps1")
+            return
+    content = src.read_text(encoding='utf-8')
+    content = content.replace("'__MEMORY_REPO_URL__'", f"'{memory_repo}'")
+    dst.write_text(content, encoding='utf-8')
+    print(f"  Created memory.ps1 (memory repo: {memory_repo})")
+
+
+def _copy_dashboard():
+    """Copy the session dashboard into the project's _tools/dashboard/ directory."""
+    src = HERE / '_tools' / 'dashboard'
+    dst = ROOT / '_tools' / 'dashboard'
+    if not src.exists():
+        print("  WARN: _tools/dashboard/ not found in kit -- skipping dashboard")
+        return
+    if dst.exists():
+        overwrite = input("  _tools/dashboard/ already exists. Overwrite? [y/N] ").strip().lower()
+        if overwrite != 'y':
+            print("  Skipped dashboard")
+            return
+    dst.mkdir(parents=True, exist_ok=True)
+    for item in src.rglob('*'):
+        if item.is_file():
+            rel = item.relative_to(src)
+            target = dst / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(item, target)
+    print("  Created _tools/dashboard/ (session dashboard on port 3030)")
+
+
 def _copy_upgrade_script():
     """Copy upgrade.py from the kit into the project root."""
     src = HERE / "upgrade.py"
@@ -144,18 +187,23 @@ def _copy_upgrade_script():
 
 
 def _write_gitignore():
-    """Add HANDOFF.md to .gitignore — it's a point-in-time snapshot, not a long-lived doc."""
+    """Add machine-local and generated files to .gitignore."""
     gitignore = ROOT / ".gitignore"
-    entry = "HANDOFF.md\n"
+    entries = [
+        "HANDOFF.md",
+        "_mem_path.txt",
+        "_webapps_path.txt",
+    ]
     if gitignore.exists():
         content = gitignore.read_text(encoding="utf-8")
-        if "HANDOFF.md" in content:
-            return  # already there
-        gitignore.write_text(content.rstrip("\n") + "\n" + entry, encoding="utf-8")
-        print("  Updated .gitignore — added HANDOFF.md")
+        new_entries = [e for e in entries if e not in content]
+        if not new_entries:
+            return  # all already there
+        gitignore.write_text(content.rstrip("\n") + "\n" + "\n".join(new_entries) + "\n", encoding="utf-8")
+        print(f"  Updated .gitignore -- added {', '.join(new_entries)}")
     else:
-        gitignore.write_text(entry, encoding="utf-8")
-        print("  Created .gitignore — HANDOFF.md excluded")
+        gitignore.write_text("\n".join(entries) + "\n", encoding="utf-8")
+        print(f"  Created .gitignore -- excluded machine-local files")
 
 
 def _write_gitattributes():
@@ -316,6 +364,15 @@ def create_task_files():
 
 | Date | Task | Estimated sessions | Actual sessions | Notes |
 |------|------|--------------------|-----------------|-------|
+""")
+
+    write("tasks/skill_usage.md", """\
+# Skill Usage Log
+
+<!-- Which skills fired each session. Updated at End Session. -->
+
+| Date | Skill | Session |
+|------|-------|---------|
 """)
 
     # .gitkeep so tasks/ is committed to the repo even before files have content
@@ -789,7 +846,7 @@ After **any code change** this session, immediately update the relevant memory f
 
 # ─── Lite Mode ────────────────────────────────────────────────────────────────
 
-def _generate_lite(name, tech):
+def _generate_lite(name, tech, use_demo=False):
     """Generate zero-Python Lite memory system — @rules/ files, no hooks."""
 
     write_instruction_files(f"""# {name} — Claude Code + Codex Project Context
@@ -882,7 +939,8 @@ Open an issue: https://github.com/YehudaFrankel/clankbrain/issues
 """)
 
     # ── @rules/ files (static conventions — load via @rules/ imports) ──
-    write("rules/stack.md", f"""# {name} — Stack
+    # Must be at .claude/rules/ — that's where @rules/ resolves to in Claude Code
+    write(".claude/rules/stack.md", f"""# {name} — Stack
 
 ## What This Project Is
 <!-- One paragraph: what it does, who uses it, what problem it solves -->
@@ -906,7 +964,7 @@ Open an issue: https://github.com/YehudaFrankel/clankbrain/issues
 <!-- Non-obvious decisions, things that would trip up a new dev -->
 """)
 
-    write("rules/conventions.md", f"""# {name} — Coding Conventions
+    write(".claude/rules/conventions.md", f"""# {name} — Coding Conventions
 
 ## Adding an Endpoint / Route
 <!-- Step-by-step: where to register, where to implement, how to read params -->
@@ -931,7 +989,7 @@ Open an issue: https://github.com/YehudaFrankel/clankbrain/issues
 | *(e.g. shared library)* | Not owned by this project |
 """)
 
-    write("rules/decisions.md", f"""# {name} — Decisions
+    write(".claude/rules/decisions.md", f"""# {name} — Decisions
 
 <!-- Log architectural choices here — don't re-debate these next session. -->
 <!-- Format: ## [date] [short title] / **Decision:** ... / **Why:** ... / **Rejected:** ... -->
@@ -1095,11 +1153,13 @@ FULL_CURATED_SKILLS = [
     'fix-bug', 'guard', 'verification-loop',                            # code quality
     'tour', 'kit-health',                                               # kit utilities
     'evolve', 'evolve-check',                                           # advanced memory
+    'scan-codebase', 'start-session', 'end-session',                    # session lifecycle
 ]
 
 # Minimal set for Lite install
 LITE_CURATED_SKILLS = [
     'learn', 'smart-resume', 'recall', 'fix-bug',
+    'scan-codebase', 'start-session', 'end-session',                    # session lifecycle
 ]
 
 
@@ -1600,7 +1660,7 @@ def main():
     size = ask("Choose [1/2]", "1")
 
     if size.strip() == "2":
-        _generate_lite(name, tech)
+        _generate_lite(name, tech, use_demo)
         return
 
     # ── File detection mode ──
@@ -1650,6 +1710,16 @@ def main():
     # Full mode always uses memory.py for drift detection + lifecycle hooks
     automated = True
 
+    # ── GitHub repos ──
+    print()
+    print("GitHub integration (optional -- press Enter to skip either):")
+    print("  Code repo:   where your source code is pushed (e.g. https://github.com/you/my-app.git)")
+    print("  Memory repo: private repo for syncing .claude/ + memory across machines")
+    print("               Create one: gh repo create my-app-memory --private")
+    print()
+    code_repo = ask("Code repo URL (or Enter to skip)", "")
+    memory_repo = ask("Memory repo URL (or Enter to skip)", "")
+
     print()
 
     # ── CLAUDE.md ──
@@ -1669,50 +1739,12 @@ def main():
 
 ---
 
-## File Paths
+## Project Rules (auto-generated on first session by /scan-codebase)
 
-| File | Purpose |
-|------|---------|
-| *(add key files here)* | |
-
----
-
-## Coding Conventions
-
-### Adding an Endpoint / Route
-<!-- Step-by-step: where to register, where to implement, how to read params -->
-
-### DB Patterns
-<!-- How to query, insert, update — framework-specific helpers, what to avoid -->
-
-### Frontend API Calls
-<!-- How JS calls the backend — fetch wrapper, promise pattern, etc. -->
-
----
-
-## Design System
-
-### Colors
-```css
-/* Paste your CSS variables here */
-```
-
-### Principles
-<!-- Mobile-first? No external deps? Specific component patterns? -->
-
----
-
-## Files Claude Should Never Touch
-
-> List files that must not be restructured or reformatted — only surgical edits allowed.
-
-| File | Why |
-|------|-----|
-| *(e.g. routing/dispatch file)* | Order-sensitive — restructuring breaks all routing |
-| *(e.g. install/migration SQL)* | Idempotent script — structure must be preserved |
-| *(e.g. shared library files)* | Not owned by this project |
-
-**Rule:** If a task requires changes to these files, read the full file first, change only the minimum lines needed, and confirm with the user before applying.
+@rules/code-map.md
+@rules/coding-conventions.md
+@rules/file-paths.md
+@rules/protected-files.md
 
 ---
 
@@ -1908,9 +1940,36 @@ type: reference
 |--------|---------|
 """)
 
+    # ── Skeleton rule files (replaced by /scan-codebase on first session) ──
+    # NOTE: code-map.md is intentionally NOT created here.
+    # start-session checks for its absence to trigger /scan-codebase.
+    # The @rules/code-map.md reference in CLAUDE.md is a soft import --
+    # Claude skips missing files gracefully.
+
+    write(".claude/rules/coding-conventions.md", f"""\
+# Coding Conventions -- {name}
+> Placeholder -- will be auto-generated by /scan-codebase on first Start Session.
+""")
+    write(".claude/rules/file-paths.md", f"""\
+# File Paths -- {name}
+> Placeholder -- will be auto-generated by /scan-codebase on first Start Session.
+""")
+    write(".claude/rules/protected-files.md", f"""\
+# Protected Files -- {name}
+> Placeholder -- will be auto-generated by /scan-codebase on first Start Session.
+""")
+    print("  Created .claude/rules/ skeleton (auto-populated on first Start Session)")
+
     # ── Skills ──
     if ask_yn("Generate skill files? (auto-invoked prompts for code review, security, bug fixing)", "y"):
         generate_skills(name, tech)
+
+    # ── Dashboard ──
+    _copy_dashboard()
+
+    # ── memory.ps1 (GitHub sync) ──
+    if memory_repo:
+        _generate_memory_ps1(memory_repo, code_repo)
 
     # ── update.py ──
     _copy_update_script()
@@ -1965,33 +2024,47 @@ type: reference
     elif ide == 'all':
         ide_note = "\nCursor:    .cursor/rules/memory.mdc\nWindsurf:  .windsurf/rules/memory.md"
 
+    repo_note = ""
+    if memory_repo:
+        repo_note += f"\n  Memory repo: {memory_repo}"
+        repo_note += "\n  Sync:        .\\memory.ps1 pull  /  .\\memory.ps1 push"
+    if code_repo:
+        repo_note += f"\n  Code repo:   {code_repo}"
+
     print(f"""
-Done. Full memory system created in: {ROOT}{ide_note}
+Done. Full memory system created in: {ROOT}{ide_note}{repo_note}
 
 ┌─────────────────────────────────────────────────────────────┐
 │  You're done. Open Claude Code and type:                    │
 │                                                             │
 │      Start Session                                          │
 │                                                             │
-│  Claude will load memory, run drift detection, and ask      │
-│  what you're working on. Hooks fire automatically.          │
+│  First session: Claude auto-scans your codebase and         │
+│  generates project-specific rules from the actual code.     │
+│  No manual config needed.                                   │
 │                                                             │
 │  At the end: type  End Session  to save what was learned.   │
 └─────────────────────────────────────────────────────────────┘
 
-Hooks installed (fire automatically — nothing to run):
-  UserPromptSubmit → captures corrections + regret guard
-  PostToolUse      → drift detection after every edit
-  Stop             → session journal + stop-check reminder
+Hooks installed (fire automatically -- nothing to run):
+  UserPromptSubmit -> captures corrections + regret guard
+  PostToolUse      -> drift detection after every edit
+  Stop             -> session journal + stop-check reminder
+
+Dashboard (session status viewer):
+  _tools/dashboard/  -- run with: node _tools/dashboard/server.js
+  Opens at http://localhost:3030
+
+First session auto-setup:
+  /scan-codebase runs automatically on first Start Session
+  Generates: code-map, coding-conventions, file-paths, protected-files
+  Replaces generic templates with rules from YOUR actual code
 
 Task files (commit these to your repo):
-  tasks/todo.md       — plans before touching code
-  tasks/lessons.md    — corrections, read every session start
-  tasks/decisions.md  — architectural choices and why
-  tasks/errors.md     — runtime errors + root causes
-
-Optional — fill in before your first session:
-  CLAUDE.md  ← tech stack section, file paths, coding conventions
+  tasks/todo.md       -- plans before touching code
+  tasks/lessons.md    -- corrections, read every session start
+  tasks/decisions.md  -- architectural choices and why
+  tasks/errors.md     -- runtime errors + root causes
 
 ⭐  If clankbrain saves you time, a star on GitHub helps others find it:
    https://github.com/YehudaFrankel/clankbrain
