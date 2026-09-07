@@ -763,48 +763,47 @@
     function handleFolderUpload(input) {
       if (!input.files || input.files.length === 0) { return; }
       var files = input.files;
-      var allContent = '';
-      var fileCount = 0;
-      var mdFiles = [];
+      var claudeMdFile = null;
+      var skippedCount = 0;
 
-      // Collect all .md files
+      // Only import CLAUDE.md from the folder root — not skills, rules, agents, memory
       for (var i = 0; i < files.length; i++) {
-        var name = files[i].webkitRelativePath || files[i].name;
-        if (name.match(/\.(md|txt)$/i)) {
-          mdFiles.push(files[i]);
+        var path = files[i].webkitRelativePath || files[i].name;
+        // Match CLAUDE.md at the root of the .claude/ folder (e.g. ".claude/CLAUDE.md" or just "CLAUDE.md")
+        var segments = path.split('/');
+        var fileName = segments[segments.length - 1];
+        if (fileName.toLowerCase() === 'claude.md') {
+          // Pick the shallowest CLAUDE.md (root, not nested in skills/rules/etc.)
+          if (!claudeMdFile || segments.length < (claudeMdFile.webkitRelativePath || claudeMdFile.name).split('/').length) {
+            claudeMdFile = files[i];
+          }
+        } else if (path.match(/\.(md|txt)$/i)) {
+          skippedCount++;
         }
       }
 
-      if (mdFiles.length === 0) {
-        document.getElementById('importFileName').textContent = 'No .md files found in folder';
+      if (!claudeMdFile) {
+        document.getElementById('importFileName').textContent = 'No CLAUDE.md found in folder';
         document.getElementById('importFileName').style.display = 'block';
         document.getElementById('importFileName').style.color = '#ef4444';
         return;
       }
 
-      var loaded = 0;
-      var sections = [];
-
-      for (var j = 0; j < mdFiles.length; j++) {
-        (function(file) {
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            var path = file.webkitRelativePath || file.name;
-            sections.push('# --- ' + path + ' ---\n\n' + e.target.result);
-            loaded++;
-            if (loaded === mdFiles.length) {
-              var combined = sections.join('\n\n');
-              document.getElementById('importExisting').value = combined;
-              document.getElementById('importFileName').innerHTML = 'Loaded ' + mdFiles.length + ' files from folder &nbsp;<a href="#" onclick="document.getElementById(\'importEditor\').style.display=\'block\';return false;" style="color:var(--accent);font-size:0.7rem;">view/edit</a>';
-              document.getElementById('importFileName').style.display = 'block';
-              autoDetectFromContent(combined);
-              updateLineNums();
-              updatePreview();
-            }
-          };
-          reader.readAsText(file);
-        })(mdFiles[j]);
-      }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('importExisting').value = e.target.result;
+        var msg = 'Loaded CLAUDE.md';
+        if (skippedCount > 0) {
+          msg += ' (' + skippedCount + ' skill/rule files skipped — Clankbrain regenerates those)';
+        }
+        msg += ' &nbsp;<a href="#" onclick="document.getElementById(\'importEditor\').style.display=\'block\';return false;" style="color:var(--accent);font-size:0.7rem;">view/edit</a>';
+        document.getElementById('importFileName').innerHTML = msg;
+        document.getElementById('importFileName').style.display = 'block';
+        autoDetectFromContent(e.target.result);
+        updateLineNums();
+        updatePreview();
+      };
+      reader.readAsText(claudeMdFile);
     }
 
     function handleFileUpload(input) {
