@@ -487,9 +487,15 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="projectName">Project name <span style="color:var(--accent)">*</span></label>
-        <input type="text" id="projectName" placeholder="my-app" value="my-app" oninput="updatePreview()">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="projectName">Project name <span style="color:var(--accent)">*</span></label>
+          <input type="text" id="projectName" placeholder="my-app" value="my-app" oninput="updatePreview()">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="githubUser">GitHub username <span class="help-icon">?<span class="tip">Used to generate setup script that creates your code + memory repos. Leave blank to skip repo setup.</span></span></label>
+          <input type="text" id="githubUser" placeholder="your-username" oninput="updatePreview()">
+        </div>
       </div>
 
       <div class="form-group">
@@ -1065,14 +1071,22 @@
         if (cv === 'memory-system') { fileCount += 9; }
       }
       // Always-included files
-      fileCount += 18; // skills(8) + rules(2) + agents(2) + modes(4) + settings + SYNC.md
+      fileCount += 19; // skills(8) + rules(2) + agents(2) + modes(4) + settings + SYNC.md + memory.ps1
 
       s += '<span class="dim">' + fileCount + ' files will be generated:</span>\n\n';
+
+      var githubUser = document.getElementById('githubUser').value.trim();
 
       s += '<span class="green">Core</span>\n';
       s += '<span class="blue">  CLAUDE.md</span>\n';
       s += '<span class="blue">  SYNC.md</span>\n';
-      s += '<span class="blue">  settings.json</span> <span class="dim">(with hooks)</span>\n\n';
+      s += '<span class="blue">  settings.json</span> <span class="dim">(with hooks)</span>\n';
+      s += '<span class="blue">  memory.ps1</span> <span class="dim">(push/pull memory)</span>\n';
+      if (githubUser) {
+        s += '<span class="blue">  setup.ps1</span> <span class="dim">(one-time bootstrap)</span>\n';
+        fileCount += 1;
+      }
+      s += '\n';
 
       s += '<span class="green">Rules</span>\n';
       s += '<span class="blue">  rules/karpathy-principles.md</span>\n';
@@ -1154,7 +1168,8 @@
         protectedFiles: document.getElementById('protectedFiles').value.trim(),
         additionalContext: document.getElementById('additionalContext').value.trim(),
         conventions: getChecked(),
-        importExisting: document.getElementById('importExisting').value.trim()
+        importExisting: document.getElementById('importExisting').value.trim(),
+        githubUser: document.getElementById('githubUser').value.trim()
       };
 
       fetch('/api/generate', {

@@ -422,6 +422,14 @@ function generateFiles(body) {
   // Sync instructions
   files['SYNC.md'] = generateSyncGuide(body);
 
+  // Memory push/pull script
+  files['memory.ps1'] = generateMemoryScript(body);
+
+  // One-time setup script (only if GitHub user provided)
+  if (body.githubUser) {
+    files['setup.ps1'] = generateSetupScript(body);
+  }
+
   return files;
 }
 
@@ -1202,5 +1210,167 @@ function generateScanCodebaseSkill(lang) {
   s += '- Never invent conventions — only document what the code actually does\n';
   s += '- If the project is too small (< 5 source files), say so and skip convention extraction\n';
   s += '- Re-run anytime with `/scan-codebase` to refresh after major refactors\n';
+  return s;
+}
+
+// --- Memory Push/Pull Script ---
+
+function generateMemoryScript(body) {
+  var ghUser = body.githubUser || 'YOUR_GITHUB_USER';
+  var projName = body.projectName || 'my-project';
+  var memRepo = 'https://github.com/' + ghUser + '/' + projName + '-memory.git';
+
+  var s = "param([string]$action = 'pull')\n\n";
+  s += "$repo    = '" + memRepo + "'\n";
+  s += "$projectRoot = $PSScriptRoot\n";
+  s += "$projectFolder = $PSScriptRoot -replace '\\\\','-' -replace ':','-' -replace '\\.','-'\n";
+  s += "$system  = \"$env:USERPROFILE\\.claude\\projects\\$projectFolder\\memory\"\n";
+  s += "$claude  = \"$PSScriptRoot\\.claude\"\n\n";
+  s += "# Resolve real git.exe (avoids broken App Execution Alias on some machines)\n";
+  s += "$gitExe = 'git'\n";
+  s += "foreach ($candidate in @(\"$env:ProgramFiles\\Git\\cmd\\git.exe\", \"${env:ProgramFiles(x86)}\\Git\\cmd\\git.exe\")) {\n";
+  s += "    if (Test-Path $candidate) { $gitExe = $candidate; break }\n";
+  s += "}\n\n";
+  s += "function Invoke-Git {\n";
+  s += "    $output = & $gitExe @args 2>&1\n";
+  s += "    $output | Where-Object { $_ -notmatch 'Failed to write item to store|Not enough memory resources' } | ForEach-Object { Write-Host $_ }\n";
+  s += "}\n\n";
+
+  // PULL
+  s += "if ($action -eq 'pull') {\n";
+  s += "    if (Test-Path \"$system\\.git\") {\n";
+  s += "        Push-Location $system\n";
+  s += "        $null = (& $gitExe fetch origin 2>&1)\n";
+  s += "        $localHead  = & $gitExe rev-parse HEAD 2>&1\n";
+  s += "        $remoteHead = & $gitExe rev-parse origin/main 2>&1\n";
+  s += "        if ($localHead -eq $remoteHead) {\n";
+  s += "            Write-Host 'Memory already up to date.'\n";
+  s += "            Pop-Location\n";
+  s += "        } else {\n";
+  s += "            Write-Host 'Pulling from GitHub...'\n";
+  s += "            $stashOut = & $gitExe stash 2>&1\n";
+  s += "            $didStash = $stashOut -notmatch 'No local changes'\n";
+  s += "            Invoke-Git pull\n";
+  s += "            # Auto-resolve conflicts in append-only files\n";
+  s += "            $logFiles = @('lessons.md','decisions.md','tasks/skill_scores.md','tasks/skill_usage.md')\n";
+  s += "            foreach ($f in $logFiles) {\n";
+  s += "                $s = & $gitExe status $f 2>&1\n";
+  s += "                if ($s -match 'both modified') {\n";
+  s += "                    & $gitExe checkout --theirs $f 2>&1 | Out-Null\n";
+  s += "                    & $gitExe add $f 2>&1 | Out-Null\n";
+  s += "                }\n";
+  s += "            }\n";
+  s += "            if (Test-Path '.git/MERGE_HEAD') {\n";
+  s += "                & $gitExe commit -m 'Auto-resolve append-only log conflicts' 2>&1 | Out-Null\n";
+  s += "            }\n";
+  s += "            if ($didStash) { Invoke-Git stash pop }\n";
+  s += "            Pop-Location\n";
+  s += "        }\n";
+  s += "    } else {\n";
+  s += "        Write-Host 'Cloning from GitHub...'\n";
+  s += "        if (Test-Path $system) { Remove-Item $system -Recurse -Force }\n";
+  s += "        Invoke-Git clone $repo $system\n";
+  s += "    }\n";
+  s += "    # Restore .claude/ folder from repo\n";
+  s += "    if (Test-Path \"$system\\claude\") {\n";
+  s += "        robocopy \"$system\\claude\" \"$claude\" /MIR /NFL /NDL /NJH /NJS /NC /NS | Out-Null\n";
+  s += "    }\n";
+  s += "    # Write current [MEM] path\n";
+  s += "    [System.IO.File]::WriteAllText(\"$PSScriptRoot\\_mem_path.txt\", $system)\n";
+  s += "    Write-Host 'Done - memory, settings and skills ready. Type Start Session.'\n";
+  s += "}\n";
+
+  // PUSH
+  s += "elseif ($action -eq 'push') {\n";
+  s += "    if (-not (Test-Path \"$system\\.git\")) {\n";
+  s += "        Write-Host \"ERROR: memory repo not found at $system - run 'memory.ps1 pull' first.\"\n";
+  s += "        exit 1\n";
+  s += "    }\n";
+  s += "    # Copy .claude/ into git repo before pushing\n";
+  s += "    New-Item -ItemType Directory -Path \"$system\\claude\" -Force | Out-Null\n";
+  s += "    robocopy \"$claude\" \"$system\\claude\" /MIR /NFL /NDL /NJH /NJS /NC /NS | Out-Null\n";
+  s += "    Copy-Item \"$PSScriptRoot\\memory.ps1\" \"$system\\memory.ps1\" -Force\n";
+  s += "    Push-Location $system -ErrorAction Stop\n";
+  s += "    try {\n";
+  s += "        Invoke-Git add .\n";
+  s += "        $changes = & $gitExe status --short 2>&1\n";
+  s += "        if ($changes) {\n";
+  s += "            Invoke-Git commit -m \"Memory update $(Get-Date -Format 'yyyy-MM-dd')\"\n";
+  s += "            Invoke-Git pull --no-rebase origin main\n";
+  s += "            Invoke-Git push\n";
+  s += "        } else {\n";
+  s += "            Write-Host 'Nothing to commit - memory already up to date.'\n";
+  s += "        }\n";
+  s += "    } finally {\n";
+  s += "        Pop-Location\n";
+  s += "    }\n";
+  s += "    Write-Host 'Done - memory, settings and skills pushed to GitHub.'\n";
+  s += "}\n";
+  s += "else {\n";
+  s += "    Write-Host 'Usage: .\\memory.ps1 pull   or   .\\memory.ps1 push'\n";
+  s += "}\n";
+
+  return s;
+}
+
+// --- One-Time Setup Script ---
+
+function generateSetupScript(body) {
+  var ghUser = body.githubUser || 'YOUR_GITHUB_USER';
+  var projName = body.projectName || 'my-project';
+
+  var s = "# " + projName + " - One-time setup\n";
+  s += "# Run this once after downloading the Clankbrain zip.\n";
+  s += "# Requires: git, gh (GitHub CLI) authenticated\n\n";
+  s += "$ProjectName = '" + projName + "'\n";
+  s += "$GitHubUser  = '" + ghUser + "'\n";
+  s += "$ProjectRoot = $PSScriptRoot  # folder where this script + .claude/ live\n\n";
+
+  s += "Write-Host 'Setting up $ProjectName...' -ForegroundColor Cyan\n\n";
+
+  s += "# 1. Init code repo (if not already a git repo)\n";
+  s += "if (-not (Test-Path \"$ProjectRoot\\.git\")) {\n";
+  s += "    git -C $ProjectRoot init\n";
+  s += "    Write-Host 'Initialized git repo.'\n";
+  s += "}\n\n";
+
+  s += "# 2. Create GitHub code repo (skip if exists)\n";
+  s += "$repoCheck = gh repo view \"$GitHubUser/$ProjectName\" 2>&1\n";
+  s += "if ($LASTEXITCODE -ne 0) {\n";
+  s += "    gh repo create \"$GitHubUser/$ProjectName\" --private --source $ProjectRoot --push\n";
+  s += "    Write-Host 'Created GitHub repo: $GitHubUser/$ProjectName'\n";
+  s += "} else {\n";
+  s += "    Write-Host 'GitHub repo already exists: $GitHubUser/$ProjectName'\n";
+  s += "    git -C $ProjectRoot remote add origin \"https://github.com/$GitHubUser/$ProjectName.git\" 2>$null\n";
+  s += "}\n\n";
+
+  s += "# 3. Create GitHub memory repo (skip if exists)\n";
+  s += "$memRepoCheck = gh repo view \"$GitHubUser/$ProjectName-memory\" 2>&1\n";
+  s += "if ($LASTEXITCODE -ne 0) {\n";
+  s += "    gh repo create \"$GitHubUser/$ProjectName-memory\" --private\n";
+  s += "    Write-Host 'Created GitHub memory repo: $GitHubUser/$ProjectName-memory'\n";
+  s += "} else {\n";
+  s += "    Write-Host 'Memory repo already exists: $GitHubUser/$ProjectName-memory'\n";
+  s += "}\n\n";
+
+  s += "# 4. Pull memory (clones on first run, sets up local memory folder)\n";
+  s += "powershell -NoProfile -ExecutionPolicy Bypass -File \"$ProjectRoot\\memory.ps1\" pull\n\n";
+
+  s += "# 5. Initial commit of .claude/ folder\n";
+  s += "git -C $ProjectRoot add .claude/ memory.ps1\n";
+  s += "git -C $ProjectRoot commit -m 'Initial Clankbrain setup'\n";
+  s += "git -C $ProjectRoot push -u origin main 2>$null\n";
+  s += "if ($LASTEXITCODE -ne 0) {\n";
+  s += "    git -C $ProjectRoot push -u origin master 2>$null\n";
+  s += "}\n\n";
+
+  s += "# 6. Push initial memory\n";
+  s += "powershell -NoProfile -ExecutionPolicy Bypass -File \"$ProjectRoot\\memory.ps1\" push\n\n";
+
+  s += "Write-Host ''\n";
+  s += "Write-Host 'Setup complete!' -ForegroundColor Green\n";
+  s += "Write-Host 'Next: cd to your project folder, run claude, and say Start Session.'\n";
+  s += "Write-Host 'On first Start Session, scan-codebase will auto-generate project-specific rules.'\n";
+
   return s;
 }
